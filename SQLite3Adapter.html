@@ -73,6 +73,8 @@
   @_query 'run', sql, values, (error) ->
     return _processSaveError error, callback if error
     callback null</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of github-flavored-markdown for pretty print
+  $('.highlight').find('pre').addClass('.prettyprint');
   window.prettyPrint && prettyPrint()
 });
 $('body').on('click', '.showcode', function () {

@@ -1,9 +1,10 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="AdapterBase.html">Classes</a></li></ul></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
+<p>CORMO is an ORM framework for Node.js.
 
-<p>CORMO is an ORM framework for Node.js.</p>
+</p>
+<p>Currently supports:
 
-<p>Currently supports:</p>
-
+</p>
 <ul>
 <li>multi-DB: MySQL, MongoDB, SQLite3, PostgreSQL</li>
 <li>constraints</li>
@@ -11,260 +12,266 @@
 <li>associations</li>
 <li>geospatial query</li>
 </ul>
+<p>Will support:
 
-<p>Will support:</p>
-
+</p>
 <ul>
 <li>auto table migration</li>
 <li>more DB, validations, associations, ...</li>
 </ul>
+<p>This project is not yet stabilized.
+API can be changed.
 
-<p>This project is not yet stabilized.<br />API can be changed.</p>
-
+</p>
 <h1>Usage</h1>
-
 <h2>Connect to DB</h2>
+<pre><code class="lang-coffeescript">DBConnection = require(&#39;cormo&#39;).DBConnection
 
-<div class="highlight"><pre lang="coffeescript">DBConnection = require('cormo').DBConnection
+connection = new DBConnection &#39;mysql&#39;, database: &#39;test&#39;
 
-connection = new DBConnection 'mysql', database: 'test'
+another = new DBConnection &#39;mongodb&#39;, database: &#39;test&#39;</code></pre>
+<p>See documents for each adapter(<a href='AdapterBase.html#AdapterBase'>AdapterBase</a>) for detail options.
 
-another = new DBConnection 'mongodb', database: 'test'
-</pre></div>
-
-<p>See documents for each adapter(<a href='AdapterBase.html#AdapterBase'>AdapterBase</a>) for detail options.</p>
-
+</p>
 <h2>Define models</h2>
+<pre><code class="lang-coffeescript"> # this will create two tables - users, posts.
 
-<div class="highlight"><pre lang="coffeescript"> # this will create two tables - users, posts.
-
-User = connection.model 'User',
+User = connection.model &#39;User&#39;,
   name: String
   age: Number
 
- # 'String' is the same as '{ type: String }'
-Post = connection.model 'Post',
+ # &#39;String&#39; is the same as &#39;{ type: String }&#39;
+Post = connection.model &#39;Post&#39;,
   title: String
   body: { type: String }
 
-connection.applySchemas (error) ->
-  console.log error
-</pre></div>
+connection.applySchemas (error) -&gt;
+  console.log error</code></pre>
+<p>You can use any of cormo.String, DBConnection.String, connection.String, or &#39;string&#39;
+(also native JavaScript Function - String - if exists) to specify a type.
 
-<p>See <a href='DBConnection.html#DBConnection__model'>DBConnection::model</a>, <a href='DBConnection.html#DBConnection__applySchemas'>DBConnection::applySchemas</a> for more details.</p>
+</p>
+<p>Currently supported types:
 
+</p>
+<ul>
+<li>String</li>
+<li>Number</li>
+<li>Integer</li>
+<li>Date</li>
+<li>GeoPoint (MySQL, MonogoDB only)</li>
+</ul>
+<p>See <a href='DBConnection.html#DBConnection__model'>DBConnection::model</a>, <a href='DBConnection.html#DBConnection__applySchemas'>DBConnection::applySchemas</a> for more details.
+
+</p>
 <h2>Create a record</h2>
-
-<div class="highlight"><pre lang="coffeescript"> # new with no data
+<pre><code class="lang-coffeescript"> # new with no data
 user1 = new User()
-user1.name = 'John Doe'
+user1.name = &#39;John Doe&#39;
 user1.age = 27
-user1.save (error) ->
+user1.save (error) -&gt;
   console.log error
 
  # new with data
-user2 = new User name: 'John Doe', age: 27
-user2.save (error) ->
+user2 = new User name: &#39;John Doe&#39;, age: 27
+user2.save (error) -&gt;
   console.log error
 
  # build is the same as new
-user3 = User.build name: 'John Doe', age: 27
-user3.save (error) ->
+user3 = User.build name: &#39;John Doe&#39;, age: 27
+user3.save (error) -&gt;
   console.log error
 
  # create is the same as build and save
-User.create { name: 'John Doe', age: 27 }, (error, user4) ->
-  console.log error
-</pre></div>
+User.create { name: &#39;John Doe&#39;, age: 27 }, (error, user4) -&gt;
+  console.log error</code></pre>
+<p>See <a href='DBModel.html#DBModel__constructor'>DBModel::constructor</a>, <a href='DBModel.html#DBModel__save'>DBModel::save</a>, <a href='DBModel.html#DBModel_build'>DBModel.build</a>, <a href='DBModel.html#DBModel_create'>DBModel.create</a> for more details.
 
-<p>See <a href='DBModel.html#DBModel__constructor'>DBModel::constructor</a>, <a href='DBModel.html#DBModel__save'>DBModel::save</a>, <a href='DBModel.html#DBModel_build'>DBModel.build</a>, <a href='DBModel.html#DBModel_create'>DBModel.create</a> for more details.</p>
-
+</p>
 <h2>Query</h2>
-
-<div class="highlight"><pre lang="coffeescript"> # simple query
- # the same as "SELECT * FROM users WHERE age=27"
-User.where age: 27, (error, users) ->
+<pre><code class="lang-coffeescript"> # simple query
+ # the same as &quot;SELECT * FROM users WHERE age=27&quot;
+User.where age: 27, (error, users) -&gt;
   console.log users
 
  # else you can use query chain
-User.where(age: 27).exec (error, users) ->
+User.where(age: 27).exec (error, users) -&gt;
   console.log users
 
  # select partial columns
- # the same as "SELECT name,age FROM users"
-User.select 'name age', (error, users) ->
+ # the same as &quot;SELECT name,age FROM users&quot;
+User.select &#39;name age&#39;, (error, users) -&gt;
   console.log users
 
  # two condition
- # the same as "SELECT * FROM users WHERE name='John Doe' AND age=27"
-User.where name: 'John Doe', age: 27, (error, users) ->
+ # the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; AND age=27&quot;
+User.where name: &#39;John Doe&#39;, age: 27, (error, users) -&gt;
   console.log users
 
  # using query chain
-User.where(name: 'John Doe').where(age: 27).exec (error, users) ->
+User.where(name: &#39;John Doe&#39;).where(age: 27).exec (error, users) -&gt;
   console.log users
 
  # find by id, return a single record
-User.find 1, (error, user) ->
+User.find 1, (error, user) -&gt;
   console.log user
 
  # get count of all records
- # the same as "SELECT COUNT(*) FROM users"
-User.count (error, count) ->
+ # the same as &quot;SELECT COUNT(*) FROM users&quot;
+User.count (error, count) -&gt;
   console.log count
 
  # get count of matched records
- # the same as "SELECT COUNT(*) FROM users WHERE age=27"
-User.count age: 27, (error, count) ->
+ # the same as &quot;SELECT COUNT(*) FROM users WHERE age=27&quot;
+User.count age: 27, (error, count) -&gt;
   console.log count
 
  # delete records that match conditions
- # the same as "DELETE FROM users WHERE age=27"
-User.delete age: 27, (error, count) ->
+ # the same as &quot;DELETE FROM users WHERE age=27&quot;
+User.delete age: 27, (error, count) -&gt;
   console.log count
 
  # or condition, similar syntax with MongoDB
- # the same as "SELECT * FROM users WHERE name='John Doe' OR age=27"
-User.where $or: [ { name: 'John Doe' }, { age: 27 } ], (error, users) ->
+ # the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; OR age=27&quot;
+User.where $or: [ { name: &#39;John Doe&#39; }, { age: 27 } ], (error, users) -&gt;
   console.log users
 
  # comparison
- # the same as "SELECT * FROM users WHERE age > 30 AND age <= 45"
-User.where [ { age: { $gt: 30 } }, { age: { $lte: 45 } } ], (error, users) ->
+ # the same as &quot;SELECT * FROM users WHERE age &gt; 30 AND age &lt;= 45&quot;
+User.where [ { age: { $gt: 30 } }, { age: { $lte: 45 } } ], (error, users) -&gt;
   console.log users
 
  # containing some text in case insensitive
- # the same as "SELECT * FROM users WHERE name LIKE '%smi%'"
-User.where { name: { $contains: 'smi' } }, (error, users) ->
+ # the same as &quot;SELECT * FROM users WHERE name LIKE &#39;%smi%&#39;&quot;
+User.where { name: { $contains: &#39;smi&#39; } }, (error, users) -&gt;
   console.log users
 
  # limit records
- # the same as "SELECT * FROM users WHERE age<40 LIMIT 3"
-User.where(age: { $lt: 40 }).limit(3).exec (error, users) ->
-  console.log users
-</pre></div>
+ # the same as &quot;SELECT * FROM users WHERE age&lt;40 LIMIT 3&quot;
+User.where(age: { $lt: 40 }).limit(3).exec (error, users) -&gt;
+  console.log users</code></pre>
+<p>See <a href='DBModel.html#DBModel_find'>DBModel.find</a>, <a href='DBModel.html#DBModel_where'>DBModel.where</a>, <a href='DBModel.html#DBModel_count'>DBModel.count</a>, <a href='DBModel.html#DBModel_delete'>DBModel.delete</a>, <a href='DBQuery.html#DBQuery'>DBQuery</a> for more details.
 
-<p>See <a href='DBModel.html#DBModel_find'>DBModel.find</a>, <a href='DBModel.html#DBModel_where'>DBModel.where</a>, <a href='DBModel.html#DBModel_count'>DBModel.count</a>, <a href='DBModel.html#DBModel_delete'>DBModel.delete</a>, <a href='DBQuery.html#DBQuery'>DBQuery</a> for more details.</p>
-
+</p>
 <h2>Constraints</h2>
+<p>Currently supports &#39;unique&#39; and &#39;required&#39;(not null).
 
-<p>Currently supports 'unique' and 'required'(not null).</p>
+</p>
+<p>&#39;unique&#39; is supported on the database layer.
+&#39;required&#39; is supported on the CORMO layer(while validating).
 
-<p>'unique' is supported on the database layer.<br />'required' is supported on the CORMO layer(while validating).</p>
+</p>
+<p>The column unique but not required can have multiple null values.
 
-<p>The column unique but not required can have multiple null values.</p>
-
-<div class="highlight"><pre lang="coffeescript">User = connection.model 'User',
+</p>
+<pre><code class="lang-coffeescript">User = connection.model &#39;User&#39;,
   name: { type: String, required: true }
   age: { type: Number, required: true }
   email: { type: String, unique: true, required: true }
 
 connection.applySchemas()
 
-User.create { name: 'Bill Smith', age: 45, email: '<a href='mailto:bill@foo.org'>bill@foo.org</a>' }, (error, user1) ->
-  User.create { name: 'Bill Simpson', age: 38, email: '<a href='mailto:bill@foo.org'>bill@foo.org</a>' }, (error, user2) ->
-    # error.message will be 'duplicated email' or 'duplicated'
-</pre></div>
+User.create { name: &#39;Bill Smith&#39;, age: 45, email: &#39;bill@foo.org&#39; }, (error, user1) -&gt;
+  User.create { name: &#39;Bill Simpson&#39;, age: 38, email: &#39;bill@foo.org&#39; }, (error, user2) -&gt;
+    # error.message will be &#39;duplicated email&#39; or &#39;duplicated&#39;</code></pre>
+<p>See <a href='DBConnection.html#DBConnection__model'>DBConnection::model</a> for more details.
 
-<p>See <a href='DBConnection.html#DBConnection__model'>DBConnection::model</a> for more details.</p>
-
+</p>
 <h2>Validations</h2>
+<p>If you want validations, adds a validator using <a href='DBModel.html#DBModel_addValidator'>DBModel.addValidator</a>.
 
-<p>If you want validations, adds a validator using <a href='DBModel.html#DBModel_addValidator'>DBModel.addValidator</a>.</p>
+</p>
+<p>If a record is invalid, throws an error, or returns false or an error string in the validator.
 
-<p>If a record is invalid, throws an error, or returns false or an error string in the validator.</p>
-
-<div class="highlight"><pre lang="coffeescript">User = models.User = connection.model 'User',
+</p>
+<pre><code class="lang-coffeescript">User = models.User = connection.model &#39;User&#39;,
   name: String
   age: Number
   email: String
 
  # checkes age validity
-User.addValidator (record) ->
-  if record.age < 18
-    return 'too young'
+User.addValidator (record) -&gt;
+  if record.age &lt; 18
+    return &#39;too young&#39;
 
  # checkes email validity
-User.addValidator (record) ->
+User.addValidator (record) -&gt;
   if record.email and not /^\w+@.+$/.test record.email
-    throw new Error 'invalid email'
+    throw new Error &#39;invalid email&#39;
   return true
 
 connection.applySchemas()
 
-User.create { name: 'John Doe', age: 10, email: 'invalid' }, (error, user) ->
-  # error.message will be 'invalid email,too young' or 'too young,invalid email'
-</pre></div>
+User.create { name: &#39;John Doe&#39;, age: 10, email: &#39;invalid&#39; }, (error, user) -&gt;
+  # error.message will be &#39;invalid email,too young&#39; or &#39;too young,invalid email&#39;</code></pre>
+<p>See <a href='DBModel.html#DBModel_addValidator'>DBModel.addValidator</a> for more details.
 
-<p>See <a href='DBModel.html#DBModel_addValidator'>DBModel.addValidator</a> for more details.</p>
-
+</p>
 <h2>Associations</h2>
-
-<div class="highlight"><pre lang="coffeescript">User = connection.model 'User',
+<pre><code class="lang-coffeescript">User = connection.model &#39;User&#39;,
   name: String
   age: Number
 
-Post = connection.model 'Post',
+Post = connection.model &#39;Post&#39;,
   title: String
   body: String
 
  # one-to-many association
- # this will add 'user_id' to the Post model
+ # this will add &#39;user_id&#39; to the Post model
 User.hasMany Post
 Post.belongsTo User
 
- # one-to-many association with 'as'
- # this will add 'parent_post_id' to the Post model
-Post.hasMany Post, as: 'comments', foreign_key: 'parent_post_id'
-Post.belongsTo Post, as: 'parent_post'
+ # one-to-many association with &#39;as&#39;
+ # this will add &#39;parent_post_id&#39; to the Post model
+Post.hasMany Post, as: &#39;comments&#39;, foreign_key: &#39;parent_post_id&#39;
+Post.belongsTo Post, as: &#39;parent_post&#39;
 
  # you must call applySchemas after defining association
 connection.applySchemas()
 
  # get associated objects
-user.posts (error, records) ->
+user.posts (error, records) -&gt;
   console.log records
-post.user (error, record) ->
+post.user (error, record) -&gt;
   console.log record
-post.comments (error, records) ->
+post.comments (error, records) -&gt;
   console.log records
-post.parent_post (error, record) ->
+post.parent_post (error, record) -&gt;
   console.log record
 
  # returned objects are cached, give true to reload
-user.posts true, (error, records) ->
+user.posts true, (error, records) -&gt;
   console.log records
 
  # two ways to create an associated object
-Post.create { title: 'first post', body: 'This is the 1st post.', user_id: user.id }, (error, post) ->
+Post.create { title: &#39;first post&#39;, body: &#39;This is the 1st post.&#39;, user_id: user.id }, (error, post) -&gt;
   console.log post
 
-post = user.posts.build title: 'first post', body: 'This is the 1st post.'
-post.save (error) ->
-  console.log error
-</pre></div>
+post = user.posts.build title: &#39;first post&#39;, body: &#39;This is the 1st post.&#39;
+post.save (error) -&gt;
+  console.log error</code></pre>
+<p>See <a href='DBModel.html#DBModel_hasMany'>DBModel.hasMany</a>, <a href='DBModel.html#DBModel_belongsTo'>DBModel.belongsTo</a> for more details.
 
-<p>See <a href='DBModel.html#DBModel_hasMany'>DBModel.hasMany</a>, <a href='DBModel.html#DBModel_belongsTo'>DBModel.belongsTo</a> for more details.</p>
-
+</p>
 <h2>Geospatial query</h2>
+<p>Currently, we supports only near query of 2D location in MongoDB and MySQL.
 
-<p>Currently, we supports only near query of 2D location in MongoDB and MySQL.</p>
-
-<div class="highlight"><pre lang="coffeescript">Place = connection.model 'Place',
+</p>
+<pre><code class="lang-coffeescript">Place = connection.model &#39;Place&#39;,
   name: String
   location: DBConnection.GeoPoint
 
 connection.applySchemas()
 
  # create 
-Place.create name: 'Carrier Dome', location: [-76.136131, 43.036240]
+Place.create name: &#39;Carrier Dome&#39;, location: [-76.136131, 43.036240]
 
  # query
-Place.where().near(location: [-5, 45]).limit(4).exec (error, places) ->
-  console.log places
-</pre></div>
-
-<p>See <a href='DBQuery.html#DBQuery__near'>DBQuery::near</a> for more details.</p></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
+Place.where().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
+  console.log places</code></pre>
+<p>See <a href='DBQuery.html#DBQuery__near'>DBQuery::near</a> for more details.
+</p>
+</div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
   // make result of github-flavored-markdown for pretty print
   $('.highlight').find('pre').addClass('.prettyprint');
   window.prettyPrint && prettyPrint()

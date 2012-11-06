@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class=""><a href="AdapterBase.html">Classes</a></li></ul></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="association.html">Modules</a></li><li class=""><a href="AdapterBase.html">Classes</a></li></ul></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
 <p>CORMO is an ORM framework for Node.js.
 
 </p>
@@ -34,16 +34,18 @@ another = new Connection &#39;mongodb&#39;, database: &#39;test&#39;</code></pre
 
 </p>
 <h2>Define models</h2>
-<pre><code class="lang-coffeescript"> # this will create two tables - users, posts.
+<pre><code class="lang-coffeescript"># this will create two tables - users, posts.
 
+# using model method
 User = connection.model &#39;User&#39;,
-  name: String
-  age: Number
+  name: { type: String }
+  age: { type: Number }
 
- # &#39;String&#39; is the same as &#39;{ type: String }&#39;
-Post = connection.model &#39;Post&#39;,
-  title: String
-  body: { type: String }
+# using CoffeeScript extends keyword
+class Post extends cormo.Model
+  @connection connection # must be first
+  @column &#39;title&#39;, String # &#39;String&#39; is the same as &#39;{ type: String }&#39;
+  @column &#39;body&#39;, &#39;string&#39; # you can also use &#39;string&#39; to specify a string type
 
 connection.applySchemas (error) -&gt;
   console.log error</code></pre>
@@ -65,103 +67,103 @@ connection.applySchemas (error) -&gt;
 
 </p>
 <h2>Create a record</h2>
-<pre><code class="lang-coffeescript"> # new with no data
+<pre><code class="lang-coffeescript"># new with no data
 user1 = new User()
 user1.name = &#39;John Doe&#39;
 user1.age = 27
 user1.save (error) -&gt;
   console.log error
 
- # new with data
+# new with data
 user2 = new User name: &#39;John Doe&#39;, age: 27
 user2.save (error) -&gt;
   console.log error
 
- # build is the same as new
+# build is the same as new
 user3 = User.build name: &#39;John Doe&#39;, age: 27
 user3.save (error) -&gt;
   console.log error
 
- # create is the same as build and save
+# create is the same as build and save
 User.create { name: &#39;John Doe&#39;, age: 27 }, (error, user4) -&gt;
   console.log error</code></pre>
 <p>See <a href='Model.html#Model__constructor'>Model::constructor</a>, <a href='Model.html#Model__save'>Model::save</a>, <a href='Model.html#Model_build'>Model.build</a>, <a href='Model.html#Model_create'>Model.create</a> for more details.
 
 </p>
 <h2>Query</h2>
-<pre><code class="lang-coffeescript"> # simple query
- # the same as &quot;SELECT * FROM users WHERE age=27&quot;
+<pre><code class="lang-coffeescript"># simple query
+# the same as &quot;SELECT * FROM users WHERE age=27&quot;
 User.where age: 27, (error, users) -&gt;
   console.log users
 
- # else you can use query chain
+# else you can use query chain
 User.where(age: 27).exec (error, users) -&gt;
   console.log users
 
- # select partial columns
- # the same as &quot;SELECT name,age FROM users&quot;
+# select partial columns
+# the same as &quot;SELECT name,age FROM users&quot;
 User.select &#39;name age&#39;, (error, users) -&gt;
   console.log users
 
- # two condition
- # the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; AND age=27&quot;
+# two condition
+# the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; AND age=27&quot;
 User.where name: &#39;John Doe&#39;, age: 27, (error, users) -&gt;
   console.log users
 
- # using query chain
+# using query chain
 User.where(name: &#39;John Doe&#39;).where(age: 27).exec (error, users) -&gt;
   console.log users
 
- # find by id, return a single record
+# find by id, return a single record
 User.find 1, (error, user) -&gt;
   console.log user
 
- # find multiple ids
- # will return error unless records are found for all ids
+# find multiple ids
+# will return error unless records are found for all ids
 User.find [1,2,3], (error, users) -&gt;
   console.log users
 
- # get count of all records
- # the same as &quot;SELECT COUNT(*) FROM users&quot;
+# get count of all records
+# the same as &quot;SELECT COUNT(*) FROM users&quot;
 User.count (error, count) -&gt;
   console.log count
 
- # get count of matched records
- # the same as &quot;SELECT COUNT(*) FROM users WHERE age=27&quot;
+# get count of matched records
+# the same as &quot;SELECT COUNT(*) FROM users WHERE age=27&quot;
 User.count age: 27, (error, count) -&gt;
   console.log count
 
- # delete records that match conditions
- # the same as &quot;DELETE FROM users WHERE age=27&quot;
+# delete records that match conditions
+# the same as &quot;DELETE FROM users WHERE age=27&quot;
 User.delete age: 27, (error, count) -&gt;
   console.log count
 
- # or condition, similar syntax with MongoDB
- # the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; OR age=27&quot;
+# or condition, similar syntax with MongoDB
+# the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; OR age=27&quot;
 User.where $or: [ { name: &#39;John Doe&#39; }, { age: 27 } ], (error, users) -&gt;
   console.log users
 
- # comparison
- # the same as &quot;SELECT * FROM users WHERE age &gt; 30 AND age &lt;= 45&quot;
+# comparison
+# the same as &quot;SELECT * FROM users WHERE age &gt; 30 AND age &lt;= 45&quot;
 User.where [ { age: { $gt: 30 } }, { age: { $lte: 45 } } ], (error, users) -&gt;
   console.log users
 
- # containing some text in case insensitive
- # the same as &quot;SELECT * FROM users WHERE name LIKE &#39;%smi%&#39;&quot;
+# containing some text in case insensitive
+# the same as &quot;SELECT * FROM users WHERE name LIKE &#39;%smi%&#39;&quot;
 User.where { name: { $contains: &#39;smi&#39; } }, (error, users) -&gt;
   console.log users
 
- # subset
- # the same as &quot;SELECT * FROM users WHERE age IN (10,20,30)&quot;
+# subset
+# the same as &quot;SELECT * FROM users WHERE age IN (10,20,30)&quot;
 User.where { age: { $in: [ 10, 20, 30 ] } }, (error, users) -&gt;
   console.log users
 
- # you can omit the $in keyword (implicit $in)
+# you can omit the $in keyword (implicit $in)
 User.where { age: [ 10, 20, 30 ] }, (error, users) -&gt;
   console.log users
 
- # limit records
- # the same as &quot;SELECT * FROM users WHERE age&lt;40 LIMIT 3&quot;
+# limit records
+# the same as &quot;SELECT * FROM users WHERE age&lt;40 LIMIT 3&quot;
 User.where(age: { $lt: 40 }).limit(3).exec (error, users) -&gt;
   console.log users</code></pre>
 <p>See <a href='Model.html#Model_find'>Model.find</a>, <a href='Model.html#Model_where'>Model.where</a>, <a href='Model.html#Model_count'>Model.count</a>, <a href='Model.html#Model_delete'>Model.delete</a>, <a href='Query.html#Query'>Query</a> for more details.
@@ -203,12 +205,12 @@ User.create { name: &#39;Bill Smith&#39;, age: 45, email: &#39;bill@foo.org&#39;
   age: Number
   email: String
 
- # checkes age validity
+# checkes age validity
 User.addValidator (record) -&gt;
   if record.age &lt; 18
     return &#39;too young&#39;
 
- # checkes email validity
+# checkes email validity
 User.addValidator (record) -&gt;
   if record.email and not /^\w+@.+$/.test record.email
     throw new Error &#39;invalid email&#39;
@@ -230,20 +232,20 @@ Post = connection.model &#39;Post&#39;,
   title: String
   body: String
 
- # one-to-many association
- # this will add &#39;user_id&#39; to the Post model
+# one-to-many association
+# this will add &#39;user_id&#39; to the Post model
 User.hasMany Post
 Post.belongsTo User
 
- # one-to-many association with &#39;as&#39;
- # this will add &#39;parent_post_id&#39; to the Post model
+# one-to-many association with &#39;as&#39;
+# this will add &#39;parent_post_id&#39; to the Post model
 Post.hasMany Post, as: &#39;comments&#39;, foreign_key: &#39;parent_post_id&#39;
 Post.belongsTo Post, as: &#39;parent_post&#39;
 
- # you must call applySchemas after defining association
+# you must call applySchemas after defining association
 connection.applySchemas()
 
- # get associated objects
+# get associated objects
 user.posts (error, records) -&gt;
   console.log records
 post.user (error, record) -&gt;
@@ -253,11 +255,11 @@ post.comments (error, records) -&gt;
 post.parent_post (error, record) -&gt;
   console.log record
 
- # returned objects are cached, give true to reload
+# returned objects are cached, give true to reload
 user.posts true, (error, records) -&gt;
   console.log records
 
- # two ways to create an associated object
+# two ways to create an associated object
 Post.create { title: &#39;first post&#39;, body: &#39;This is the 1st post.&#39;, user_id: user.id }, (error, post) -&gt;
   console.log post
 
@@ -277,17 +279,17 @@ post.save (error) -&gt;
 
 connection.applySchemas()
 
- # create 
+# create 
 Place.create name: &#39;Carrier Dome&#39;, location: [-76.136131, 43.036240]
 
- # query
+# query
 Place.where().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
   console.log places</code></pre>
 <p>See <a href='Query.html#Query__near'>Query::near</a> for more details.
 </p>
 </div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
-  // make result of github-flavored-markdown for pretty print
-  $('.highlight').find('pre').addClass('.prettyprint');
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
   window.prettyPrint && prettyPrint()
 });
 $('body').on('click', '.showcode', function () {

@@ -16,18 +16,30 @@
     @_conditions.push id: @_id
     delete @_id
   @_adapter.delete @_name, @_conditions, callback</pre><hr class="item-seperator"></section><section id="Query__exec"><h2 class="class_method">Query::exec(callback)</h2><div><p>Executes the query</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, records)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='Model.html#Model'>Model</a>&gt;} </span><code>records</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee)</span><pre class="sourcecode prettyprint linenums">exec: (callback) ->
-  if @_id and @_conditions.length is 0
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, records)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='Model.html#Model'>Model</a>, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='Model.html#Model'>Model</a>&gt;} </span><code>records</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee)</span><pre class="sourcecode prettyprint linenums">exec: (callback) ->
+  if @_id and not Array.isArray(@_id) and @_conditions.length is 0
     @_adapter.findById @_name, @_id, @_options, (error, record) ->
-      return callback error if error
-      callback null, [record]
+      return callback new Error('not found') if error or not record
+      callback null, record
     return
+  expected_count = undefined
   if @_id
-    @_conditions.push id: @_id
-    delete @_id
-  @_adapter.find @_name, @_conditions, @_options, callback</pre><hr class="item-seperator"></section><section id="Query__find"><h2 class="class_method">Query::find(id)</h2><div><p>Finds a record by id</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>id</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee)</span><pre class="sourcecode prettyprint linenums">find: (id) ->
-  @_id = id
+    if Array.isArray @_id
+      @_conditions.push id: { $in: @_id }
+      expected_count = @_id.length
+    else
+      @_conditions.push id: @_id
+      expected_count = 1
+  @_adapter.find @_name, @_conditions, @_options, (error, records) ->
+    return callback error if error
+    if expected_count?
+      return callback new Error('not found') if records.length isnt expected_count
+    callback null, records</pre><hr class="item-seperator"></section><section id="Query__find"><h2 class="class_method">Query::find(id)</h2><div><p>Finds a record by id</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='types.RecordID.html#types_RecordID'>RecordID</a>, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='types.RecordID.html#types_RecordID'>RecordID</a>&gt;} </span><code>id</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee)</span><pre class="sourcecode prettyprint linenums">find: (id) ->
+  if Array.isArray id
+    @_id = _.uniq id
+  else
+    @_id = id
   return @</pre><hr class="item-seperator"></section><section id="Query__limit"><h2 class="class_method">Query::limit(limit)</h2><div><p>Sets limit of query</p>
 </div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>limit</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee)</span><pre class="sourcecode prettyprint linenums">limit: (limit) ->
   @_options.limit = limit

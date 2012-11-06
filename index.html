@@ -116,6 +116,11 @@ User.where(name: &#39;John Doe&#39;).where(age: 27).exec (error, users) -&gt;
 User.find 1, (error, user) -&gt;
   console.log user
 
+ # find multiple ids
+ # will return error unless records are found for all ids
+User.find [1,2,3], (error, users) -&gt;
+  console.log users
+
  # get count of all records
  # the same as &quot;SELECT COUNT(*) FROM users&quot;
 User.count (error, count) -&gt;
@@ -144,6 +149,15 @@ User.where [ { age: { $gt: 30 } }, { age: { $lte: 45 } } ], (error, users) -&gt;
  # containing some text in case insensitive
  # the same as &quot;SELECT * FROM users WHERE name LIKE &#39;%smi%&#39;&quot;
 User.where { name: { $contains: &#39;smi&#39; } }, (error, users) -&gt;
+  console.log users
+
+ # subset
+ # the same as &quot;SELECT * FROM users WHERE age IN (10,20,30)&quot;
+User.where { age: { $in: [ 10, 20, 30 ] } }, (error, users) -&gt;
+  console.log users
+
+ # you can omit the $in keyword (implicit $in)
+User.where { age: [ 10, 20, 30 ] }, (error, users) -&gt;
   console.log users
 
  # limit records

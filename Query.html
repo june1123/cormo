@@ -6,12 +6,12 @@
   @_adapter = model._connection._adapter
   @_conditions = []
   @_options = {}</pre><hr class="item-seperator"></section><section id="Query__count"><h2 class="class_method">Query::count(callback)</h2><div><p>Executes the query as a count operation</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, count)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>count</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee:107)</span><pre class="sourcecode prettyprint .linenums:107">count: (callback) ->
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, count)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>count</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee:108)</span><pre class="sourcecode prettyprint .linenums:108">count: (callback) ->
   if @_id
     @_conditions.push id: @_id
     delete @_id
   @_adapter.count @_name, @_conditions, callback</pre><hr class="item-seperator"></section><section id="Query__delete"><h2 class="class_method">Query::delete(callback)</h2><div><p>Executes the query as a delete operation</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, count)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>count</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee:120)</span><pre class="sourcecode prettyprint .linenums:120">delete: (callback) ->
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, count)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>count</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Query.html#Query'>Query</a>} </span><span>this</span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/query.coffee:121)</span><pre class="sourcecode prettyprint .linenums:121">delete: (callback) ->
   if @_id
     @_conditions.push id: @_id
     delete @_id
@@ -25,6 +25,7 @@
   expected_count = undefined
   if @_id
     if Array.isArray @_id
+      return callback null, [] if @_id.length is 0
       @_conditions.push id: { $in: @_id }
       expected_count = @_id.length
     else

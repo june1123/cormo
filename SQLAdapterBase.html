@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - SQLAdapterBase</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="index.html">Home</a></li><li class=""><a href="association.html">Modules</a></li><li class="active"><a href="AdapterBase.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="AdapterBase.html">AdapterBase</a></li><li><a href="Connection.html">Connection</a></li><li><a href="Model.html">Model</a></li><li><a href="MongoDBAdapter.html">MongoDBAdapter</a></li><li><a href="MySQLAdapter.html">MySQLAdapter</a></li><li><a href="PostgreSQLAdapter.html">PostgreSQLAdapter</a></li><li><a href="Query.html">Query</a></li><li class="active"><a href="#SQLAdapterBase">SQLAdapterBase</a></li><li><a href="SQLite3Adapter.html">SQLite3Adapter</a></li><li class="nav-header">types</li><li><a href="types.Integer.html">Integer</a></li><li><a href="types.RecordID.html">RecordID</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="SQLAdapterBase"><h1 class="class_title">SQLAdapterBase<span class="extends"> extends <a href='AdapterBase.html#AdapterBase'>AdapterBase</a></span></h1><div><p>Base class for SQL adapters</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/sql_base.coffee:5)</span><pre class="sourcecode prettyprint .linenums:5">class SQLAdapterBase extends AdapterBase
+  _param_place_holder: (pos) -> '?'
+  _contains_op: 'LIKE'
+
+  _buildWhere: (conditions, params, conjunction='AND') ->
+    if Array.isArray conditions
+      subs = conditions.map (condition) => @_buildWhere condition, params
+    else if typeof conditions is 'object'
+      keys = Object.keys conditions
+      if keys.length is 0
+        return ''
+      if keys.length is 1
+        key = keys[0]
+        if key.substr(0, 1) is '$'
+          switch key
+            when '$and'
+              return @_buildWhere conditions[key], params, 'AND'
+            when '$or'
+              return @_buildWhere conditions[key], params, 'OR'
+        else
+          value = conditions[key]
+          op = '='
+          if Array.isArray value
+            values = value.map (value) =>
+              params.push value
+              return @_param_place_holder params.length
+            return "#{key} IN (#{values.join ','})"
+          else if typeof value is 'object' and (keys = Object.keys value).length is 1
+            sub_key = keys[0]
+            if sub_key is '$in'
+              values = value[sub_key]
+              values = values.map (value) =>
+                params.push value
+                return @_param_place_holder params.length
+              return "#{key} IN (#{values.join ','})"
+            switch sub_key
+              when '$gt'
+                op = '>'
+                value = value[sub_key]
+              when '$lt'
+                op = '<'
+                value = value[sub_key]
+              when '$gte'
+                op = '>='
+                value = value[sub_key]
+              when '$lte'
+                op = '<='
+                value = value[sub_key]
+              when '$contains'
+                op = ' ' + @_contains_op + ' '
+                value = '%' + value[sub_key] + '%'
+          params.push value
+          return key + op + @_param_place_holder params.length
+      else
+        subs = keys.map (key) =>
+          obj = {}
+          obj[key] = conditions[key]
+          @_buildWhere obj, params
+    else
+      return ''
+    return '(' + subs.join(' ' + conjunction + ' ') + ')'</pre><dl><dt>Direct known subclasses:</dt><dd><a href='MySQLAdapter.html#MySQLAdapter'>MySQLAdapter</a>, <a href='PostgreSQLAdapter.html#PostgreSQLAdapter'>PostgreSQLAdapter</a>, <a href='SQLite3Adapter.html#SQLite3Adapter'>SQLite3Adapter</a></dd></dl></section></div></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

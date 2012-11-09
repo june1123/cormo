@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="association.html">Modules</a></li><li class=""><a href="AdapterBase.html">Classes</a></li></ul></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="association.html">Modules</a></li><li class=""><a href="AdapterBase.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
 <p>CORMO is an ORM framework for Node.js.
 
 </p>
@@ -223,6 +223,42 @@ User.create { name: &#39;John Doe&#39;, age: 10, email: &#39;invalid&#39; }, (er
 <p>See <a href='Model.html#Model_addValidator'>Model.addValidator</a> for more details.
 
 </p>
+<h2>Callbacks</h2>
+<p>CORMO supports following callbacks:
+
+</p>
+<ul>
+<li>afterInitialize</li>
+<li>afterFind</li>
+<li>beforeValidate</li>
+<li>afterValidate</li>
+<li>beforeSave</li>
+<li>afterSave</li>
+<li>beforeCreate</li>
+<li>afterCreate</li>
+<li>beforeUpdate</li>
+<li>afterUpdate</li>
+<li>beforeDestroy</li>
+<li>afterDestroy</li>
+</ul>
+<pre><code class="lang-coffeescript"># using method name
+User.afterInitialize &#39;onAfterInitialie&#39;
+User::onAfterInitialie = -&gt;
+  console.log &#39;initialized&#39;
+
+# using anonymous function
+User.afterCreate -&gt;
+  console.log &#39;created&#39;
+
+# while defining a model
+class Post extends cormo.Model
+  @connection connection # must be first
+  @column &#39;title&#39;, String # &#39;String&#39; is the same as &#39;{ type: String }&#39;
+  @column &#39;body&#39;, &#39;string&#39; # you can also use &#39;string&#39; to specify a string type
+  @afterSave &#39;onAfterSave&#39;
+
+  onAfterSave: -&gt;
+    console.log &#39;saved&#39;</code></pre>
 <h2>Associations</h2>
 <pre><code class="lang-coffeescript">User = connection.model &#39;User&#39;,
   name: String
@@ -294,6 +330,11 @@ Place.where().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
 });
 $('body').on('click', '.showcode', function () {
   $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
 });</script><script src="http://code.jquery.com/ui/1.9.0/jquery-ui.min.js"></script><script src="tocify/jquery.tocify.min.js"></script><script>$(function() {
   $('#toc').tocify();
 });</script></body></html>

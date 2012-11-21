@@ -105,6 +105,11 @@ User.where(age: 27).exec (error, users) -&gt;
 User.select &#39;name age&#39;, (error, users) -&gt;
   console.log users
 
+# sort result
+# the same as &quot;SELECT * FROM users ORDER BY age ASC, name DESC&quot;
+User.order &#39;age -name&#39;, (error, users) -&gt;
+  console.log users
+
 # two condition
 # the same as &quot;SELECT * FROM users WHERE name=&#39;John Doe&#39; AND age=27&quot;
 User.where name: &#39;John Doe&#39;, age: 27, (error, users) -&gt;
@@ -166,7 +171,7 @@ User.where { age: [ 10, 20, 30 ] }, (error, users) -&gt;
 # the same as &quot;SELECT * FROM users WHERE age&lt;40 LIMIT 3&quot;
 User.where(age: { $lt: 40 }).limit(3).exec (error, users) -&gt;
   console.log users</code></pre>
-<p>See <a href='model.ModelQuery.html#model_ModelQuery_find'>ModelQuery.find</a>, <a href='model.ModelQuery.html#model_ModelQuery_where'>ModelQuery.where</a>, <a href='model.ModelQuery.html#model_ModelQuery_count'>ModelQuery.count</a>, <a href='model.ModelQuery.html#model_ModelQuery_delete'>ModelQuery.delete</a>, <a href='Query.html#Query'>Query</a> for more details.
+<p>See <a href='model.ModelQuery.html#model_ModelQuery'>ModelQuery</a>, <a href='Query.html#Query'>Query</a> for more details.
 
 </p>
 <h2>Constraints</h2>

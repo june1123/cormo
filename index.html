@@ -85,7 +85,7 @@ user3.save (error) -&gt;
   console.log error
 
 # create is the same as build and save
-User.create { name: &#39;John Doe&#39;, age: 27 }, (error, user4) -&gt;
+User.create { name: &#39;John Doe&#39;, age: 27 }, (error, user) -&gt;
   console.log error</code></pre>
 <p>See <a href='Model.html#Model__constructor'>Model::constructor</a>, <a href='Model.html#Model__save'>Model::save</a>, <a href='Model.html#Model_build'>Model.build</a>, <a href='Model.html#Model_create'>Model.create</a> for more details.
 
@@ -128,6 +128,11 @@ User.find 1, (error, user) -&gt;
 User.find [1,2,3], (error, users) -&gt;
   console.log users
 
+# find multiple ids with same order
+User.findPreserve [2,1,2,3], (error, users) -&gt;
+  # users[0].id is 2 and users[1].id is 1 and users[2].id is 2 and users[3].id is 3
+  console.log users
+
 # get count of all records
 # the same as &quot;SELECT COUNT(*) FROM users&quot;
 User.count (error, count) -&gt;
@@ -136,6 +141,15 @@ User.count (error, count) -&gt;
 # get count of matched records
 # the same as &quot;SELECT COUNT(*) FROM users WHERE age=27&quot;
 User.count age: 27, (error, count) -&gt;
+  console.log count
+
+# update records that match conditions
+# the same as &quot;UPDATE users SET age=10 WHERE age=27&quot;
+User.update { age: 10 }, age: 27, (error, count) -&gt;
+  console.log count
+
+# using query chain
+User.where(age: 27).update age:10, (error, count) -&gt;
   console.log count
 
 # delete records that match conditions
@@ -327,7 +341,18 @@ Place.create name: &#39;Carrier Dome&#39;, location: [-76.136131, 43.036240]
 Place.where().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
   console.log places</code></pre>
 <p>See <a href='Query.html#Query__near'>Query::near</a> for more details.
+
 </p>
+<h2>Other features</h2>
+<p>Use <a href='model.ModelTimestamp.html#model_ModelTimestamp_timestamps'>ModelTimestamp.timestamps</a> to add created_at and updated_at to the table.
+
+</p>
+<pre><code class="lang-coffeescript">User.timestamps()</code></pre>
+<p>Use <a href='Model.html#Model_createBulk'>Model.createBulk</a> to create many records at once.
+
+</p>
+<pre><code class="lang-coffeescript">User.createBulk [ { name: &#39;John Doe&#39;, age: 27 }, { name: &#39;Bill Smith&#39;, age: 45 } ], (error, users) -&gt;
+  console.log users</code></pre>
 </div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
   // make result of marked for pretty print
   $('pre code[class^="lang-"]').addClass('.prettyprint');

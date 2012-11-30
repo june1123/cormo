@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="association.html">Modules</a></li><li class=""><a href="Connection.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class=""><a href="Connection.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
 <p>CORMO is an ORM framework for Node.js.
 
 </p>
@@ -49,8 +49,8 @@ class Post extends cormo.Model
 
 connection.applySchemas (error) -&gt;
   console.log error</code></pre>
-<p>You can use any of cormo.String, Connection.String, connection.String, or &#39;string&#39;
-(also native JavaScript Function - String - if exists) to specify a type.
+<p>You can use any of cormo.types.String, &#39;string&#39;, or String
+(native JavaScript Function, if exists) to specify a type.
 
 </p>
 <p>Currently supported types:
@@ -330,7 +330,7 @@ post.save (error) -&gt;
 </p>
 <pre><code class="lang-coffeescript">Place = connection.model &#39;Place&#39;,
   name: String
-  location: Connection.GeoPoint
+  location: cormo.types.GeoPoint
 
 connection.applySchemas()
 

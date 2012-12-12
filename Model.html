@@ -1,59 +1,52 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - Model</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class="active"><a href="Connection.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="Connection.html">Connection</a></li><li class="active"><a href="#Model">Model</a></li><li class="cormo-class-property "><a href="#Model_addValidator">addValidator<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_belongsTo">belongsTo<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_build">build<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_column">column<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_connection">connection<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__constructor">constructor</a></li><li class="cormo-class-property "><a href="#Model_create">create<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_createBulk">createBulk<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_deleteAll">deleteAll<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__destroy">destroy</a></li><li class="cormo-class-property "><a href="#Model_drop">drop<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_hasMany">hasMany<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_newModel">newModel<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__save">save</a></li><li class="cormo-class-property "><a href="#Model__validate">validate</a></li><li><a href="Query.html">Query</a></li><li class="nav-header">adapter</li><li><a href="adapter.AdapterBase.html">AdapterBase</a></li><li><a href="adapter.MongoDBAdapter.html">MongoDBAdapter</a></li><li><a href="adapter.MySQLAdapter.html">MySQLAdapter</a></li><li><a href="adapter.PostgreSQLAdapter.html">PostgreSQLAdapter</a></li><li><a href="adapter.SQLAdapterBase.html">SQLAdapterBase</a></li><li><a href="adapter.SQLite3Adapter.html">SQLite3Adapter</a></li><li class="nav-header">model</li><li><a href="model.ModelCallback.html">ModelCallback</a></li><li><a href="model.ModelQuery.html">ModelQuery</a></li><li><a href="model.ModelTimestamp.html">ModelTimestamp</a></li><li class="nav-header">types</li><li><a href="types.Integer.html">Integer</a></li><li><a href="types.RecordID.html">RecordID</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="Model"><h1 class="class_title">Model<span class="uses"> uses <a href='model.ModelQuery.html#model_ModelQuery'>ModelQuery</a>, <a href='model.ModelCallback.html#model_ModelCallback'>ModelCallback</a>, <a href='model.ModelTimestamp.html#model_ModelTimestamp'>ModelTimestamp</a></span></h1><div><p>Base class for models</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:35)</span><pre class="sourcecode prettyprint .linenums:35">class Model</pre></section></div><section id="Model_addValidator" class=""><h2 class="class_method">Model.addValidator(validator)<span class="label label-static">static</span></h2><div><p>Adds a validator</p>
-</div><div><p>A validator must return false(boolean) or error message(string), or throw an Error exception if invalid</p>
-</div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(record)} </span><code>validator</code><span> </span><ul><li><span>{<a href='Model.html#Model'>Model</a>} </span><code>record</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:433)</span><pre class="sourcecode prettyprint .linenums:433">@addValidator: (validator) ->
-  @_validators.push validator</pre><hr class="item-seperator"></section><section id="Model_belongsTo" class=""><h2 class="class_method">Model.belongsTo(target_model_or_column, [options])<span class="label label-static">static</span></h2><div><p>Adds a belongs-to association</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='Model.html#Model'>Model</a>&gt;, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>target_model_or_column</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:420)</span><pre class="sourcecode prettyprint .linenums:420">@belongsTo: (target_model_or_column, options) ->
-  @_connection._pending_associations.push
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - Model</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class="active"><a href="ColumnProperty.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="ColumnProperty.html">ColumnProperty</a></li><li><a href="Connection.html">Connection</a></li><li class="active"><a href="#Model">Model</a></li><li class="cormo-class-property private"><a href="#Model__adapter">_adapter<span class="label label-private">private</span><span class="label label-static">static</span><span class="label label-property">property</span></a></li><li class="cormo-class-property private"><a href="#Model___attributes">_attributes<span class="label label-private">private</span><span class="label label-property">property</span></a></li><li class="cormo-class-property private"><a href="#Model__connection">_connection<span class="label label-private">private</span><span class="label label-static">static</span><span class="label label-property">property</span></a></li><li class="cormo-class-property private"><a href="#Model___intermediates">_intermediates<span class="label label-private">private</span><span class="label label-property">property</span></a></li><li class="cormo-class-property private"><a href="#Model___prev_attributes">_prev_attributes<span class="label label-private">private</span><span class="label label-property">property</span></a></li><li class="cormo-class-property private"><a href="#Model__schema">_schema<span class="label label-private">private</span><span class="label label-static">static</span><span class="label label-property">property</span></a></li><li class="cormo-class-property "><a href="#Model_belongsTo">belongsTo<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_build">build<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_column">column<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model_connection">connection<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__constructor">constructor</a></li><li class="cormo-class-property "><a href="#Model_deleteAll">deleteAll<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__destroy">destroy</a></li><li class="cormo-class-property "><a href="#Model_dirty_tracking">dirty_tracking<span class="label label-static">static</span><span class="label label-property">property</span></a></li><li class="cormo-class-property "><a href="#Model_drop">drop<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__get">get</a></li><li class="cormo-class-property "><a href="#Model__getChanged">getChanged</a></li><li class="cormo-class-property "><a href="#Model__getPrevious">getPrevious</a></li><li class="cormo-class-property "><a href="#Model_hasMany">hasMany<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__isDirty">isDirty</a></li><li class="cormo-class-property "><a href="#Model_newModel">newModel<span class="label label-static">static</span></a></li><li class="cormo-class-property "><a href="#Model__reset">reset</a></li><li class="cormo-class-property "><a href="#Model__set">set</a></li><li><a href="Query.html">Query</a></li><li class="nav-header">adapter</li><li><a href="adapter.AdapterBase.html">AdapterBase</a></li><li><a href="adapter.MongoDBAdapter.html">MongoDBAdapter</a></li><li><a href="adapter.MySQLAdapter.html">MySQLAdapter</a></li><li><a href="adapter.PostgreSQLAdapter.html">PostgreSQLAdapter</a></li><li><a href="adapter.RedisAdapter.html">RedisAdapter</a></li><li><a href="adapter.SQLAdapterBase.html">SQLAdapterBase</a></li><li><a href="adapter.SQLite3Adapter.html">SQLite3Adapter</a></li><li class="nav-header">connection</li><li><a href="connection.ConnectionAssociation.html">ConnectionAssociation</a></li><li class="nav-header">model</li><li><a href="model.ModelCallback.html">ModelCallback</a></li><li><a href="model.ModelPersistence.html">ModelPersistence</a></li><li><a href="model.ModelQuery.html">ModelQuery</a></li><li><a href="model.ModelTimestamp.html">ModelTimestamp</a></li><li><a href="model.ModelValidate.html">ModelValidate</a></li><li class="nav-header">types</li><li><a href="types.Integer.html">Integer</a></li><li><a href="types.RecordID.html">RecordID</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="Model"><h1 class="class_title">Model<span class="uses"> uses <a href='model.ModelQuery.html#model_ModelQuery'>ModelQuery</a>, <a href='model.ModelCallback.html#model_ModelCallback'>ModelCallback</a>, <a href='model.ModelTimestamp.html#model_ModelTimestamp'>ModelTimestamp</a>, <a href='model.ModelPersistence.html#model_ModelPersistence'>ModelPersistence</a>, <a href='model.ModelValidate.html#model_ModelValidate'>ModelValidate</a></span></h1><div><p>Base class for models</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:36)</span><pre class="sourcecode prettyprint .linenums:36">class Model</pre></section></div><section id="Model__adapter" class="private"><h2 class="class_method">Model._adapter : <a href='adapter.AdapterBase.html#adapter_AdapterBase'>AdapterBase</a><span class="label label-private">private</span><span class="label label-static">static</span><span class="label label-property">property</span></h2><div><p>Indicates the adapter associated to this model</p>
+</div><div></div><h3>See Also:</h3><ul><li><a href='Model.html#Model_connection'>Model.connection</a></li></ul><hr class="item-seperator"></section><section id="Model___attributes" class="private"><h2 class="class_method">Model::_attributes<span class="label label-private">private</span><span class="label label-property">property</span></h2><div></div><div></div><hr class="item-seperator"></section><section id="Model__connection" class="private"><h2 class="class_method">Model._connection : <a href='Connection.html#Connection'>Connection</a><span class="label label-private">private</span><span class="label label-static">static</span><span class="label label-property">property</span></h2><div><p>Indicates the connection associated to this model</p>
+</div><div></div><h3>See Also:</h3><ul><li><a href='Model.html#Model_connection'>Model.connection</a></li></ul><hr class="item-seperator"></section><section id="Model___intermediates" class="private"><h2 class="class_method">Model::_intermediates<span class="label label-private">private</span><span class="label label-property">property</span></h2><div></div><div></div><hr class="item-seperator"></section><section id="Model___prev_attributes" class="private"><h2 class="class_method">Model::_prev_attributes<span class="label label-private">private</span><span class="label label-property">property</span></h2><div></div><div></div><hr class="item-seperator"></section><section id="Model__schema" class="private"><h2 class="class_method">Model._schema : <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>StringMap</a>&lt;<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>&gt;<span class="label label-private">private</span><span class="label label-static">static</span><span class="label label-property">property</span></h2><div><p>Schema for this model.
+Maps from column path to property object</p>
+</div><div></div><h3>See Also:</h3><ul><li><a href='Model.html#Model_connection'>Model.connection</a></li></ul><hr class="item-seperator"></section><section id="Model_belongsTo" class=""><h2 class="class_method">Model.belongsTo(target_model_or_column, [options])<span class="label label-static">static</span></h2><div><p>Adds a belongs-to association</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='Model.html#Model'>Model</a>&gt;, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>target_model_or_column</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:345)</span><pre class="sourcecode prettyprint .linenums:345">@belongsTo: (target_model_or_column, options) ->
+  @_connection.addAssociation
     type: 'belongsTo'
     this_model: @
     target_model_or_column: target_model_or_column
     options: options</pre><hr class="item-seperator"></section><section id="Model_build" class=""><h2 class="class_method">Model.build([data={}])<span class="label label-static">static</span></h2><div><p>Creates a record.
 &#39;Model.build(data)&#39; is the same as &#39;new Model(data)&#39;</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data={}</code><span> </span><span class="label label-optional">optional</span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Model.html#Model'>Model</a>} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:157)</span><pre class="sourcecode prettyprint .linenums:157">@build: (data) ->
-  return new @ data</pre><hr class="item-seperator"></section><section id="Model_column" class=""><h2 class="class_method">Model.column(name, property)<span class="label label-static">static</span></h2><div><p>Adds a column to this model</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>name</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>property</code><span> </span></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:68)</span><pre class="sourcecode prettyprint .linenums:68">@column: (name, property) ->
-  # nested type
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data={}</code><span> </span><span class="label label-optional">optional</span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='Model.html#Model'>Model</a>} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:164)</span><pre class="sourcecode prettyprint .linenums:164">@build: (data) ->
+  return new @ data</pre><hr class="item-seperator"></section><section id="Model_column" class=""><h2 class="class_method">Model.column(path, property)<span class="label label-static">static</span></h2><div><p>Adds a column to this model</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>path</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(), <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>, <a href='ColumnProperty.html#ColumnProperty'>ColumnProperty</a>} </span><code>property</code><span> </span></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:111)</span><pre class="sourcecode prettyprint .linenums:111">@column: (path, property) ->
+  # nested path
   if typeof property is 'object' and (not property.type or property.type.type)
-    for subtype, subproperty of property
-      @column name+'.'+subtype, subproperty
+    for subcolumn, subproperty of property
+      @column path+'.'+subcolumn, subproperty
     return
 
-  return if @_schema.hasOwnProperty name
+  return if @_schema.hasOwnProperty path
 
-  # convert simple type to object
+  # convert simple type to property object
   if typeof property is 'function' or typeof property is 'string'
     property = type: property
 
-  # convert javascript built-in class
-  type = property.type
-  switch type
-    when String then type = types.String
-    when Number then type = types.Number
-    when Boolean then type = types.Boolean
-    when Date then type = types.Date
-    when Object then type = types.Object
-  if typeof type isnt 'string'
-    throw new Error 'unknown type : ' + type
-  type = type.toLowerCase()
+  type = types._toCORMOType property.type
+  if type is types.RecordID
+    type = @_getKeyType property.connection
 
   # check supports of GeoPoint
   if type is types.GeoPoint and not @_adapter.support_geopoint
     throw new Error 'this adapter does not support GeoPoint'
 
-  if type is types.RecordID
-    target_connection = property.connection or @_connection
-    if @_connection is target_connection and target_connection._adapter.key_type_internal
-      type = target_connection._adapter.key_type_internal
-    else
-      type = target_connection._adapter.key_type
+  parts = path.split '.'
+  for i in [0...parts.length-1]
+    @_intermediate_paths[parts[0..i]] = 1
 
   property.type = type
-  property.parts = name.split '.'
-  property.dbname = name.replace '.', '_' if not @_adapter.support_nested
+  property._parts = path.split '.'
+  property._dbname = path.replace '.', '_'
 
-  @_schema[name] = property</pre><hr class="item-seperator"></section><section id="Model_connection" class=""><h2 class="class_method">Model.connection(connection, [name])<span class="label label-static">static</span></h2><div><p>Sets a connection of this model</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='Connection.html#Connection'>Connection</a>} </span><code>connection</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>name</code><span> </span><span class="label label-optional">optional</span></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:53)</span><pre class="sourcecode prettyprint .linenums:53">@connection: (connection, name) ->
+  @_schema[path] = property
+
+  @_schema_changed = true
+  @_connection._schema_changed = true</pre><hr class="item-seperator"></section><section id="Model_connection" class=""><h2 class="class_method">Model.connection(connection, [name])<span class="label label-static">static</span></h2><div><p>Sets a connection of this model</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='Connection.html#Connection'>Connection</a>} </span><code>connection</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>name</code><span> </span><span class="label label-optional">optional</span></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:84)</span><pre class="sourcecode prettyprint .linenums:84">@connection: (connection, name) ->
   name = @name if not name
   connection.models[name] = @
 
@@ -61,67 +54,66 @@
   Object.defineProperty @, '_adapter', value: connection._adapter
   Object.defineProperty @, '_associations', value: {}
   Object.defineProperty @, '_validators', value: []
-  Object.defineProperty @, '_name', configurable: true, value: name
-  Object.defineProperty @, '_schema', configurable: true, value: {}</pre><hr class="item-seperator"></section><section id="Model__constructor" class=""><h2 class="class_method">Model::constructor([data={}])</h2><div><p>Creates a record</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data={}</code><span> </span><span class="label label-optional">optional</span></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:117)</span><pre class="sourcecode prettyprint .linenums:117">constructor: (data) ->
+  Object.defineProperty @, '_name', value: name
+  Object.defineProperty @, '_schema_changed', writable: true, value: true
+  Object.defineProperty @, '_schema', value: {}
+  Object.defineProperty @, '_intermediate_paths', value: {}</pre><hr class="item-seperator"></section><section id="Model__constructor" class=""><h2 class="class_method">Model::constructor([data={}])</h2><div><p>Creates a record</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data={}</code><span> </span><span class="label label-optional">optional</span></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:182)</span><pre class="sourcecode prettyprint .linenums:182">constructor: (data) ->
   data = data or {}
   ctor = @constructor
   schema = ctor._schema
   adapter = ctor._adapter
 
+  Object.defineProperty @, '_prev_attributes', writable: true, value: {}
+  if ctor.dirty_tracking
+    Object.defineProperty @, '_attributes', value: {}
+    Object.defineProperty @, '_intermediates', value: {}
+    for path in Object.keys(ctor._intermediate_paths).sort()
+      [obj, last] = util.getLeafOfPath @, path
+      @_intermediates[path] = {}
+      @_defineProperty obj, last, path, false
+    for column, property of schema
+      [obj, last] = util.getLeafOfPath @, property._parts
+      @_defineProperty obj, last, column, false
+  else
+    Object.defineProperty @, 'isDirty', value: -> true
+    Object.defineProperty @, 'getChanged', value: -> []
+    Object.defineProperty @, 'get', value: (path) -> util.getPropertyOfPath @, path.split '.'
+    Object.defineProperty @, 'getPrevious', value: ->
+    Object.defineProperty @, 'set', value: (path, value) -> util.setPropertyOfPath @, path.split('.'), value
+    Object.defineProperty @, 'reset', value: ->
+
   if id = arguments[1]
     # if id exists, this is called from adapter with database record data
+    support_nested = adapter.support_nested
     for column, property of schema
-      parts = property.parts
-      if adapter.support_nested
-        value = _getValue data, parts
+      parts = property._parts
+      value = if support_nested
+        util.getPropertyOfPath data, parts
       else
-        value = data[property.dbname]
+        data[property._dbname]
       if value?
-        if property.type is types.Object and not adapter.support_object
-          value = JSON.parse value
-        else
-          value = adapter.valueToModel value, column, property
-        _setValue @, parts, value
+        value = adapter.valueToModel value, column, property
+        util.setPropertyOfPath @, parts, value
 
     Object.defineProperty @, 'id', configurable: false, enumerable: true, writable: false, value: id
 
     @_runCallbacks 'find', 'after'
   else
     for column, property of schema
-      parts = property.parts
-      value = _getValue data, parts
+      parts = property._parts
+      value = util.getPropertyOfPath data, parts
       if value?
-        _setValue @, parts, value
+        util.setPropertyOfPath @, parts, value
 
     Object.defineProperty @, 'id', configurable: true, enumerable: true, writable: false, value: undefined
 
-  @_runCallbacks 'initialize', 'after'</pre><hr class="item-seperator"></section><section id="Model_create" class=""><h2 class="class_method">Model.create([data={}], callback)<span class="label label-static">static</span></h2><div><p>Creates a record and saves it to the database
-&#39;Model.create(data, callback)&#39; is the same as &#39;Model.build(data).save(callback)&#39;</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data={}</code><span> </span><span class="label label-optional">optional</span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, record)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='Model.html#Model'>Model</a>} </span><code>record</code><span> created record</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:167)</span><pre class="sourcecode prettyprint .linenums:167">@create: (data, callback) ->
-  if typeof data is 'function'
-    callback = data
-    data = {}
-  @build(data).save callback</pre><hr class="item-seperator"></section><section id="Model_createBulk" class=""><h2 class="class_method">Model.createBulk(data, callback)<span class="label label-static">static</span></h2><div><p>Creates multiple records and saves them to the database.</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>&gt;} </span><code>data</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, records)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='Model.html#Model'>Model</a>&gt;} </span><code>records</code><span> created records</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:179)</span><pre class="sourcecode prettyprint .linenums:179">@createBulk: (data, callback) ->
-  return callback new Error 'data is not an array' if not Array.isArray data
-
-  records = data.map (item) => @build item
-  async.forEach records, (record, callback) ->
-    record.validate callback
-  , (error) =>
-    return callback error if error
-    records.forEach (record) -> record._runCallbacks 'save', 'before'
-    records.forEach (record) -> record._runCallbacks 'create', 'before'
-    @_createBulk records, (error, records) ->
-      records.forEach (record) -> record._runCallbacks 'create', 'after'
-      records.forEach (record) -> record._runCallbacks 'save', 'after'
-      callback error, records</pre><hr class="item-seperator"></section><section id="Model_deleteAll" class=""><h2 class="class_method">Model.deleteAll(callback)<span class="label label-static">static</span></h2><div><p>Deletes all records from the database</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:450)</span><pre class="sourcecode prettyprint .linenums:450">@deleteAll: (callback) ->
+  @_runCallbacks 'initialize', 'after'</pre><hr class="item-seperator"></section><section id="Model_deleteAll" class=""><h2 class="class_method">Model.deleteAll(callback)<span class="label label-static">static</span></h2><div><p>Deletes all records from the database</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:319)</span><pre class="sourcecode prettyprint .linenums:319">@deleteAll: (callback) ->
   callback = (->) if typeof callback isnt 'function'
   @delete callback
   return</pre><hr class="item-seperator"></section><section id="Model__destroy" class=""><h2 class="class_method">Model::destroy(callback)</h2><div><p>Destroys this record (remove from the database)</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:387)</span><pre class="sourcecode prettyprint .linenums:387">destroy: (callback) ->
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:303)</span><pre class="sourcecode prettyprint .linenums:303">destroy: (callback) ->
   callback = (->) if typeof callback isnt 'function'
   @_runCallbacks 'destroy', 'before'
   if @id
@@ -131,77 +123,61 @@
   else
     @_runCallbacks 'destroy', 'after'
     callback null
-  return</pre><hr class="item-seperator"></section><section id="Model_drop" class=""><h2 class="class_method">Model.drop(callback)<span class="label label-static">static</span></h2><div><p>Drops this model from the database</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='adapter.AdapterBase.html#adapter_AdapterBase__drop'>AdapterBase::drop</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:441)</span><pre class="sourcecode prettyprint .linenums:441">@drop: (callback) ->
-  return if @_waitingForConnection @, @drop, arguments
+  return</pre><hr class="item-seperator"></section><section id="Model_dirty_tracking" class=""><h2 class="class_method">Model.dirty_tracking : <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a><span class="label label-static">static</span><span class="label label-property">property</span></h2><div><p>Tracks changes of a record if true</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:40)</span><pre class="sourcecode prettyprint .linenums:40">@dirty_tracking: false</pre><hr class="item-seperator"></section><section id="Model_drop" class=""><h2 class="class_method">Model.drop(callback)<span class="label label-static">static</span></h2><div><p>Drops this model from the database</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='adapter.AdapterBase.html#adapter_AdapterBase__drop'>AdapterBase::drop</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:150)</span><pre class="sourcecode prettyprint .linenums:150">@drop: (callback) ->
+  # do not need to apply schema before drop, only waiting connection established
+  return if @_connection._waitingForConnection @, @drop, arguments
 
-  @_adapter.drop @_name, _bindDomain callback</pre><hr class="item-seperator"></section><section id="Model_hasMany" class=""><h2 class="class_method">Model.hasMany(target_model_or_column, [options])<span class="label label-static">static</span></h2><div><p>Adds a has-many association</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='Model.html#Model'>Model</a>&gt;, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>target_model_or_column</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:406)</span><pre class="sourcecode prettyprint .linenums:406">@hasMany: (target_model_or_column, options) ->
-  @_connection._pending_associations.push
+  @_adapter.drop @_name, _bindDomain (error) =>
+    @_schema_changed = true
+    @_connection._schema_changed = true
+    callback error</pre><hr class="item-seperator"></section><section id="Model__get" class=""><h2 class="class_method">Model::get(path)</h2><div><p>Returns the current value of the column of the given path</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>path</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:255)</span><pre class="sourcecode prettyprint .linenums:255">get: (path) ->
+  if @_intermediates.hasOwnProperty path
+    @_intermediates[path]
+  else
+    util.getPropertyOfPath @_attributes, path</pre><hr class="item-seperator"></section><section id="Model__getChanged" class=""><h2 class="class_method">Model::getChanged()</h2><div><p>Returns the list of paths of changed columns</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:248)</span><pre class="sourcecode prettyprint .linenums:248">getChanged: ->
+  Object.keys @_prev_attributes</pre><hr class="item-seperator"></section><section id="Model__getPrevious" class=""><h2 class="class_method">Model::getPrevious(path)</h2><div><p>Returns the original value of the column of the given path</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>path</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:265)</span><pre class="sourcecode prettyprint .linenums:265">getPrevious: (path) ->
+  @_prev_attributes[path]</pre><hr class="item-seperator"></section><section id="Model_hasMany" class=""><h2 class="class_method">Model.hasMany(target_model_or_column, [options])<span class="label label-static">static</span></h2><div><p>Adds a has-many association</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='Model.html#Model'>Model</a>&gt;, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>target_model_or_column</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:331)</span><pre class="sourcecode prettyprint .linenums:331">@hasMany: (target_model_or_column, options) ->
+  @_connection.addAssociation
     type: 'hasMany'
     this_model: @
     target_model_or_column: target_model_or_column
-    options: options</pre><hr class="item-seperator"></section><section id="Model_newModel" class=""><h2 class="class_method">Model.newModel(connection, name, schema)<span class="label label-static">static</span></h2><div><p>Returns a new model class extending Model</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='Connection.html#Connection'>Connection</a>} </span><code>connection</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>name</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>schema</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='Model.html#Model'>Model</a>&gt;} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:42)</span><pre class="sourcecode prettyprint .linenums:42">@newModel: (connection, name, schema) ->
+    options: options</pre><hr class="item-seperator"></section><section id="Model__isDirty" class=""><h2 class="class_method">Model::isDirty()</h2><div><p>Returns true if there is some changed columns</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:243)</span><pre class="sourcecode prettyprint .linenums:243">isDirty: ->
+  Object.keys(@_prev_attributes).length > 0</pre><hr class="item-seperator"></section><section id="Model_newModel" class=""><h2 class="class_method">Model.newModel(connection, name, schema)<span class="label label-static">static</span></h2><div><p>Returns a new model class extending Model</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='Connection.html#Connection'>Connection</a>} </span><code>connection</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>name</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>schema</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='Model.html#Model'>Model</a>&gt;} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:73)</span><pre class="sourcecode prettyprint .linenums:73">@newModel: (connection, name, schema) ->
   class NewModel extends Model
   NewModel.connection connection, name
   for name, property of schema
     NewModel.column name, property
-  return NewModel</pre><hr class="item-seperator"></section><section id="Model__save" class=""><h2 class="class_method">Model::save([options], [callback])</h2><div><p>Saves data to the database</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a>} </span><code>validate=true</code><span> </span><span class="label label-optional">optional</span></li></ul></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, record)} </span><code>callback</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='Model.html#Model'>Model</a>} </span><code>record</code><span> this</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:356)</span><pre class="sourcecode prettyprint .linenums:356">save: (options, callback) ->
-  if typeof options is 'function'
-    callback = options
-    options = {}
-  callback = (->) if typeof callback isnt 'function'
-
-  if options?.validate isnt false
-    @validate (error) =>
-      return callback error if error
-      @save validate: false, callback
-    return
-
-  @_runCallbacks 'save', 'before'
-
-  if @id
-    @_runCallbacks 'update', 'before'
-    @_update (error, record) =>
-      @_runCallbacks 'update', 'after'
-      @_runCallbacks 'save', 'after'
-      callback error, record
+  return NewModel</pre><hr class="item-seperator"></section><section id="Model__reset" class=""><h2 class="class_method">Model::reset()</h2><div><p>Resets all changes</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:294)</span><pre class="sourcecode prettyprint .linenums:294">reset: ->
+  for path, value of @_prev_attributes
+    @set path, value
+  @_prev_attributes = {}</pre><hr class="item-seperator"></section><section id="Model__set" class=""><h2 class="class_method">Model::set(path, value)</h2><div><p>Changes the value of the column of the given path</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>path</code><span> </span></li><li> <code>value</code><span> </span></li></ul><h3>Returns:</h3><ul><li><span> {} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:273)</span><pre class="sourcecode prettyprint .linenums:273">set: (path, value) ->
+  if @_intermediates.hasOwnProperty path
+    obj = @_intermediates[path]
+    for k of obj
+      obj[k] = undefined
+    for k, v of value
+      obj[k] = v
   else
-    @_runCallbacks 'create', 'before'
-    @_create (error, record) =>
-      @_runCallbacks 'create', 'after'
-      @_runCallbacks 'save', 'after'
-      callback error, record</pre><hr class="item-seperator"></section><section id="Model__validate" class=""><h2 class="class_method">Model::validate([callback])</h2><div><p>Validates data</p>
-</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><h3>Returns:</h3><ul><li><span> {<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a>} </span><span></span><ul></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/model.coffee:238)</span><pre class="sourcecode prettyprint .linenums:238">validate: (callback) ->
-  @_runCallbacks 'validate', 'before'
-
-  errors = []
-
-  ctor = @constructor
-  schema = ctor._schema
-  for column, property of schema
-    if error = ctor._validateColumn @, column, property
-      errors.push error
-
-  @constructor._validators.forEach (validator) =>
-    try
-      r = validator @
-      if r is false
-        errors.push 'validation failed'
-      else if typeof r is 'string'
-        errors.push r
-    catch e
-      errors.push e.message
-  if errors.length > 0
-    @_runCallbacks 'validate', 'after'
-    callback? new Error errors.join ','
-    return false
-  else
-    @_runCallbacks 'validate', 'after'
-    callback? null
-    return true</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
+    parts = path.split '.'
+    if not @_prev_attributes.hasOwnProperty path
+      @_prev_attributes[path] = util.getPropertyOfPath @_attributes, parts
+    [obj, last] = util.getLeafOfPath @, parts
+    @_defineProperty obj, last, path, value?
+    util.setPropertyOfPath @_attributes, parts, value
+    while parts.length > 1
+      parts.pop()
+      [obj, last] = util.getLeafOfPath @, parts
+      @_defineProperty obj, last, parts.join('.'), true</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
   // make result of marked for pretty print
   $('pre code[class^="lang-"]').addClass('.prettyprint');
   window.prettyPrint && prettyPrint()

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class=""><a href="Connection.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"><link href="tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class=""><a href="ColumnProperty.html">Classes</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
 <p>CORMO is an ORM framework for Node.js.
 
 </p>
@@ -6,7 +6,7 @@
 
 </p>
 <ul>
-<li>multi-DB: MySQL, MongoDB, SQLite3, PostgreSQL</li>
+<li>multi-DB: MySQL, MongoDB, SQLite3, PostgreSQL, Redis</li>
 <li>constraints</li>
 <li>validations</li>
 <li>associations</li>
@@ -87,7 +87,7 @@ user3.save (error) -&gt;
 # create is the same as build and save
 User.create { name: &#39;John Doe&#39;, age: 27 }, (error, user) -&gt;
   console.log error</code></pre>
-<p>See <a href='Model.html#Model__constructor'>Model::constructor</a>, <a href='Model.html#Model__save'>Model::save</a>, <a href='Model.html#Model_build'>Model.build</a>, <a href='Model.html#Model_create'>Model.create</a> for more details.
+<p>See <a href='Model.html#Model__constructor'>Model::constructor</a>, <a href='model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a>, <a href='Model.html#Model_build'>Model.build</a>, <a href='model.ModelPersistence.html#model_ModelPersistence_create'>ModelPersistence.create</a> for more details.
 
 </p>
 <h2>Query</h2>
@@ -213,7 +213,7 @@ User.create { name: &#39;Bill Smith&#39;, age: 45, email: &#39;bill@foo.org&#39;
 
 </p>
 <h2>Validations</h2>
-<p>If you want validations, adds a validator using <a href='Model.html#Model_addValidator'>Model.addValidator</a>.
+<p>If you want validations, adds a validator using <a href='model.ModelValidate.html#model_ModelValidate_addValidator'>ModelValidate.addValidator</a>.
 
 </p>
 <p>If a record is invalid, throws an error, or returns false or an error string in the validator.
@@ -239,7 +239,7 @@ connection.applySchemas()
 
 User.create { name: &#39;John Doe&#39;, age: 10, email: &#39;invalid&#39; }, (error, user) -&gt;
   # error.message will be &#39;invalid email,too young&#39; or &#39;too young,invalid email&#39;</code></pre>
-<p>See <a href='Model.html#Model_addValidator'>Model.addValidator</a> for more details.
+<p>See <a href='model.ModelValidate.html#model_ModelValidate_addValidator'>ModelValidate.addValidator</a> for more details.
 
 </p>
 <h2>Callbacks</h2>
@@ -348,7 +348,7 @@ Place.where().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
 
 </p>
 <pre><code class="lang-coffeescript">User.timestamps()</code></pre>
-<p>Use <a href='Model.html#Model_createBulk'>Model.createBulk</a> to create many records at once.
+<p>Use <a href='model.ModelPersistence.html#model_ModelPersistence_createBulk'>ModelPersistence.createBulk</a> to create many records at once.
 
 </p>
 <pre><code class="lang-coffeescript">User.createBulk [ { name: &#39;John Doe&#39;, age: 27 }, { name: &#39;Bill Smith&#39;, age: 45 } ], (error, users) -&gt;

@@ -43,10 +43,11 @@ User = connection.model &#39;User&#39;,
 
 # using CoffeeScript extends keyword
 class Post extends cormo.Model
-  @connection connection # must be first
+  @connection connection # if omitted, Connection.defaultConnection will be used instead
   @column &#39;title&#39;, String # &#39;String&#39; is the same as &#39;{ type: String }&#39;
   @column &#39;body&#39;, &#39;string&#39; # you can also use &#39;string&#39; to specify a string type
 
+# apply defined models to Database. This can be omitted
 connection.applySchemas (error) -&gt;
   console.log error</code></pre>
 <p>You can use any of cormo.types.String, &#39;string&#39;, or String
@@ -204,8 +205,6 @@ User.where(age: { $lt: 40 }).limit(3).exec (error, users) -&gt;
   age: { type: Number, required: true }
   email: { type: String, unique: true, required: true }
 
-connection.applySchemas()
-
 User.create { name: &#39;Bill Smith&#39;, age: 45, email: &#39;bill@foo.org&#39; }, (error, user1) -&gt;
   User.create { name: &#39;Bill Simpson&#39;, age: 38, email: &#39;bill@foo.org&#39; }, (error, user2) -&gt;
     # error.message will be &#39;duplicated email&#39; or &#39;duplicated&#39;</code></pre>
@@ -234,8 +233,6 @@ User.addValidator (record) -&gt;
   if record.email and not /^\w+@.+$/.test record.email
     throw new Error &#39;invalid email&#39;
   return true
-
-connection.applySchemas()
 
 User.create { name: &#39;John Doe&#39;, age: 10, email: &#39;invalid&#39; }, (error, user) -&gt;
   # error.message will be &#39;invalid email,too young&#39; or &#39;too young,invalid email&#39;</code></pre>
@@ -271,7 +268,6 @@ User.afterCreate -&gt;
 
 # while defining a model
 class Post extends cormo.Model
-  @connection connection # must be first
   @column &#39;title&#39;, String # &#39;String&#39; is the same as &#39;{ type: String }&#39;
   @column &#39;body&#39;, &#39;string&#39; # you can also use &#39;string&#39; to specify a string type
   @afterSave &#39;onAfterSave&#39;
@@ -296,9 +292,6 @@ Post.belongsTo User
 # this will add &#39;parent_post_id&#39; to the Post model
 Post.hasMany Post, as: &#39;comments&#39;, foreign_key: &#39;parent_post_id&#39;
 Post.belongsTo Post, as: &#39;parent_post&#39;
-
-# you must call applySchemas after defining association
-connection.applySchemas()
 
 # get associated objects
 user.posts (error, records) -&gt;
@@ -331,8 +324,6 @@ post.save (error) -&gt;
 <pre><code class="lang-coffeescript">Place = connection.model &#39;Place&#39;,
   name: String
   location: cormo.types.GeoPoint
-
-connection.applySchemas()
 
 # create 
 Place.create name: &#39;Carrier Dome&#39;, location: [-76.136131, 43.036240]

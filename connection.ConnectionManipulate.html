@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - connection.ConnectionManipulate</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="index.html">Home</a></li><li class=""><a href="cormo.html">Modules</a></li><li class="active"><a href="ColumnProperty.html">Classes - connection.ConnectionManipulate</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="ColumnProperty.html">ColumnProperty</a></li><li><a href="Connection.html">Connection</a></li><li><a href="Model.html">Model</a></li><li><a href="Query.html">Query</a></li><li class="nav-header">adapter</li><li><a href="adapter.AdapterBase.html">AdapterBase</a></li><li><a href="adapter.MongoDBAdapter.html">MongoDBAdapter</a></li><li><a href="adapter.MySQLAdapter.html">MySQLAdapter</a></li><li><a href="adapter.PostgreSQLAdapter.html">PostgreSQLAdapter</a></li><li><a href="adapter.RedisAdapter.html">RedisAdapter</a></li><li><a href="adapter.SQLAdapterBase.html">SQLAdapterBase</a></li><li><a href="adapter.SQLite3Adapter.html">SQLite3Adapter</a></li><li class="nav-header">connection</li><li><a href="connection.ConnectionAssociation.html">ConnectionAssociation</a></li><li class="active"><a href="#connection_ConnectionManipulate">ConnectionManipulate</a></li><li class="cormo-class-property "><a href="#connection_ConnectionManipulate__manipulate">manipulate</a></li><li class="nav-header">model</li><li><a href="model.ModelCallback.html">ModelCallback</a></li><li><a href="model.ModelPersistence.html">ModelPersistence</a></li><li><a href="model.ModelQuery.html">ModelQuery</a></li><li><a href="model.ModelTimestamp.html">ModelTimestamp</a></li><li><a href="model.ModelValidate.html">ModelValidate</a></li><li class="nav-header">types</li><li><a href="types.Integer.html">Integer</a></li><li><a href="types.RecordID.html">RecordID</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="connection_ConnectionManipulate"><h1 class="class_title">ConnectionManipulate</h1><div><p>Manipulate data</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/manipulate.coffee:8)</span><pre class="sourcecode prettyprint .linenums:8">class ConnectionManipulate
+  _manipulateCreate: (model, data, callback) ->
+    model = inflector.camelize model
+    return callback new Error("model #{model} does not exist") if not @models[model]
+    model = @models[model]
+
+    model.create data, skip_log: true, (error, record) ->
+      callback error, record
+
+  _manipulateDelete: (model, data, callback) ->
+    model = inflector.camelize model
+    return callback new Error("model #{model} does not exist") if not @models[model]
+    model = @models[model]
+
+    model.where(data).delete skip_log: true, (error, count) ->
+      callback error
+
+  _manipulateDeleteAllModels: (callback) ->
+    async.forEach Object.keys(@models), (model, callback) =>
+      model = @models[model]
+      model.where().delete skip_log: true, (error, count) ->
+        callback error
+    , callback
+
+  _manipulateDropModel: (model, callback) ->
+    model = inflector.camelize model
+    return callback new Error("model #{model} does not exist") if not @models[model]
+    model = @models[model]
+
+    model.drop callback
+
+  _manipulateDropAllModels: (callback) ->
+    async.forEach Object.keys(@models), (model, callback) =>
+      model = @models[model]
+      model.drop callback
+    , callback
+
+  _manipulateFind: (model, data, callback) ->
+    model = inflector.camelize inflector.singularize model
+    return callback new Error("model #{model} does not exist") if not @models[model]
+    model = @models[model]
+
+    model.where(data).exec skip_log: true, (error, records) ->
+      callback error, records
+
+  _manipulateConvertIds: (id_to_record_map, model, data) ->
+    model = inflector.camelize model
+    return if not @models[model]
+    model = @models[model]
+
+    for column, property of model._schema
+      if property.record_id and data.hasOwnProperty column
+        record = id_to_record_map[data[column]]
+        if record
+          data[column] = record.id</pre><dl><dt>Used by:</dt><dd><a href='Connection.html#Connection'>Connection</a></dd></dl></section></div><section id="connection_ConnectionManipulate__manipulate" class=""><h2 class="class_method">ConnectionManipulate::manipulate(commands, callback)</h2><div><p>Manipulate data</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>&gt;} </span><code>commands</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, id_to_record_map)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>id_to_record_map</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/manipulate.coffee:70)</span><pre class="sourcecode prettyprint .linenums:70">manipulate: (commands, callback) ->
+  @log '<conn>', 'manipulate', commands
+
+  id_to_record_map = {}
+  commands = [commands] if not Array.isArray commands
+  async.forEachSeries commands, (command, callback) =>
+    if typeof command is 'object'
+      key = Object.keys command
+      if key.length is 1
+        key = key[0]
+        data = command[key]
+      else
+        key = undefined
+    else if typeof command is 'string'
+      key = command
+    return callback new Error('invalid command: '+JSON.stringify(command)) if not key
+    if key.substr(0, 7) is 'create_'
+      model = key.substr 7
+      id = data.id
+      delete data.id
+      @_manipulateConvertIds id_to_record_map, model, data
+      @_manipulateCreate model, data, (error, record) ->
+        return callback error if error
+        id_to_record_map[id] = record if id
+        callback null
+    else if key.substr(0, 7) is 'delete_'
+      model = key.substr 7
+      @_manipulateDelete model, data, callback
+    else if key is 'deleteAll'
+      @_manipulateDeleteAllModels callback
+    else if key.substr(0, 5) is 'drop_'
+      model = key.substr 5
+      @_manipulateDropModel model, callback
+    else if key is 'dropAll'
+      @_manipulateDropAllModels callback
+    else if key.substr(0, 5) is 'find_'
+      model = key.substr 5
+      id = data.id
+      delete data.id
+      return callback null if not id
+      @_manipulateFind model, data, (error, records) ->
+        return callback error if error
+        id_to_record_map[id] = records
+        callback null
+    else
+      return callback new Error('unknown command: '+key)
+  , (error) ->
+    callback error, id_to_record_map</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

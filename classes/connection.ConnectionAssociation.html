@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - connection.ConnectionAssociation</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class="active"><a href="../classes/ColumnProperty.html">Classes - connection.ConnectionAssociation</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../classes/ColumnProperty.html">ColumnProperty</a></li><li><a href="../classes/Connection.html">Connection</a></li><li><a href="../classes/Model.html">Model</a></li><li><a href="../classes/Query.html">Query</a></li><li class="nav-header">adapter</li><li><a href="../classes/adapter.AdapterBase.html">AdapterBase</a></li><li><a href="../classes/adapter.MongoDBAdapter.html">MongoDBAdapter</a></li><li><a href="../classes/adapter.MySQLAdapter.html">MySQLAdapter</a></li><li><a href="../classes/adapter.PostgreSQLAdapter.html">PostgreSQLAdapter</a></li><li><a href="../classes/adapter.RedisAdapter.html">RedisAdapter</a></li><li><a href="../classes/adapter.SQLAdapterBase.html">SQLAdapterBase</a></li><li><a href="../classes/adapter.SQLite3Adapter.html">SQLite3Adapter</a></li><li class="nav-header">connection</li><li class="active"><a href="#connection_ConnectionAssociation">ConnectionAssociation</a></li><li class="cormo-class-property private"><a href="#connection_ConnectionAssociation___applyAssociations">_applyAssociations<span class="label label-private">private</span></a></li><li class="cormo-class-property private"><a href="#connection_ConnectionAssociation___belongsTo">_belongsTo<span class="label label-private">private</span></a></li><li class="cormo-class-property private"><a href="#connection_ConnectionAssociation___hasMany">_hasMany<span class="label label-private">private</span></a></li><li class="cormo-class-property "><a href="#connection_ConnectionAssociation__addAssociation">addAssociation</a></li><li><a href="../classes/connection.ConnectionManipulate.html">ConnectionManipulate</a></li><li class="nav-header">model</li><li><a href="../classes/model.ModelCallback.html">ModelCallback</a></li><li><a href="../classes/model.ModelPersistence.html">ModelPersistence</a></li><li><a href="../classes/model.ModelQuery.html">ModelQuery</a></li><li><a href="../classes/model.ModelTimestamp.html">ModelTimestamp</a></li><li><a href="../classes/model.ModelValidate.html">ModelValidate</a></li><li class="nav-header">types</li><li><a href="../classes/types.Integer.html">Integer</a></li><li><a href="../classes/types.RecordID.html">RecordID</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="connection_ConnectionAssociation"><h1 class="class_title">ConnectionAssociation</h1><div><p>Makes association between two models</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/association.coffee:7)</span><pre class="sourcecode prettyprint .linenums:7">class ConnectionAssociation</pre><dl><dt>Used by:</dt><dd><a href='../classes/Connection.html#Connection'>Connection</a></dd></dl></section></div><section id="connection_ConnectionAssociation___applyAssociations" class="private"><h2 class="class_method">ConnectionAssociation::_applyAssociations(connection, associations)<span class="label label-private">private</span></h2><div><p>Applies pending associations</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='../classes/Connection.html#Connection'>Connection</a>} </span><code>connection</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>&gt;} </span><code>associations</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> 'hasMany' or 'belongsTo'</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/association.coffee:114)</span><pre class="sourcecode prettyprint .linenums:114">_applyAssociations: ->
+  @_pending_associations.forEach (item) =>
+    this_model = item.this_model
+    options = item.options
+    if typeof item.target_model_or_column is 'string'
+      if item.options?.connection
+        models = item.options.connection.models
+      else
+        models = @models
+      if item.options?.type
+        target_model = item.options.type
+        options.as = item.target_model_or_column
+      else if item.type is 'belongsTo'
+        target_model = inflector.camelize item.target_model_or_column
+      else
+        target_model = inflector.classify item.target_model_or_column
+      throw new Error("model #{target_model} does not exist") if not models[target_model]
+      target_model = models[target_model]
+    else
+      target_model = item.target_model_or_column
+    @['_'+item.type] this_model, target_model, options
+
+  @_pending_associations = []</pre><hr class="item-seperator"></section><section id="connection_ConnectionAssociation___belongsTo" class="private"><h2 class="class_method">ConnectionAssociation::_belongsTo(this_model, target_model, [options])<span class="label label-private">private</span></h2><div><p>Adds a belongs-to association</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;} </span><code>this_model</code><span> </span></li><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;} </span><code>target_model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/association.coffee:72)</span><pre class="sourcecode prettyprint .linenums:72">_belongsTo: (this_model, target_model, options) ->
+  if options?.foreign_key
+    foreign_key = options.foreign_key
+  else if options?.as
+    foreign_key = options.as + '_id'
+  else
+    foreign_key = inflector.foreign_key target_model._name
+  this_model.column foreign_key, type: types.RecordID, connection: target_model._connection
+
+  column = options?.as or inflector.underscore(target_model._name)
+  columnCache = '__cache_' + column
+  columnGetter = '__getter_' + column
+
+  Object.defineProperty this_model.prototype, column,
+    get: ->
+      # getter must be created per instance due to __scope
+      if not @.hasOwnProperty columnGetter
+        getter = (reload, callback) ->
+          if typeof reload is 'function'
+            callback = reload
+            reload = false
+          # @ is getter.__scope in normal case (this_model_instance.target_model_name()),
+          # but use getter.__scope for safety
+          self = getter.__scope
+          if (not self[columnCache] or reload) and self[foreign_key]
+            target_model.find self[foreign_key], (error, record) ->
+              return callback error if error
+              self[columnCache] = record
+              callback null, record
+          else
+            callback null, self[columnCache]
+        getter.__scope = @
+        Object.defineProperty @, columnCache, value: null, writable: true
+        Object.defineProperty @, columnGetter, value: getter
+      return @[columnGetter]</pre><hr class="item-seperator"></section><section id="connection_ConnectionAssociation___hasMany" class="private"><h2 class="class_method">ConnectionAssociation::_hasMany(this_model, target_model, [options])<span class="label label-private">private</span></h2><div><p>Adds a has-many association</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;} </span><code>this_model</code><span> </span></li><li> <span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;} </span><code>target_model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/association.coffee:16)</span><pre class="sourcecode prettyprint .linenums:16">_hasMany: (this_model, target_model, options) ->
+  if options?.foreign_key
+    foreign_key = options.foreign_key
+  else if options?.as
+    foreign_key = options.as + '_id'
+  else
+    foreign_key = inflector.foreign_key this_model._name
+  target_model.column foreign_key, type: types.RecordID, connection: this_model._connection
+
+  column = options?.as or inflector.tableize(target_model._name)
+  columnCache = '__cache_' + column
+  columnGetter = '__getter_' + column
+
+  this_model._associations[column] = { type: 'hasMany' }
+
+  Object.defineProperty this_model.prototype, column,
+    get: ->
+      # getter must be created per instance due to __scope
+      if not @.hasOwnProperty columnGetter
+        getter = (reload, callback) ->
+          if typeof reload is 'function'
+            callback = reload
+            reload = false
+          # @ is getter.__scope in normal case (this_model_instance.target_model_name()),
+          # but use getter.__scope for safety
+          self = getter.__scope
+          if (not self[columnCache] or reload) and self.id
+            conditions = {}
+            conditions[foreign_key] = self.id
+            target_model.where conditions, (error, records) ->
+              return callback error if error
+              self[columnCache] = records
+              callback null, records
+          else
+            callback null, self[columnCache] or []
+        getter.build = (data) ->
+          # @ is getter, so use getter.__scope instead
+          self = getter.__scope
+          new_object = new target_model data
+          new_object[foreign_key] = self.id
+          self[columnCache] = [] if not self[columnCache]
+          self[columnCache].push new_object
+          return new_object
+        getter.__scope = @
+        Object.defineProperty @, columnCache, value: null, writable: true
+        Object.defineProperty @, columnGetter, value: getter
+      return @[columnGetter]</pre><hr class="item-seperator"></section><section id="connection_ConnectionAssociation__addAssociation" class=""><h2 class="class_method">ConnectionAssociation::addAssociation(association)</h2><div><p>Adds an association</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>association</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> 'hasMany' or 'belongsTo'</span></li><li><span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;} </span><code>this_model</code><span> </span></li><li><span>{<a href='http://coffeescript.org/#classes'>Class</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;, <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>target_model_or_column</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span><span class="label label-optional">optional</span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>type</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>as</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>foreign_key</code><span> </span><span class="label label-optional">optional</span></li></ul></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Model.html#Model_hasMany'>Model.hasMany</a></li><li><a href='../classes/Model.html#Model_belongsTo'>Model.belongsTo</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/connection/association.coffee:150)</span><pre class="sourcecode prettyprint .linenums:150">addAssociation: (association) ->
+  @_pending_associations.push association
+  @_schema_changed = true</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

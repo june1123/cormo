@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - adapter.PostgreSQLAdapter</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class="active"><a href="../classes/ColumnProperty.html">Classes - adapter.PostgreSQLAdapter</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../classes/ColumnProperty.html">ColumnProperty</a></li><li><a href="../classes/Connection.html">Connection</a></li><li><a href="../classes/Model.html">Model</a></li><li><a href="../classes/Query.html">Query</a></li><li class="nav-header">adapter</li><li><a href="../classes/adapter.AdapterBase.html">AdapterBase</a></li><li><a href="../classes/adapter.MongoDBAdapter.html">MongoDBAdapter</a></li><li><a href="../classes/adapter.MySQLAdapter.html">MySQLAdapter</a></li><li class="active"><a href="#adapter_PostgreSQLAdapter">PostgreSQLAdapter</a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__applySchema">applySchema<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__connect">connect</a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__constructor">constructor</a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__count">count<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__create">create<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__createBulk">createBulk<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__delete">delete<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__drop">drop<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__find">find<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__findById">findById<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__update">update<span class="label label-override">override</span></a></li><li class="cormo-class-property "><a href="#adapter_PostgreSQLAdapter__updatePartial">updatePartial<span class="label label-override">override</span></a></li><li><a href="../classes/adapter.RedisAdapter.html">RedisAdapter</a></li><li><a href="../classes/adapter.SQLAdapterBase.html">SQLAdapterBase</a></li><li><a href="../classes/adapter.SQLite3Adapter.html">SQLite3Adapter</a></li><li class="nav-header">connection</li><li><a href="../classes/connection.ConnectionAssociation.html">ConnectionAssociation</a></li><li><a href="../classes/connection.ConnectionManipulate.html">ConnectionManipulate</a></li><li class="nav-header">model</li><li><a href="../classes/model.ModelCallback.html">ModelCallback</a></li><li><a href="../classes/model.ModelPersistence.html">ModelPersistence</a></li><li><a href="../classes/model.ModelQuery.html">ModelQuery</a></li><li><a href="../classes/model.ModelTimestamp.html">ModelTimestamp</a></li><li><a href="../classes/model.ModelValidate.html">ModelValidate</a></li><li class="nav-header">types</li><li><a href="../classes/types.Integer.html">Integer</a></li><li><a href="../classes/types.RecordID.html">RecordID</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="adapter_PostgreSQLAdapter"><h1 class="class_title">PostgreSQLAdapter<span class="extends"> extends <a href='../classes/adapter.SQLAdapterBase.html#adapter_SQLAdapterBase'>SQLAdapterBase</a></span></h1><div><p>Adapter for PostgreSQL</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:38)</span><pre class="sourcecode prettyprint .linenums:38">class PostgreSQLAdapter extends SQLAdapterBase
+  key_type: types.Integer
+  _param_place_holder: (pos) -> '$' + pos
+  _contains_op: 'ILIKE'</pre></section></div><section id="adapter_PostgreSQLAdapter__applySchema" class=""><h2 class="class_method">PostgreSQLAdapter::applySchema(model, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__applySchema'>AdapterBase::applySchema</a></div><br><div><p>Applies schema.
+Creates tables, alter tables, create indexes, or etc. depending adapters</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Connection.html#Connection__applySchemas'>Connection::applySchemas</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:81)</span><pre class="sourcecode prettyprint .linenums:81">applySchema: (model, callback) ->
+  table = tableize model
+  @_query "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name=$1", [table], (error, result) =>
+    columns = result?.rows
+    if error or columns.length is 0
+      @_createTable model, callback
+    else
+      @_alterTable model, columns, callback</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__connect" class=""><h2 class="class_method">PostgreSQLAdapter::connect(settings, callback)</h2><div><p>Connects to the database</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>settings</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>host</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>port</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>user</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>password</code><span> </span><span class="label label-optional">optional</span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>database</code><span> </span></li></ul></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:282)</span><pre class="sourcecode prettyprint .linenums:282">connect: (settings, callback) ->
+  # connect
+  pg.connect
+      host: settings.host
+      port: settings.port
+      user: settings.user
+      password: settings.password
+      database: settings.database
+    , (error, client) =>
+      if error?.code is '3D000'
+        return callback new Error 'database does not exist'
+      return callback PostgreSQLAdapter.wrapError 'failed to connect', error if error
+
+      @_client = client
+      return callback null</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__constructor" class=""><h2 class="class_method">PostgreSQLAdapter::constructor()</h2><div><p>Creates a PostgreSQL adapter</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:45)</span><pre class="sourcecode prettyprint .linenums:45">constructor: (connection) ->
+  @_connection = connection</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__count" class=""><h2 class="class_method">PostgreSQLAdapter::count(model, conditions, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__count'>AdapterBase::count</a></div><br><div><p>Counts records</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>conditions</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, count)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>count</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Query.html#Query__count'>Query::count</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:243)</span><pre class="sourcecode prettyprint .linenums:243">count: (model, conditions, callback) ->
+  params = []
+  sql = "SELECT COUNT(*) AS count FROM #{tableize model}"
+  if conditions.length > 0
+    try
+      sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
+    catch e
+      return callback e
+  #console.log sql, params
+  @_query sql, params, (error, result) =>
+    rows = result?.rows
+    return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
+    return callback error 'unknown error' if rows?.length isnt 1
+    callback null, Number(rows[0].count)</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__create" class=""><h2 class="class_method">PostgreSQLAdapter::create(model, data, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__create'>AdapterBase::create</a></div><br><div><p>Creates a record</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, id)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='../classes/types.RecordID.html#types_RecordID'>RecordID</a>} </span><code>id</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:144)</span><pre class="sourcecode prettyprint .linenums:144">create: (model, data, callback) ->
+  values = []
+  [ fields, places ] = @_buildUpdateSet model, data, values, true
+  sql = "INSERT INTO #{tableize model} (#{fields}) VALUES (#{places}) RETURNING id"
+  @_query sql, values, (error, result) ->
+    rows = result?.rows
+    return _processSaveError model, error, callback if error
+    if rows?.length is 1 and rows[0].id?
+      callback null, rows[0].id
+    else
+      callback new Error 'unexpected rows'</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__createBulk" class=""><h2 class="class_method">PostgreSQLAdapter::createBulk(model, data, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__createBulk'>AdapterBase::createBulk</a></div><br><div><p>Creates records</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>&gt;} </span><code>data</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, ids)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='../classes/types.RecordID.html#types_RecordID'>RecordID</a>&gt;} </span><code>ids</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:157)</span><pre class="sourcecode prettyprint .linenums:157">createBulk: (model, data, callback) ->
+  values = []
+  fields = undefined
+  places = []
+  data.forEach (item) =>
+    [ fields, places_sub ] = @_buildUpdateSet model, item, values, true
+    places.push '(' + places_sub + ')'
+  sql = "INSERT INTO #{tableize model} (#{fields}) VALUES #{places.join ','} RETURNING id"
+  @_query sql, values, (error, result) ->
+    return _processSaveError model, error, callback if error
+    ids = result?.rows.map (row) -> row.id
+    if ids.length is data.length
+      callback null, ids
+    else
+      callback new Error 'unexpected rows'</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__delete" class=""><h2 class="class_method">PostgreSQLAdapter::delete(model, conditions, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__delete'>AdapterBase::delete</a></div><br><div><p>Deletes records from the database</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>conditions</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, count)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a>} </span><code>count</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Query.html#Query__delete'>Query::delete</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:259)</span><pre class="sourcecode prettyprint .linenums:259">delete: (model, conditions, callback) ->
+  params = []
+  sql = "DELETE FROM #{tableize model}"
+  if conditions.length > 0
+    try
+      sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
+    catch e
+      return callback e
+  #console.log sql, params
+  @_query sql, params, (error, result) ->
+    return callback PostgreSQLAdapter.wrapError 'unknown error', error if error or not result?
+    callback null, result.rowCount</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__drop" class=""><h2 class="class_method">PostgreSQLAdapter::drop(model, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__drop'>AdapterBase::drop</a></div><br><div><p>Drops a model from the database</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Model.html#Model_drop'>Model.drop</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:91)</span><pre class="sourcecode prettyprint .linenums:91">drop: (model, callback) ->
+  table = tableize model
+  @_query "DROP TABLE IF EXISTS #{table}", (error) ->
+    return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
+    callback null</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__find" class=""><h2 class="class_method">PostgreSQLAdapter::find(model, conditions, options, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__find'>AdapterBase::find</a></div><br><div><p>Finds records</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>conditions</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, records)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;} </span><code>records</code><span> </span></li></ul></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Query.html#Query__exec'>Query::exec</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:215)</span><pre class="sourcecode prettyprint .linenums:215">find: (model, conditions, options, callback) ->
+  if options.select
+    selects = 'id,' + options.select.join ','
+  else
+    selects = '*'
+  params = []
+  sql = "SELECT #{selects} FROM #{tableize model}"
+  if conditions.length > 0
+    try
+      sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
+    catch e
+      return callback e
+  if options?.limit?
+    sql += ' LIMIT ' + options.limit
+  if options?.orders.length > 0
+    orders = options.orders.map (order) ->
+      if order[0] is '-'
+        return order[1..] + ' DESC'
+      else
+        return order + ' ASC'
+    sql += ' ORDER BY ' + orders.join ','
+  #console.log sql, params
+  @_query sql, params, (error, result) =>
+    rows = result?.rows
+    return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
+    callback null, rows.map (record) => @_convertToModelInstance model, record, options.select</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__findById" class=""><h2 class="class_method">PostgreSQLAdapter::findById(model, id, options, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__findById'>AdapterBase::findById</a></div><br><div><p>Finds a record by id</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='../classes/types.RecordID.html#types_RecordID'>RecordID</a>} </span><code>id</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, record)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li><li><span>{<a href='../classes/Model.html#Model'>Model</a>} </span><code>record</code><span> </span></li></ul></li></ul><h3>Throws:</h3><ul><li>{<span>Error('not found')</span>} <span></span></li></ul><h3>See Also:</h3><ul><li><a href='../classes/Query.html#Query__exec'>Query::exec</a></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:198)</span><pre class="sourcecode prettyprint .linenums:198">findById: (model, id, options, callback) ->
+  if options.select
+    selects = 'id,' + options.select.join ','
+  else
+    selects = '*'
+  table = tableize model
+  @_query "SELECT #{selects} FROM #{table} WHERE id=$1 LIMIT 1", [id], (error, result) =>
+    rows = result?.rows
+    return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
+    if rows?.length is 1
+      callback null, @_convertToModelInstance model, rows[0], options.select
+    else if rows?.length > 1
+      callback new Error 'unknown error'
+    else
+      callback new Error 'not found'</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__update" class=""><h2 class="class_method">PostgreSQLAdapter::update(model, data, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__update'>AdapterBase::update</a></div><br><div><p>Updates a record</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:174)</span><pre class="sourcecode prettyprint .linenums:174">update: (model, data, callback) ->
+  values = []
+  [ fields ] = @_buildUpdateSet model, data, values
+  values.push data.id
+  sql = "UPDATE #{tableize model} SET #{fields} WHERE id=$#{values.length}"
+  @_query sql, values, (error) ->
+    return _processSaveError model, error, callback if error
+    callback null</pre><hr class="item-seperator"></section><section id="adapter_PostgreSQLAdapter__updatePartial" class=""><h2 class="class_method">PostgreSQLAdapter::updatePartial(model, data, conditions, options, callback)<span class="label label-override">override</span></h2><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__updatePartial'>AdapterBase::updatePartial</a></div><br><div><p>Updates some fields of records that match conditions</p>
+</div><div></div><h3>Parameters:</h3><ul><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a>} </span><code>model</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>data</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>conditions</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a>} </span><code>options</code><span> </span></li><li> <span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)} </span><code>callback</code><span> </span><ul><li><span>{<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a>} </span><code>error</code><span> </span></li></ul></li></ul><button class="showcode btn btn-info">Show code</button><span> (defined in /src/adapters/postgresql.coffee:184)</span><pre class="sourcecode prettyprint .linenums:184">updatePartial: (model, data, conditions, options, callback) ->
+  values = []
+  [ fields ] = @_buildPartialUpdateSet model, data, values
+  sql = "UPDATE #{tableize model} SET #{fields}"
+  if conditions.length > 0
+    try
+      sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, values
+    catch e
+      return callback e
+  @_query sql, values, (error, result) ->
+    return _processSaveError model, error, callback if error
+    callback null, result.rowCount</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

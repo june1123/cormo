@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - model.persistence.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - model.persistence.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li class="active"><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>model.persistence.coffee</h1></section><pre class="prettyprint">async = require 'async'
+inflector = require '../inflector'
+util = require '../util'
+_ = require 'underscore'
+
+_bindDomain = (fn) -&gt; if d = process.domain then d.bind fn else fn
+
+##
+# Model persistence
+# @namespace model
+class ModelPersistence
+  ##
+  # Creates a record and saves it to the database
+  # 'Model.create(data, callback)' is the same as 'Model.build(data).save(callback)'
+  # @param {Object} [data={}]
+  # @param {Object} [options]
+  # @param {Boolean} [options.skip_log=false]
+  # @param {Function} callback
+  # @param {Error} callback.error
+  # @param {Model} callback.record created record
+  @create: (data, options, callback) -&gt;
+    if typeof data is 'function'
+      callback = data
+      data = {}
+      options = {}
+    else if typeof options is 'function'
+      callback = options
+      options = {}
+    @build(data).save options, callback
+
+  ##
+  # Creates multiple records and saves them to the database.
+  # @param {Array&lt;Object&gt;} data
+  # @param {Function} callback
+  # @param {Error} callback.error
+  # @param {Array&lt;Model&gt;} callback.records created records
+  @createBulk: (data, callback) -&gt;
+    return callback new Error 'data is not an array' if not Array.isArray data
+
+    records = data.map (item) =&gt; @build item
+    async.forEach records, (record, callback) -&gt;
+      record.validate callback
+    , (error) =&gt;
+      return callback error if error
+      records.forEach (record) -&gt; record._runCallbacks 'save', 'before'
+      records.forEach (record) -&gt; record._runCallbacks 'create', 'before'
+      @_createBulk records, (error, records) -&gt;
+        records.forEach (record) -&gt; record._runCallbacks 'create', 'after'
+        records.forEach (record) -&gt; record._runCallbacks 'save', 'after'
+        callback error, records
+
+  @_buildSaveDataColumn: (data, model, column, property, allow_null) -&gt;
+    adapter = @_adapter
+    parts = property._parts
+    value = util.getPropertyOfPath model, parts
+    value = adapter.valueToDB value, column, property
+    if allow_null or value isnt undefined
+      if adapter.support_nested
+        util.setPropertyOfPath data, parts, value
+      else
+        data[property._dbname] = value
+
+  _buildSaveData: -&gt;
+    data = {}
+    ctor = @constructor
+    schema = ctor._schema
+    for column, property of schema
+      ctor._buildSaveDataColumn data, @, column, property
+    if @id?
+      data.id = ctor._adapter.idToDB @id
+    return data
+
+  _create: (options, callback) -&gt;
+    return if @constructor._waitingForReady @, @_create, arguments
+
+    try
+      data = @_buildSaveData()
+    catch e
+      return callback e, @
+
+    ctor = @constructor
+    ctor._connection.log ctor._name, 'create', data if not options?.skip_log
+    ctor._adapter.create ctor._name, data, _bindDomain (error, id) =&gt;
+      return callback error, @ if error
+      Object.defineProperty @, 'id', configurable: false, enumerable: true, writable: false, value: id
+      # save sub objects of each association
+      foreign_key = inflector.foreign_key ctor._name
+      async.forEach Object.keys(ctor._associations), (column, callback) =&gt;
+        async.forEach @['__cache_' + column] or [], (sub, callback) -&gt;
+          sub[foreign_key] = id
+          sub.save (error) -&gt;
+            callback error
+        , (error) -&gt;
+          callback error
+      , (error) =&gt;
+        @_prev_attributes = {}
+        callback null, @
+
+  @_createBulk: (records, callback) -&gt;
+    return if @_waitingForReady @, @_createBulk, arguments
+
+    error = undefined
+    data_array = records.map (record) -&gt;
+      try
+        data = record._buildSaveData()
+      catch e
+        error = e
+      return data
+    return callback error, records if error
+
+    @_connection.log @_name, 'createBulk', data_array
+    @_adapter.createBulk @_name, data_array, _bindDomain (error, ids) -&gt;
+      return callback error, records if error
+      records.forEach (record, i) -&gt;
+        Object.defineProperty record, 'id', configurable: false, enumerable: true, writable: false, value: ids[i]
+      callback null, records
+
+  _update: (options, callback) -&gt;
+    ctor = @constructor
+    return if ctor._waitingForReady @, @_update, arguments
+
+    if ctor.dirty_tracking
+      # update changed values only
+      if not @isDirty()
+        return callback null, @
+
+      data = {}
+      adapter = ctor._adapter
+      schema = ctor._schema
+      try
+        for path of @_prev_attributes
+          ctor._buildSaveDataColumn data, @_attributes, path, schema[path], true
+      catch e
+        return callback e, @
+
+      ctor._connection.log ctor._name, 'update', data if not options?.skip_log
+      adapter.updatePartial ctor._name, data, id: @id, {}, _bindDomain (error) =&gt;
+        return callback error, @ if error
+        @_prev_attributes = {}
+        callback null, @
+    else
+      # update all
+      try
+        data = @_buildSaveData()
+      catch e
+        return callback e, @
+      
+      ctor._connection.log ctor._name, 'update', data if not options?.skip_log
+      ctor._adapter.update ctor._name, data, _bindDomain (error) =&gt;
+        return callback error, @ if error
+        @_prev_attributes = {}
+        callback null, @
+
+  ##
+  # Saves data to the database
+  # @param {Object} [options]
+  # @param {Boolean} [options.validate=true]
+  # @param {Boolean} [options.skip_log=false]
+  # @param {Function} [callback]
+  # @param {Error} callback.error
+  # @param {Model} callback.record this
+  save: (options, callback) -&gt;
+    if typeof options is 'function'
+      callback = options
+      options = {}
+    callback = (-&gt;) if typeof callback isnt 'function'
+
+    if options?.validate isnt false
+      @validate (error) =&gt;
+        return callback error if error
+        @save _.extend({}, options, validate: false), callback
+      return
+
+    @_runCallbacks 'save', 'before'
+
+    if @id
+      @_runCallbacks 'update', 'before'
+      @_update options, (error, record) =&gt;
+        @_runCallbacks 'update', 'after'
+        @_runCallbacks 'save', 'after'
+        callback error, record
+    else
+      @_runCallbacks 'create', 'before'
+      @_create options, (error, record) =&gt;
+        @_runCallbacks 'create', 'after'
+        @_runCallbacks 'save', 'after'
+        callback error, record
+
+module.exports = ModelPersistence</pre></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

@@ -39,6 +39,7 @@ _propertyToSQL = (property) -&gt;
 class MySQLAdapter extends SQLAdapterBase
   key_type: types.Integer
   support_geopoint: true
+  native_integrity: true
 
   ##
   # Creates a MySQL adapter
@@ -51,19 +52,27 @@ class MySQLAdapter extends SQLAdapterBase
 
   _createTable: (model, callback) -&gt;
     table = tableize model
+    model_class = @_connection.models[model]
     sql = []
     sql.push 'id INT NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY'
-    for column, property of @_connection.models[model]._schema
+    for column, property of model_class._schema
       column_sql = _propertyToSQL property
       if column_sql
         sql.push property._dbname + ' ' + column_sql
-    for index in @_connection.models[model]._indexes
+    for index in model_class._indexes
       columns = []
       for column, order of index.columns
         order = if order is -1 then 'DESC' else 'ASC'
         columns.push column + ' ' + order
       unique = if index.options.unique then 'UNIQUE ' else ''
       sql.push &quot;#{unique}INDEX #{index.options.name} (#{columns.join ','})&quot;
+    for integrity in model_class._integrities
+      if integrity.type is 'child_nullify'
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE SET NULL&quot;
+      else if integrity.type is 'child_restrict'
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE RESTRICT&quot;
+      else if integrity.type is 'child_delete'
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE CASCADE&quot;
     sql = &quot;CREATE TABLE #{table} ( #{sql.join ','} )&quot;
     @_query sql, (error, result) -&gt;
       return callback MySQLAdapter.wrapError 'unknown error', error if error
@@ -205,7 +214,7 @@ class MySQLAdapter extends SQLAdapterBase
   ## @override AdapterBase::findById
   findById: (model, id, options, callback) -&gt;
     if options.select
-      selects = 'id,' + options.select.join ','
+      selects = if options.select.length&gt;0 then 'id,' + options.select.join ',' else 'id'
     else
       selects = '*'
     sql = &quot;SELECT #{selects} FROM #{tableize model} WHERE id=? LIMIT 1&quot;
@@ -221,7 +230,7 @@ class MySQLAdapter extends SQLAdapterBase
   ## @override AdapterBase::find
   find: (model, conditions, options, callback) -&gt;
     if options.select
-      selects = 'id,' + options.select.join ','
+      selects = if options.select.length&gt;0 then 'id,' + options.select.join ',' else 'id'
     else
       selects = '*'
     if options.near? and field = Object.keys(options.near)[0]
@@ -278,6 +287,7 @@ class MySQLAdapter extends SQLAdapterBase
         return callback e
     #console.log sql, params
     @_query sql, params, (error, result) -&gt;
+      return callback new Error 'rejected' if error and error.code is 'ER_ROW_IS_REFERENCED_'
       return callback MySQLAdapter.wrapError 'unknown error', error if error or not result?
       callback null, result.affectedRows
 

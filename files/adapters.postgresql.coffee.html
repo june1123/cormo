@@ -37,6 +37,7 @@ _propertyToSQL = (property) -&gt;
 # @namespace adapter
 class PostgreSQLAdapter extends SQLAdapterBase
   key_type: types.Integer
+  native_integrity: true
   _param_place_holder: (pos) -&gt; '$' + pos
   _contains_op: 'ILIKE'
 
@@ -52,16 +53,24 @@ class PostgreSQLAdapter extends SQLAdapterBase
 
   _createTable: (model, callback) -&gt;
     table = tableize model
+    model_class = @_connection.models[model]
     sql = []
     sql.push 'id SERIAL PRIMARY KEY'
-    for column, property of @_connection.models[model]._schema
+    for column, property of model_class._schema
       column_sql = _propertyToSQL property
       if column_sql
         sql.push property._dbname + ' ' + column_sql
+    for integrity in model_class._integrities
+      if integrity.type is 'child_nullify'
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE SET NULL&quot;
+      else if integrity.type is 'child_restrict'
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE RESTRICT&quot;
+      else if integrity.type is 'child_delete'
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE CASCADE&quot;
     sql = &quot;CREATE TABLE #{table} ( #{sql.join ','} )&quot;
     @_query sql, (error) =&gt;
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
-      async.forEach @_connection.models[model]._indexes, (index, callback) =&gt;
+      async.forEach model_class._indexes, (index, callback) =&gt;
         columns = []
         for column, order of index.columns
           order = if order is -1 then 'DESC' else 'ASC'
@@ -197,7 +206,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
   ## @override AdapterBase::findById
   findById: (model, id, options, callback) -&gt;
     if options.select
-      selects = 'id,' + options.select.join ','
+      selects = if options.select.length&gt;0 then 'id,' + options.select.join ',' else 'id'
     else
       selects = '*'
     table = tableize model
@@ -214,7 +223,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
   ## @override AdapterBase::find
   find: (model, conditions, options, callback) -&gt;
     if options.select
-      selects = 'id,' + options.select.join ','
+      selects = if options.select.length&gt;0 then 'id,' + options.select.join ',' else 'id'
     else
       selects = '*'
     params = []
@@ -266,6 +275,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
         return callback e
     #console.log sql, params
     @_query sql, params, (error, result) -&gt;
+      return callback new Error 'rejected' if error and error.code is '23503'
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error or not result?
       callback null, result.rowCount
 

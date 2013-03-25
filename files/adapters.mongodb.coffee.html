@@ -112,10 +112,17 @@ class MongoDBAdapter extends AdapterBase
     @_connection = connection
     @_collections = {}
 
+  _getMongoDBColName = (name) -&gt;
+    # there is a problem with name begins with underscore
+    if name is '_archives'
+      '@archives'
+    else
+      name
+
   _collection: (name) -&gt;
     name = tableize name
     if not @_collections[name]
-      return @_collections[name] = new mongodb.Collection @_client, name
+      return @_collections[name] = new mongodb.Collection @_client, _getMongoDBColName name
     else
       return @_collections[name]
 
@@ -148,7 +155,7 @@ class MongoDBAdapter extends AdapterBase
   drop: (model, callback) -&gt;
     name = tableize model
     delete @_collections[name]
-    @_client.dropCollection name, (error) -&gt;
+    @_client.dropCollection _getMongoDBColName(name), (error) -&gt;
       # ignore not found error
       if error and error.errmsg isnt 'ns not found'
         return callback MongoDBAdapter.wrapError 'unknown error', error
@@ -308,7 +315,7 @@ class MongoDBAdapter extends AdapterBase
     @_collection(model).find conditions, client_options, (error, cursor) =&gt;
       return callback MongoDBAdapter.wrapError 'unknown error', error if error or not cursor
       cursor.toArray (error, result) =&gt;
-        return callback MongoDBAdapter.wrapError 'unknown error', error if error or not cursor
+        return callback MongoDBAdapter.wrapError 'unknown error', error if error
         callback null, result.map (record) =&gt; @_convertToModelInstance model, record, options.select
 
   ## @override AdapterBase::count
@@ -324,8 +331,9 @@ class MongoDBAdapter extends AdapterBase
 
   ## @override AdapterBase::delete
   delete: (model, conditions, callback) -&gt;
+    model_class = @_connection.models[model]
     try
-      conditions = _buildWhere @_connection.models[model]._schema, conditions
+      conditions = _buildWhere model_class._schema, conditions
     catch e
       return callback e
     #console.log JSON.stringify conditions

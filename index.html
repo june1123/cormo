@@ -317,6 +317,26 @@ post.save (error) -&gt;
 <p>See <a href='./classes/Model.html#Model_hasMany'>Model.hasMany</a>, <a href='./classes/Model.html#Model_belongsTo'>Model.belongsTo</a> for more details.
 
 </p>
+<h3>keep data consistent</h3>
+<p>CORMO supports foreign key constraints by DBMS for SQL-based DBMS or by framework for MongoDB.
+(CORMO does not guarantee integrity for MongoDB even if using this feature)
+
+</p>
+<p>To use constraints, give an integrity options on <a href='./classes/Model.html#Model_hasMany'>Model.hasMany</a>.
+
+</p>
+<pre><code class="lang-coffeescript"># the same as &quot;CREATE TABLE posts ( user_id INT, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL&quot;
+User.hasMany Post, integrity: &#39;nullify&#39;
+
+# the same as &quot;CREATE TABLE posts ( user_id INT, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT&quot;
+User.hasMany Post, integrity: &#39;restrict&#39;
+
+# the same as &quot;CREATE TABLE posts ( user_id INT, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE&quot;
+User.hasMany Post, integrity: &#39;delete&#39;
+
+# no option means no foreign key constraint
+# so there may be a post with invalid user_id
+User.hasMany Post</code></pre>
 <h2>Geospatial query</h2>
 <p>Currently, we supports only near query of 2D location in MongoDB and MySQL.
 
@@ -344,6 +364,14 @@ Place.where().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
 </p>
 <pre><code class="lang-coffeescript">User.createBulk [ { name: &#39;John Doe&#39;, age: 27 }, { name: &#39;Bill Smith&#39;, age: 45 } ], (error, users) -&gt;
   console.log users</code></pre>
+<p>If <a href='./classes/Model.html#Model_archive'>Model.archive</a> is true, deleted records are archived in the _Archive table.
+
+</p>
+<pre><code class="lang-coffeescript">User.archive = true
+User.delete age: 27, (error, count) -&gt;
+  # _Archive will have delete records as
+  #   { model: &#39;User&#39;, data: &lt;deleted user 1&gt; },
+  #   { model: &#39;User&#39;, data: &lt;deleted user 2&gt; }, ...</code></pre>
 </div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="./bootstrap/js/bootstrap.min.js"></script><script src="./google-code-prettify/prettify.js"></script><script>$(function() {
   // make result of marked for pretty print
   $('pre code[class^="lang-"]').addClass('.prettyprint');

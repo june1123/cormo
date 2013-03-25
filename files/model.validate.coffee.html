@@ -94,6 +94,7 @@ class ModelValidate
   # @param {Function} validator
   # @param {Model} validator.record
   @addValidator: (validator) -&gt;
+    @_checkConnection()
     @_validators.push validator
 
 module.exports = ModelValidate</pre></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {

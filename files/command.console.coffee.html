@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - command.console.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/CLI.html">CLI</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - command.console.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li class="active"><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>command.console.coffee</h1></section><pre class="prettyprint">coffee = require 'coffee-script'
+commander = require 'commander'
+Fiber = require 'fibers'
+Future = require 'fibers/future'
+path = require 'path'
+repl = require 'repl'
+vm = require 'vm'
+
+Connection = require '../connection'
+Model = require '../model'
+
+prettyErrorMessage = coffee.helpers.prettyErrorMessage or (e) -&gt; e
+
+##
+# CORMO console
+class CommandConsole
+  constructor: (argv) -&gt;
+    loads = []
+    @program = program = new commander.Command('cormo')
+    program.usage('console [options]')
+      .option('-l, --load &lt;path&gt;', 'load specified module')
+      .on('load', (path) -&gt; loads.push path)
+    program.help() if argv.indexOf('--help') &gt;= 0 || argv.indexOf('-h') &gt;= 0
+    program.parse(argv)
+
+    try
+      cwd = process.cwd()
+      for load in loads
+        console.log &quot;Loading module '#{load}'...&quot;
+        require path.resolve cwd, load
+
+  run: -&gt;
+    @runCoffee()
+
+  runCoffee: -&gt;
+    repl = repl.start
+      prompt: 'cormo&gt; '
+      eval: (cmd, context, filename, callback) -&gt;
+        Fiber( -&gt;
+          cmd = cmd.substr(1, cmd.length-2).trim() if cmd[0] is '(' and cmd[cmd.length-1] is ')'
+          return callback null if not cmd
+          # apply future if command is ended with '$'
+          use_future = /[, ]\$$/.test cmd
+          if use_future
+            future = new Future()
+            context.$ = future.resolver()
+          if /^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test cmd
+            assign_to = RegExp.$1
+          try
+            js = coffee.compile cmd, filename: filename, bare: true
+            result = vm.runInContext js, context, filename
+            if use_future
+              result = future.wait()
+              if assign_to
+                context[assign_to] = result
+              delete context.$
+          catch e
+            return callback prettyErrorMessage e, filename, cmd, true
+          callback null, result
+        ).run()
+    repl.on 'exit', -&gt;
+      process.exit 0
+    @_setupContext repl.context
+
+  _setupContext: (context) -&gt;
+    context.Connection = Connection
+    context.Model = Model
+    context.connection = connection = Connection.defaultConnection
+    if connection
+      for model, modelClass of connection.models
+        context[model] = modelClass
+
+module.exports = CommandConsole</pre></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

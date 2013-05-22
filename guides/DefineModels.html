@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - DefineModels</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"><link href="../tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides - DefineModels <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>basic</h1>
+<p>First, you should create a <a href='../classes/Connection.html#Connection'>Connection</a> to the database.
+
+</p>
+<pre><code class="lang-coffeescript">cormo = require &#39;cormo&#39;
+connection = new cormo.Connection &#39;mysql&#39;, database: &#39;test&#39;</code></pre>
+<p>Available adapters are &#39;mysql&#39;, &#39;mongodb&#39;, &#39;postgresql&#39;, &#39;sqlite3&#39;, and &#39;sqlite3_memory&#39;.
+See documents for each adapter(<a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase'>AdapterBase</a>) for detail settings.
+
+</p>
+<p>Then, you can define <a href='../classes/Model.html#Model'>Model</a>s using the extends keyword.
+
+</p>
+<pre><code class="lang-coffeescript"># this will create two tables - users, posts - in the database.
+
+class User extends cormo.Model
+  @column &#39;name&#39;, type: String
+  @column &#39;age&#39;, type: cormo.types.Integer
+
+class Post extends cormo.Model
+  @column &#39;title&#39;, String # `String` is the same as `type: String`
+  @column &#39;body&#39;, &#39;string&#39; # you can also use `string` to specify a string type
+  @column &#39;date&#39;, Date</code></pre>
+<p>You can use any of cormo.types.String, &#39;string&#39;, or String
+(native JavaScript Function, if exists) to specify a type.
+
+</p>
+<p>Currently supported <a href='../modules/cormo.types.html#cormo_types'>types</a>:
+
+</p>
+<ul>
+<li><a href='../modules/cormo.types.html#cormo_types_String'>types.String</a> (&#39;string&#39;, String)</li>
+<li><a href='../modules/cormo.types.html#cormo_types_Number'>types.Number</a> (&#39;number&#39;, Number)</li>
+<li><a href='../modules/cormo.types.html#cormo_types_Boolean'>types.Boolean</a> (&#39;boolean&#39;, Boolean)</li>
+<li><a href='../classes/types.Integer.html#types_Integer'>types.Integer</a> (&#39;integer&#39;)</li>
+<li><a href='../modules/cormo.types.html#cormo_types_Date'>types.Date</a> (&#39;date&#39;, Date)</li>
+<li><a href='../classes/types.GeoPoint.html#types_GeoPoint'>types.GeoPoint</a> (&#39;geopoint&#39;)<ul>
+<li>MySQL, MonogoDB only</li>
+</ul>
+</li>
+<li><a href='../modules/cormo.types.html#cormo_types_Object'>types.Object</a> (&#39;object&#39;, Object)<ul>
+<li>Objects are stored as a JSON string in SQL adapters.</li>
+</ul>
+</li>
+</ul>
+<p>After defining models, you may call <a href='../classes/Connection.html#Connection__applySchemas'>Connection::applySchemas</a> to apply schemas to the database.
+(It will be called automatically when you run a query.)
+
+</p>
+<h1>when using JavaScript</h1>
+<p>If you want to use CORMO in JavaScript, use <a href='../classes/Connection.html#Connection__model'>Connection::model</a> instead of the extends keyword.
+
+</p>
+<pre><code class="lang-javascript">var cormo = require(&#39;cormo&#39;);
+var connection = new cormo.Connection(&#39;mysql&#39;, { database: &#39;test&#39; } );
+
+var User = connection.model(&#39;User&#39;, {
+  name: { type: String },
+  age: { type: cormo.types.Integer }
+});
+
+var Post = connection.model(&#39;Post&#39;, {
+  title: String,
+  body: &#39;string&#39;,
+  date: Date
+});</code></pre>
+<h1>mixing databases</h1>
+<p>You can use two or more databases at the same time.
+
+</p>
+<p>Use <a href='../classes/Model.html#Model_connection'>Model.connection</a> to specify the connection which the model uses
+
+</p>
+<pre><code class="lang-coffeescript">cormo = require &#39;cormo&#39;
+mysql = new cormo.Connection &#39;mysql&#39;, database: &#39;test&#39;
+mongodb = new cormo.Connection &#39;mongodb&#39;, database: &#39;test&#39;
+
+class User extends cormo.Model
+  @connection mysql
+  @column &#39;name&#39;, String
+  @column &#39;age&#39;, cormo.types.Integer
+
+class Post extends cormo.Model
+  @connection mongodb
+  @column &#39;title&#39;, String
+  @column &#39;body&#39;, String
+  @column &#39;date&#39;, Date</code></pre>
+</div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script><script src="http://code.jquery.com/ui/1.9.0/jquery-ui.min.js"></script><script src="../tocify/jquery.tocify.min.js"></script><script>$(function() {
+  $('#toc').tocify();
+});</script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

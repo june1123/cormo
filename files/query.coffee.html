@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - query.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/CLI.html">CLI</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - query.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li class="active"><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>query.coffee</h1></section><pre class="prettyprint">_ = require 'underscore'
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - query.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - query.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li class="active"><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>query.coffee</h1></section><pre class="prettyprint">_ = require 'underscore'
 async = require 'async'
 
 _bindDomain = (fn) -&gt; if d = process.domain then d.bind fn else fn
@@ -15,8 +15,10 @@ class Query
     @_connection = model._connection
     @_adapter = model._connection._adapter
     @_conditions = []
+    @_includes = []
     @_options =
       orders: []
+      conditions_of_group: []
  
   ##
   # Finds a record by id
@@ -49,15 +51,24 @@ class Query
     @_options.near = target
     return @
 
+  _addCondition: (condition) -&gt;
+    if @_options.group_fields
+      keys = Object.keys condition
+      if keys.length is 1 and @_options.group_fields.hasOwnProperty keys[0]
+        @_options.conditions_of_group.push condition
+        return
+    @_conditions.push condition
+
   ##
   # Finds records by condition
   # @param {Object} condition
   # @return {Query} this
   where: (condition) -&gt;
     if Array.isArray condition
-      @_conditions.push.apply @_conditions, condition
+      condition.forEach (cond) =&gt;
+        @_addCondition cond
     else if condition?
-      @_conditions.push condition
+      @_addCondition condition
     return @
 
   ##
@@ -66,9 +77,9 @@ class Query
   # @return {Query} this
   select: (columns) -&gt;
     @_options.select = null
-    schema_columns = Object.keys @_model._schema
-    intermediate_paths = @_model._intermediate_paths
     if typeof columns is 'string'
+      schema_columns = Object.keys @_model._schema
+      intermediate_paths = @_model._intermediate_paths
       select = []
       columns.split(/\s+/).forEach (column) -&gt;
         if schema_columns.indexOf(column) &gt;= 0
@@ -86,14 +97,16 @@ class Query
   # @param {String} orders
   # @return {Query} this
   order: (orders) -&gt;
-    schema_columns = Object.keys @_model._schema
     if typeof orders is 'string'
+      avaliable_columns = []
+      [].push.apply avaliable_columns, Object.keys @_model._schema
+      [].push.apply avaliable_columns, Object.keys @_options.group_fields if @_options.group_fields
       orders.split(/\s+/).forEach (order) =&gt;
         asc = true
         if order[0] is '-'
           asc = false
           order = order[1..]
-        if schema_columns.indexOf(order) &gt;= 0
+        if avaliable_columns.indexOf(order) &gt;= 0
           @_options.orders.push if asc then order else '-'+order
     return @
 
@@ -120,6 +133,14 @@ class Query
     return @
 
   ##
+  # Sets skip of query
+  # @param {Number} skip
+  # @return {Query} this
+  skip: (skip) -&gt;
+    @_options.skip = skip
+    return @
+
+  ##
   # Returns raw instances instead of model instances
   # @see Query::exec
   return_raw_instance: -&gt;
@@ -139,6 +160,14 @@ class Query
   # @param {Boolean} options.refresh don't load from cache if true
   cache: (options) -&gt;
     @_options.cache = options
+    return @
+
+  ##
+  # Returns associated objects also
+  # @param {String} column
+  # @param {String} [select]
+  include: (column, select) -&gt;
+    @_includes.push column: column, select: select
     return @
 
   _exec: (options, callback) -&gt;
@@ -169,6 +198,14 @@ class Query
       else
         callback null, records
 
+  _execAndInclude: (options, callback) -&gt;
+    @_exec options, (error, records) =&gt;
+      return callback error if error
+      async.forEach @_includes, (include, callback) =&gt;
+        @_connection.fetchAssociated records, include.column, include.select, callback
+      , (error) -&gt;
+        callback error, records
+
   ##
   # Executes the query
   # @param {Object} [options]
@@ -191,13 +228,13 @@ class Query
       @_model._loadFromCache cache_key, cache_options.refresh, (error, records) =&gt;
         return callback null, records if not error
         # no cache, execute query
-        @_exec options, (error, records) =&gt;
+        @_execAndInclude options, (error, records) =&gt;
           return callback error if error
           # save result to cache
           @_model._saveToCache cache_key, cache_options.ttl, records, (error) -&gt;
             callback error, records
     else
-      @_exec options, callback
+      @_execAndInclude options, callback
 
   ##
   # Executes the query as a count operation
@@ -349,4 +386,4 @@ $('body').on('click', '.showcode', function () {
 $('#options-private').on('click', function () {
   $('.private').toggle();
   $('body').scrollspy('refresh');
-});</script></body></html>
+});</script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

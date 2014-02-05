@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - adapters.mongodb.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - adapters.mongodb.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li class="active"><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>adapters.mongodb.coffee</h1></section><pre class="prettyprint">try
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - adapters/mongodb.coffee</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li><a href="../index.html">Home</a></li><li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li><a href="../modules/cormo.html">Modules</a></li><li><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - adapters/mongodb.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters/base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters/mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters/mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters/postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters/redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters/sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters/sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters/sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command/console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection/association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection/manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model/cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model/callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model/persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model/query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model/timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model/validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li class="active"><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>adapters/mongodb.coffee</h1></section><pre class="prettyprint">try
   mongodb = require 'mongodb'
 catch error
   console.log 'Install mongodb module to use this adapter'
@@ -8,42 +10,46 @@ ObjectID = mongodb.ObjectID
 
 AdapterBase = require './base'
 types = require '../types'
-tableize = require('../inflector').tableize
 async = require 'async'
 _ = require 'underscore'
 
 _convertValueToObjectID = (value, key) -&gt;
-  if value?
-    len = value.length
-    if len is 24
-      oid = ''
-      number = parseInt(value.substr(0, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(2, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(4, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(6, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(8, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(10, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(12, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(14, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(16, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(18, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(20, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      number = parseInt(value.substr(22, 2), 16)
-      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
-      if oid.length is 12
-        return _bsontype: 'ObjectID', id: oid
-  throw new Error(&quot;'#{key}' is not a valid id&quot;)
+  try
+    new ObjectID value
+  catch e
+    throw new Error(&quot;'#{key}' is not a valid id&quot;)
+# speed up version, doesn't work with native_parser
+#  if value?
+#    len = value.length
+#    if len is 24
+#      oid = ''
+#      number = parseInt(value.substr(0, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(2, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(4, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(6, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(8, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(10, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(12, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(14, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(16, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(18, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(20, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      number = parseInt(value.substr(22, 2), 16)
+#      oid += String.fromCharCode number if number&gt;=0 and number&lt;256
+#      if oid.length is 12
+#        return _bsontype: 'ObjectID', id: oid, toString: (-&gt; value), toJSON: (-&gt; value)
+#  throw new Error(&quot;'#{key}' is not a valid id&quot;)
 
 _objectIdToString = (oid) -&gt;
   oid = oid.id
@@ -105,12 +111,16 @@ _buildWhereSingle = (property, key, value, not_op) -&gt;
         return _buildWhereSingle property, key, value[sub_key], not not_op
       when '$gt', '$lt', '$gte', '$lte'
         sub_value = value[sub_key]
-        sub_value = new Date sub_value if property_type is types.Date
+        if is_objectid
+          sub_value = _convertValueToObjectID sub_value, key
+        else if property_type is types.Date
+          sub_value = new Date sub_value
         value = {}
         value[sub_key] = sub_value
         if not_op
           value = $not: value
         obj = {}
+        key = '_id' if key is 'id'
         obj[key] = value
         return obj
       when '$contains'
@@ -211,8 +221,8 @@ class MongoDBAdapter extends AdapterBase
     else
       name
 
-  _collection: (name) -&gt;
-    name = tableize name
+  _collection: (model) -&gt;
+    name = @_connection.models[model].tableName
     if not @_collections[name]
       return @_collections[name] = new mongodb.Collection @_client, _getMongoDBColName name
     else
@@ -238,14 +248,14 @@ class MongoDBAdapter extends AdapterBase
       else
         indexes.push [ index.columns, { name: index.options.name } ]
     async.forEach indexes, (index, callback) -&gt;
-        collection.ensureIndex index[0], index[1], (error) -&gt;
-          callback error
-      , (error) -&gt;
+      collection.ensureIndex index[0], index[1], (error) -&gt;
         callback error
+    , (error) -&gt;
+      callback error
 
   ## @override AdapterBase::drop
   drop: (model, callback) -&gt;
-    name = tableize model
+    name = @_connection.models[model].tableName
     delete @_collections[name]
     @_client.dropCollection _getMongoDBColName(name), (error) -&gt;
       # ignore not found error
@@ -484,20 +494,20 @@ class MongoDBAdapter extends AdapterBase
   # @param {Function} callback
   # @param {Error} callback.error
   connect: (settings, callback) -&gt;
-    server = new mongodb.Server settings.host or 'localhost', settings.port or 27017, {}
-    db = new mongodb.Db settings.database, server, safe: true
-    db.open (error, client) =&gt;
+    if settings.user or settings.password
+      url = &quot;mongodb://#{settings.user}:#{settings.password}@#{settings.host or 'localhost'}:#{settings.port or 27017}/#{settings.database}&quot;
+    else
+      url = &quot;mongodb://#{settings.host or 'localhost'}:#{settings.port or 27017}/#{settings.database}&quot;
+    mongodb.MongoClient.connect url, (error, db) =&gt;
       return callback MongoDBAdapter.wrapError 'unknown error', error if error
-      if settings.user or settings.password
-        db.authenticate settings.user, settings.password, (error, success) =&gt;
-          if success
-            @_client = client
-            callback null
-          else
-            callback MongoDBAdapter.wrapError 'unknown error', error
-      else
-        @_client = client
-        callback null
+      @_client = db
+      callback null
+
+  ## @override AdapterBase::close
+  close: -&gt;
+    if @_client
+      @_client.close()
+    @_client = null
 
 module.exports = (connection) -&gt;
   new MongoDBAdapter connection</pre></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {

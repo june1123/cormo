@@ -1,10 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="./bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="./google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="./style.css" rel="stylesheet" type="text/css"><link href="./tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="./index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="./guides/Association.html">Association</a></li><li><a href="./guides/CLI.html">CLI</a></li><li><a href="./guides/Callback.html">Callback</a></li><li><a href="./guides/Constraint.html">Constraint</a></li><li><a href="./guides/CreateRecords.html">CreateRecords</a></li><li><a href="./guides/DefineModels.html">DefineModels</a></li><li><a href="./guides/Geospatial.html">Geospatial</a></li><li><a href="./guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="./guides/Query.html">Query</a></li><li><a href="./guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="./modules/cormo.html">Modules</a></li><li class=""><a href="./classes/ColumnProperty.html">Classes</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="./files/command.coffee.html">command.coffee</a></li><li><a href="./files/connection.coffee.html">connection.coffee</a></li><li><a href="./files/index.coffee.html">index.coffee</a></li><li><a href="./files/inflector.coffee.html">inflector.coffee</a></li><li><a href="./files/model.coffee.html">model.coffee</a></li><li><a href="./files/query.coffee.html">query.coffee</a></li><li><a href="./files/types.coffee.html">types.coffee</a></li><li><a href="./files/util.coffee.html">util.coffee</a></li><li><a href="./files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="./files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="./files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="./files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="./files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="./files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="./files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="./files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="./files/command.console.coffee.html">command.console.coffee</a></li><li><a href="./files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="./files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="./files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="./files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="./files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="./files/model.query.coffee.html">model.query.coffee</a></li><li><a href="./files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="./files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1>About</h1>
-<p>CORMO is an ORM framework for Node.js.
-
-</p>
-<p>Currently supports:
-
-</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - README</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="./bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="./google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="./style.css" rel="stylesheet" type="text/css"><link href="./tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class="active"><a href="./index.html">Home</a></li><li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="./guides/Association.html">Association</a></li><li><a href="./guides/CLI.html">CLI</a></li><li><a href="./guides/Callback.html">Callback</a></li><li><a href="./guides/Constraint.html">Constraint</a></li><li><a href="./guides/CreateRecords.html">CreateRecords</a></li><li><a href="./guides/DefineModels.html">DefineModels</a></li><li><a href="./guides/Geospatial.html">Geospatial</a></li><li><a href="./guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="./guides/Query.html">Query</a></li><li><a href="./guides/Validation.html">Validation</a></li></ul></li><li><a href="./modules/cormo.html">Modules</a></li><li><a href="./classes/ColumnProperty.html">Classes</a></li><li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="./files/command.coffee.html">command.coffee</a></li><li><a href="./files/connection.coffee.html">connection.coffee</a></li><li><a href="./files/console_future.coffee.html">console_future.coffee</a></li><li><a href="./files/index.coffee.html">index.coffee</a></li><li><a href="./files/inflector.coffee.html">inflector.coffee</a></li><li><a href="./files/model.coffee.html">model.coffee</a></li><li><a href="./files/query.coffee.html">query.coffee</a></li><li><a href="./files/types.coffee.html">types.coffee</a></li><li><a href="./files/util.coffee.html">util.coffee</a></li><li><a href="./files/adapters.base.coffee.html">adapters/base.coffee</a></li><li><a href="./files/adapters.mongodb.coffee.html">adapters/mongodb.coffee</a></li><li><a href="./files/adapters.mysql.coffee.html">adapters/mysql.coffee</a></li><li><a href="./files/adapters.postgresql.coffee.html">adapters/postgresql.coffee</a></li><li><a href="./files/adapters.redis.coffee.html">adapters/redis.coffee</a></li><li><a href="./files/adapters.sql_base.coffee.html">adapters/sql_base.coffee</a></li><li><a href="./files/adapters.sqlite3.coffee.html">adapters/sqlite3.coffee</a></li><li><a href="./files/adapters.sqlite3_memory.coffee.html">adapters/sqlite3_memory.coffee</a></li><li><a href="./files/command.console.coffee.html">command/console.coffee</a></li><li><a href="./files/connection.association.coffee.html">connection/association.coffee</a></li><li><a href="./files/connection.manipulate.coffee.html">connection/manipulate.coffee</a></li><li><a href="./files/model.cache.coffee.html">model/cache.coffee</a></li><li><a href="./files/model.callback.coffee.html">model/callback.coffee</a></li><li><a href="./files/model.persistence.coffee.html">model/persistence.coffee</a></li><li><a href="./files/model.query.coffee.html">model/query.coffee</a></li><li><a href="./files/model.timestamp.coffee.html">model/timestamp.coffee</a></li><li><a href="./files/model.validate.coffee.html">model/validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><h1 id="about">About</h1>
+<p>CORMO is an ORM framework for Node.js.</p>
+<p>Currently supports:</p>
 <ul>
 <li>multi-DB: MySQL, MongoDB, SQLite3, PostgreSQL</li>
 <li>constraints</li>
@@ -15,14 +13,10 @@
 <li>aggregation</li>
 <li>nested column</li>
 </ul>
-<p>See <a href="https://github.com/croquiscom/cormo/wiki/Future-Plans">https://github.com/croquiscom/cormo/wiki/Future-Plans</a> for future plans.
-
-</p>
-<h1>Overview</h1>
-<p>You can see detail guides on <a href="http://croquiscom.github.io/cormo/">http://croquiscom.github.io/cormo/</a>.
-
-</p>
-<h2>Define models</h2>
+<p>See <a href="https://github.com/croquiscom/cormo/wiki/Future-Plans">https://github.com/croquiscom/cormo/wiki/Future-Plans</a> for future plans.</p>
+<h1 id="overview">Overview</h1>
+<p>You can see detail guides on <a href="http://croquiscom.github.io/cormo/">http://croquiscom.github.io/cormo/</a>.</p>
+<h2 id="define-models">Define models</h2>
 <pre><code class="lang-coffeescript">cormo = require &#39;cormo&#39;
 connection = new cormo.Connection &#39;mysql&#39;, database: &#39;test&#39;
 
@@ -35,15 +29,17 @@ class User extends cormo.Model
 class Post extends cormo.Model
   @column &#39;title&#39;, String # `String` is the same as `type: String`
   @column &#39;body&#39;, &#39;string&#39; # you can also use `string` to specify a string type
-  @column &#39;date&#39;, Date</code></pre>
-<h2>Create records</h2>
+  @column &#39;date&#39;, Date
+</code></pre>
+<h2 id="create-records">Create records</h2>
 <pre><code class="lang-coffeescript">user1 = new User name: &#39;John Doe&#39;, age: 27
 user1.save (error) -&gt;
   console.log error
 
 User.create name: &#39;John Doe&#39;, age: 27, (error, user2) -&gt;
-  console.log error</code></pre>
-<h2>Retreive records</h2>
+  console.log error
+</code></pre>
+<h2 id="retreive-records">Retreive records</h2>
 <pre><code class="lang-coffeescript">User.find 1, (error, user) -&gt;
 
 User.where name: &#39;John Doe&#39;, (error, users) -&gt;
@@ -57,27 +53,32 @@ User.where(age: 27)
 
 User.where($or: [ { age: { $lt: 20 } }, { age: { $gt: 60 } } ])
   .where(name: { $contains: &#39;smi&#39; })
-  .exec (error, users) -&gt;</code></pre>
-<h2>Count records</h2>
+  .exec (error, users) -&gt;
+</code></pre>
+<h2 id="count-records">Count records</h2>
 <pre><code class="lang-coffeescript">User.count (error, count) -&gt;
 
-User.count age: 27, (error, count) -&gt;</code></pre>
-<h2>Update records</h2>
+User.count age: 27, (error, count) -&gt;
+</code></pre>
+<h2 id="update-records">Update records</h2>
 <pre><code class="lang-coffeescript">User.find 1, (error, user) -&gt;
   user.age = 30
   user.save (error) -&gt;
 
 User.find(1).update age: 10, (error, count) -&gt;
 
-User.where(age: 27).update age:10, (error, count) -&gt;</code></pre>
-<h2>Delete records</h2>
-<pre><code class="lang-coffeescript">User.delete age: 27, (error, count) -&gt;</code></pre>
-<h2>Constraint</h2>
+User.where(age: 27).update age:10, (error, count) -&gt;
+</code></pre>
+<h2 id="delete-records">Delete records</h2>
+<pre><code class="lang-coffeescript">User.delete age: 27, (error, count) -&gt;
+</code></pre>
+<h2 id="constraint">Constraint</h2>
 <pre><code class="lang-coffeescript">class User extends cormo.Model
   @column &#39;name&#39;, type: String, required: true
   @column &#39;age&#39;, type: Number, required: true
-  @column &#39;email&#39;, type: String, unique: true, required: true</code></pre>
-<h2>Validation</h2>
+  @column &#39;email&#39;, type: String, unique: true, required: true
+</code></pre>
+<h2 id="validation">Validation</h2>
 <pre><code class="lang-coffeescript">class User extends cormo.Model
   @column &#39;name&#39;, String
   @column &#39;age&#39;, Number
@@ -85,15 +86,17 @@ User.where(age: 27).update age:10, (error, count) -&gt;</code></pre>
 
   @addValidator (record) -&gt;
     if record.age &lt; 18
-      return &#39;too young&#39;</code></pre>
-<h2>Callbacks</h2>
+      return &#39;too young&#39;
+</code></pre>
+<h2 id="callbacks">Callbacks</h2>
 <pre><code class="lang-coffeescript">class User extends cormo.Model
   @column &#39;name&#39;, String
   @column &#39;age&#39;, Number
 
   @beforeSave -&gt;
-    @name = @name.trim()</code></pre>
-<h2>Associations</h2>
+    @name = @name.trim()
+</code></pre>
+<h2 id="associations">Associations</h2>
 <pre><code class="lang-coffeescript">class User extends cormo.Model
   @column &#39;name&#39;, String
   @column &#39;age&#39;, Number
@@ -102,8 +105,9 @@ User.where(age: 27).update age:10, (error, count) -&gt;</code></pre>
 class Post extends cormo.Model
   @column &#39;title&#39;, String
   @column &#39;body&#39;, String
-  @belongsTo &#39;user&#39;</code></pre>
-<h2>Geospatial query</h2>
+  @belongsTo &#39;user&#39;
+</code></pre>
+<h2 id="geospatial-query">Geospatial query</h2>
 <pre><code class="lang-coffeescript">class Place extends cormo.Model
   @column &#39;name&#39;, String
   @column &#39;location&#39;, cormo.types.GeoPoint
@@ -113,34 +117,26 @@ Place.create name: &#39;Carrier Dome&#39;, location: [-76.136131, 43.036240]
 
 # query
 Place.query().near(location: [-5, 45]).limit(4).exec (error, places) -&gt;
-  console.log places</code></pre>
-<h1>License</h1>
-<p>The MIT License (MIT)
-
-</p>
-<p>Copyright (c) 2012-2013 Sangmin Yoon &lt;sangmin.yoon@croquis.com&gt;
-
-</p>
+  console.log places
+</code></pre>
+<h1 id="license">License</h1>
+<p>The MIT License (MIT)</p>
+<p>Copyright (c) 2012-2013 Sangmin Yoon &lt;sangmin.yoon@croquis.com&gt;</p>
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-</p>
+furnished to do so, subject to the following conditions:</p>
 <p>The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-</p>
+all copies or substantial portions of the Software.</p>
 <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-</p>
+THE SOFTWARE.</p>
 </div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="./bootstrap/js/bootstrap.min.js"></script><script src="./google-code-prettify/prettify.js"></script><script>$(function() {
   // make result of marked for pretty print
   $('pre code[class^="lang-"]').addClass('.prettyprint');

@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - Query</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"><link href="../tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides - Query <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><p>To query, create a query object using <a href='../classes/model.ModelQuery.html#model_ModelQuery_query'>ModelQuery.query</a> first.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - Query</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"><link href="../tocify/jquery.tocify.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li><a href="../index.html">Home</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides - Query <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li><a href="../modules/cormo.html">Modules</a></li><li><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters/base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters/mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters/mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters/postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters/redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters/sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters/sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters/sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command/console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection/association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection/manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model/cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model/callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model/persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model/query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model/timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model/validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content extra"><div class="row-fluid"><div class="span3"><div id="toc"></div></div><div class="span9"><p>To query, create a query object using <a href='../classes/model.ModelQuery.html#model_ModelQuery_query'>ModelQuery.query</a> first.
 Then build up a query by chaining methods,
-and run a query by <a href='../classes/Query.html#Query__exec'>Query::exec</a>, <a href='../classes/Query.html#Query__count'>Query::count</a>, <a href='../classes/Query.html#Query__update'>Query::update</a>, or <a href='../classes/Query.html#Query__delete'>Query::delete</a>.
-
-</p>
-<p>Also, <a href='../classes/model.ModelQuery.html#model_ModelQuery'>ModelQuery</a> class has some methods that borrowed from <a href='../classes/Query.html#Query'>Query</a> to run simple queries easily.
-
-</p>
+and run a query by <a href='../classes/Query.html#Query__exec'>Query::exec</a>, <a href='../classes/Query.html#Query__count'>Query::count</a>, <a href='../classes/Query.html#Query__update'>Query::update</a>, or <a href='../classes/Query.html#Query__delete'>Query::delete</a>.</p>
+<p>Also, <a href='../classes/model.ModelQuery.html#model_ModelQuery'>ModelQuery</a> class has some methods that borrowed from <a href='../classes/Query.html#Query'>Query</a> to run simple queries easily.</p>
 <pre><code>User.query().where(age: 27).exec (error, users) -&gt;
   console.log users
 
@@ -13,13 +11,11 @@ User.where(age: 27).exec (error, users) -&gt;
   console.log users
 
 User.where age:27, (error, users) -&gt;
-  console.log users</code></pre>
-<h1>Selection criteria</h1>
+  console.log users
+</code></pre><h1 id="selection-criteria">Selection criteria</h1>
 <p>You can give criteria for selection with <a href='../classes/Query.html#Query__where'>Query::where</a> or <a href='../classes/Query.html#Query__find'>Query::find</a>.
 <a href='../classes/Query.html#Query__where'>Query::where</a>&#39;s criteria is similar to the MongoDB&#39;s.
-Two or more <a href='../classes/Query.html#Query__where'>Query::where</a>s mean a logical and.
-
-</p>
+Two or more <a href='../classes/Query.html#Query__where'>Query::where</a>s mean a logical and.</p>
 <table class='table table-bordered'><thead><tr>
   <th>Description</th><th>CORMO</th><th>SQL</th><th>MongoDB</th>
 </tr></thead><tbody>
@@ -111,32 +107,24 @@ Two or more <a href='../classes/Query.html#Query__where'>Query::where</a>s mean 
 </tbody></table>
 
 <p>If you want find records based on the identifier, use <a href='../classes/Query.html#Query__find'>Query::find</a> that accepts an ID or an array of IDs.
-It is logically same to &#39;.where(id: &lt;given ID or array of IDs&gt;)&#39;.
-
-</p>
-<h1>Retrieve records</h1>
-<p><a href='../classes/Query.html#Query__exec'>Query::exec</a> retrieves records. 
-
-</p>
+It is logically same to &#39;.where(id: &lt;given ID or array of IDs&gt;)&#39;.</p>
+<h1 id="retrieve-records">Retrieve records</h1>
+<p><a href='../classes/Query.html#Query__exec'>Query::exec</a> retrieves records. </p>
 <p>It normally returns an array of Model instances.
-But if you use <a href='../classes/Query.html#Query__find'>Query::find</a> for a single ID, it will return a single Model instance.
-
-</p>
+But if you use <a href='../classes/Query.html#Query__find'>Query::find</a> for a single ID, it will return a single Model instance.</p>
 <pre><code class="lang-coffeescript">User.find 1, (error, user) -&gt;
   console.log user
 
 User.find [1,2,3], (error, users) -&gt;
-  console.log users</code></pre>
+  console.log users
+</code></pre>
 <p><a href='../classes/Query.html#Query__find'>Query::find</a> does not return error if any ID is found and does not preserve given order.
 If you want to guarantee that you get all records of IDs and order is preserved,
-use <a href='../classes/Query.html#Query__findPreserve'>Query::findPreserve</a> instead.
-
-</p>
+use <a href='../classes/Query.html#Query__findPreserve'>Query::findPreserve</a> instead.</p>
 <pre><code class="lang-coffeescript">User.findPreserve [2,1,2,3], (error, users) -&gt;
-  # users[0].id is 2 and users[1].id is 1 and users[2].id is 2 and users[3].id is 3</code></pre>
-<p>You can give some options to <a href='../classes/Query.html#Query__exec'>Query::exec</a>.
-
-</p>
+  # users[0].id is 2 and users[1].id is 1 and users[2].id is 2 and users[3].id is 3
+</code></pre>
+<p>You can give some options to <a href='../classes/Query.html#Query__exec'>Query::exec</a>.</p>
 <table class='table table-bordered'><thead><tr>
   <th>Description</th><th>CORMO</th><th>SQL</th><th>MongoDB</th>
 </tr></thead><tbody>
@@ -171,10 +159,13 @@ use <a href='../classes/Query.html#Query__findPreserve'>Query::findPreserve</a> 
 
 </tbody></table>
 
-<h1>Count records</h1>
-<p><a href='../classes/Query.html#Query__count'>Query::count</a> returns the count of records.
-
-</p>
+<h2 id="request-only-one-record">Request only one record</h2>
+<p>If you know that there will be only one result (e.x. query on unique column), <a href='../classes/Query.html#Query__one'>Query::one</a> will be helpful.
+It makes a query return a single instance (or null) instead of array of instances.</p>
+<pre><code>User.where(age: 27).one().exec (error, user) -&gt;
+  console.log user
+</code></pre><h1 id="count-records">Count records</h1>
+<p><a href='../classes/Query.html#Query__count'>Query::count</a> returns the count of records.</p>
 <table class='table table-bordered'><thead><tr>
   <th>CORMO</th><th>SQL</th><th>MongoDB</th>
 </tr></thead><tbody>
@@ -196,19 +187,14 @@ use <a href='../classes/Query.html#Query__findPreserve'>Query::findPreserve</a> 
 
 </tbody></table>
 
-<h1>Update records</h1>
-<p>To update records, <a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> and <a href='../classes/Query.html#Query__update'>Query::update</a> are provided.
-
-</p>
-<p><a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> is used to update a single retrieved record.
-
-</p>
+<h1 id="update-records">Update records</h1>
+<p>To update records, <a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> and <a href='../classes/Query.html#Query__update'>Query::update</a> are provided.</p>
+<p><a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> is used to update a single retrieved record.</p>
 <pre><code class="lang-coffeescript">User.find 1, (error, user) -&gt;
   user.age = 30
-  user.save (error) -&gt;</code></pre>
-<p>But <a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> has some weaknesses.
-
-</p>
+  user.save (error) -&gt;
+</code></pre>
+<p>But <a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> has some weaknesses.</p>
 <ul>
 <li>You must retrieve a record before modification.<ul>
 <li>In normal application, retrieved data may not be used usually.</li>
@@ -220,9 +206,7 @@ use <a href='../classes/Query.html#Query__findPreserve'>Query::findPreserve</a> 
 </ul>
 </li>
 </ul>
-<p><a href='../classes/Query.html#Query__update'>Query::update</a> updates selected records.
-
-</p>
+<p><a href='../classes/Query.html#Query__update'>Query::update</a> updates selected records.</p>
 <table class='table table-bordered'><thead><tr>
   <th>CORMO</th><th>SQL</th><th>MongoDB</th>
 </tr></thead><tbody>
@@ -246,17 +230,14 @@ use <a href='../classes/Query.html#Query__findPreserve'>Query::findPreserve</a> 
 
 <p>But you cannot use other column&#39;s value as data like SQL does on <a href='../classes/Query.html#Query__update'>Query::update</a>.
 If you want this, you must retrieve the record first.
-But <a href='../classes/Query.html#Query__update'>Query::update</a> may be more efficient than <a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> even if in that case.
-
-</p>
+But <a href='../classes/Query.html#Query__update'>Query::update</a> may be more efficient than <a href='../classes/model.ModelPersistence.html#model_ModelPersistence__save'>ModelPersistence::save</a> even if in that case.</p>
 <pre><code class="lang-coffeescript">User.find 1, (error, user) -&gt;
   age = user.age + 1
-  User.find(user.id).update age: age, (error, count) -&gt;</code></pre>
-<h1>Delete records</h1>
+  User.find(user.id).update age: age, (error, count) -&gt;
+</code></pre>
+<h1 id="delete-records">Delete records</h1>
 <p><a href='../classes/Query.html#Query__delete'>Query::delete</a> or <a href='../classes/Model.html#Model__destroy'>Model::destroy</a> deletes some records.
-<a href='../classes/Model.html#Model__destroy'>Model::destroy</a> is similar to <a href='../classes/Query.html#Query__delete'>Query::delete</a> on the model&#39;s ID.
-
-</p>
+<a href='../classes/Model.html#Model__destroy'>Model::destroy</a> is similar to <a href='../classes/Query.html#Query__delete'>Query::delete</a> on the model&#39;s ID.</p>
 <table class='table table-bordered'><thead><tr>
   <th>CORMO</th><th>SQL</th><th>MongoDB</th>
 </tr></thead><tbody>

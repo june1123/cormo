@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - adapters.sqlite3.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - adapters.sqlite3.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li class="active"><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>adapters.sqlite3.coffee</h1></section><pre class="prettyprint">try
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - adapters/sqlite3.coffee</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li><a href="../index.html">Home</a></li><li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li><a href="../modules/cormo.html">Modules</a></li><li><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - adapters/sqlite3.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters/base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters/mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters/mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters/postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters/redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters/sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters/sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters/sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command/console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection/association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection/manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model/cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model/callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model/persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model/query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model/timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model/validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li class="active"><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>adapters/sqlite3.coffee</h1></section><pre class="prettyprint">try
   sqlite3 = require 'sqlite3'
 catch e
   console.log 'Install sqlite3 module to use this adapter'
@@ -6,7 +8,6 @@ catch e
 
 SQLAdapterBase = require './sql_base'
 types = require '../types'
-tableize = require('../inflector').tableize
 async = require 'async'
 _ = require 'underscore'
 
@@ -49,8 +50,8 @@ class SQLite3Adapter extends SQLAdapterBase
     @_client[method].apply @_client, [].slice.call arguments, 1
 
   _createTable: (model, callback) -&gt;
-    table = tableize model
     model_class = @_connection.models[model]
+    tableName = model_class.tableName
     sql = []
     sql.push 'id INTEGER PRIMARY KEY AUTOINCREMENT'
     for column, property of model_class._schema
@@ -59,12 +60,12 @@ class SQLite3Adapter extends SQLAdapterBase
         sql.push property._dbname + ' ' + column_sql
     for integrity in model_class._integrities
       if integrity.type is 'child_nullify'
-        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE SET NULL&quot;
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{integrity.parent.tableName}(id) ON DELETE SET NULL&quot;
       else if integrity.type is 'child_restrict'
-        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE RESTRICT&quot;
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{integrity.parent.tableName}(id) ON DELETE RESTRICT&quot;
       else if integrity.type is 'child_delete'
-        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{tableize integrity.parent._name}(id) ON DELETE CASCADE&quot;
-    sql = &quot;CREATE TABLE #{table} ( #{sql.join ','} )&quot;
+        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{integrity.parent.tableName}(id) ON DELETE CASCADE&quot;
+    sql = &quot;CREATE TABLE #{tableName} ( #{sql.join ','} )&quot;
     @_query 'run', sql, (error, result) =&gt;
       return callback SQLite3Adapter.wrapError 'unknown error', error if error
       async.forEach model_class._indexes, (index, callback) =&gt;
@@ -73,7 +74,7 @@ class SQLite3Adapter extends SQLAdapterBase
           order = if order is -1 then 'DESC' else 'ASC'
           columns.push column + ' ' + order
         unique = if index.options.unique then 'UNIQUE ' else ''
-        sql = &quot;CREATE #{unique}INDEX #{index.options.name} ON #{table} (#{columns.join ','})&quot;
+        sql = &quot;CREATE #{unique}INDEX #{index.options.name} ON #{tableName} (#{columns.join ','})&quot;
         @_query 'run', sql, callback
       , (error) -&gt;
         return callback SQLite3Adapter.wrapError 'unknown error', error if error
@@ -86,8 +87,8 @@ class SQLite3Adapter extends SQLAdapterBase
 
   ## @override AdapterBase::drop
   drop: (model, callback) -&gt;
-    table = tableize model
-    @_query 'run', &quot;DROP TABLE IF EXISTS #{table}&quot;, (error) -&gt;
+    tableName = @_connection.models[model].tableName
+    @_query 'run', &quot;DROP TABLE IF EXISTS #{tableName}&quot;, (error) -&gt;
       return callback SQLite3Adapter.wrapError 'unknown error', error if error
       callback null
 
@@ -144,9 +145,10 @@ class SQLite3Adapter extends SQLAdapterBase
 
   ## @override AdapterBase::create
   create: (model, data, callback) -&gt;
+    tableName = @_connection.models[model].tableName
     values = []
     [ fields, places ] = @_buildUpdateSet model, data, values, true
-    sql = &quot;INSERT INTO #{tableize model} (#{fields}) VALUES (#{places})&quot;
+    sql = &quot;INSERT INTO #{tableName} (#{fields}) VALUES (#{places})&quot;
     @_query 'run', sql, values, (error) -&gt;
       return _processSaveError error, callback if error
       callback null, @lastID
@@ -159,19 +161,21 @@ class SQLite3Adapter extends SQLAdapterBase
 
   ## @override AdapterBase::update
   update: (model, data, callback) -&gt;
+    tableName = @_connection.models[model].tableName
     values = []
     [ fields ] = @_buildUpdateSet model, data, values
     values.push data.id
-    sql = &quot;UPDATE #{tableize model} SET #{fields} WHERE id=?&quot;
+    sql = &quot;UPDATE #{tableName} SET #{fields} WHERE id=?&quot;
     @_query 'run', sql, values, (error) -&gt;
       return _processSaveError error, callback if error
       callback null
 
   ## @override AdapterBase::updatePartial
   updatePartial: (model, data, conditions, options, callback) -&gt;
+    tableName = @_connection.models[model].tableName
     values = []
     [ fields ] = @_buildPartialUpdateSet model, data, values
-    sql = &quot;UPDATE #{tableize model} SET #{fields}&quot;
+    sql = &quot;UPDATE #{tableName} SET #{fields}&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, values
@@ -184,8 +188,8 @@ class SQLite3Adapter extends SQLAdapterBase
   ## @override AdapterBase::findById
   findById: (model, id, options, callback) -&gt;
     select = @_buildSelect @_connection.models[model], options.select
-    table = tableize model
-    @_query 'all', &quot;SELECT #{select} FROM #{table} WHERE id=? LIMIT 1&quot;, id, (error, result) =&gt;
+    tableName = @_connection.models[model].tableName
+    @_query 'all', &quot;SELECT #{select} FROM #{tableName} WHERE id=? LIMIT 1&quot;, id, (error, result) =&gt;
       return callback SQLite3Adapter.wrapError 'unknown error', error if error
       if result?.length is 1
         if options.return_raw_instance
@@ -203,8 +207,9 @@ class SQLite3Adapter extends SQLAdapterBase
       select = @_buildGroupFields options.group_by, options.group_fields
     else
       select = @_buildSelect @_connection.models[model], options.select
+    tableName = @_connection.models[model].tableName
     params = []
-    sql = &quot;SELECT #{select} FROM #{tableize model}&quot;
+    sql = &quot;SELECT #{select} FROM #{tableName}&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -243,7 +248,8 @@ class SQLite3Adapter extends SQLAdapterBase
   ## @override AdapterBase::count
   count: (model, conditions, callback) -&gt;
     params = []
-    sql = &quot;SELECT COUNT(*) AS count FROM #{tableize model}&quot;
+    tableName = @_connection.models[model].tableName
+    sql = &quot;SELECT COUNT(*) AS count FROM #{tableName}&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -258,7 +264,8 @@ class SQLite3Adapter extends SQLAdapterBase
   ## @override AdapterBase::delete
   delete: (model, conditions, callback) -&gt;
     params = []
-    sql = &quot;DELETE FROM #{tableize model}&quot;
+    tableName = @_connection.models[model].tableName
+    sql = &quot;DELETE FROM #{tableName}&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -284,6 +291,12 @@ class SQLite3Adapter extends SQLAdapterBase
       @_client = client
       @_query 'run', 'PRAGMA foreign_keys=ON', (error) -&gt;
         callback null
+
+  ## @override AdapterBase::close
+  close: -&gt;
+    if @_client
+      @_client.close()
+    @_client = null
 
 module.exports = (connection) -&gt;
   new SQLite3Adapter connection</pre></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {

@@ -1,8 +1,19 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - model.coffee</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="dropdown "><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li class=""><a href="../modules/cormo.html">Modules</a></li><li class=""><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - model.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters.base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters.mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters.mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters.postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters.redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters.sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters.sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters.sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command.console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection.association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection.manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model.cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model.callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model.persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model.query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model.timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model.validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li class="active"><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>model.coffee</h1></section><pre class="prettyprint">_ = require 'underscore'
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CORMO - model.coffee</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li><a href="../index.html">Home</a></li><li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Guides <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../guides/Association.html">Association</a></li><li><a href="../guides/CLI.html">CLI</a></li><li><a href="../guides/Callback.html">Callback</a></li><li><a href="../guides/Constraint.html">Constraint</a></li><li><a href="../guides/CreateRecords.html">CreateRecords</a></li><li><a href="../guides/DefineModels.html">DefineModels</a></li><li><a href="../guides/Geospatial.html">Geospatial</a></li><li><a href="../guides/Miscellaneous.html">Miscellaneous</a></li><li><a href="../guides/Query.html">Query</a></li><li><a href="../guides/Validation.html">Validation</a></li></ul></li><li><a href="../modules/cormo.html">Modules</a></li><li><a href="../classes/ColumnProperty.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - model.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li><a href="../files/adapters.base.coffee.html">adapters/base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">adapters/mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">adapters/mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">adapters/postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">adapters/redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">adapters/sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">adapters/sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">adapters/sqlite3_memory.coffee</a></li><li><a href="../files/command.console.coffee.html">command/console.coffee</a></li><li><a href="../files/connection.association.coffee.html">connection/association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">connection/manipulate.coffee</a></li><li><a href="../files/model.cache.coffee.html">model/cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">model/callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">model/persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">model/query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">model/timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">model/validate.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../files/command.coffee.html">command.coffee</a></li><li><a href="../files/connection.coffee.html">connection.coffee</a></li><li><a href="../files/console_future.coffee.html">console_future.coffee</a></li><li><a href="../files/index.coffee.html">index.coffee</a></li><li><a href="../files/inflector.coffee.html">inflector.coffee</a></li><li class="active"><a href="../files/model.coffee.html">model.coffee</a></li><li><a href="../files/query.coffee.html">query.coffee</a></li><li><a href="../files/types.coffee.html">types.coffee</a></li><li><a href="../files/util.coffee.html">util.coffee</a></li><li class="nav-header">adapters</li><li><a href="../files/adapters.base.coffee.html">base.coffee</a></li><li><a href="../files/adapters.mongodb.coffee.html">mongodb.coffee</a></li><li><a href="../files/adapters.mysql.coffee.html">mysql.coffee</a></li><li><a href="../files/adapters.postgresql.coffee.html">postgresql.coffee</a></li><li><a href="../files/adapters.redis.coffee.html">redis.coffee</a></li><li><a href="../files/adapters.sql_base.coffee.html">sql_base.coffee</a></li><li><a href="../files/adapters.sqlite3.coffee.html">sqlite3.coffee</a></li><li><a href="../files/adapters.sqlite3_memory.coffee.html">sqlite3_memory.coffee</a></li><li class="nav-header">command</li><li><a href="../files/command.console.coffee.html">console.coffee</a></li><li class="nav-header">connection</li><li><a href="../files/connection.association.coffee.html">association.coffee</a></li><li><a href="../files/connection.manipulate.coffee.html">manipulate.coffee</a></li><li class="nav-header">model</li><li><a href="../files/model.cache.coffee.html">cache.coffee</a></li><li><a href="../files/model.callback.coffee.html">callback.coffee</a></li><li><a href="../files/model.persistence.coffee.html">persistence.coffee</a></li><li><a href="../files/model.query.coffee.html">query.coffee</a></li><li><a href="../files/model.timestamp.coffee.html">timestamp.coffee</a></li><li><a href="../files/model.validate.coffee.html">validate.coffee</a></li></ul></div></div><div class="span9"><section><h1>model.coffee</h1></section><pre class="prettyprint">_ = require 'underscore'
+console_future = require './console_future'
+tableize = require('./inflector').tableize
 types = require './types'
 util = require './util'
 
 _bindDomain = (fn) -&gt; if d = process.domain then d.bind fn else fn
+
+_pf_isDirty = -&gt; true
+_pf_getChanged = -&gt; []
+_pf_get = (path) -&gt; util.getPropertyOfPath @, path.split '.'
+_pf_getPrevious = -&gt;
+_pf_set = (path, value) -&gt; util.setPropertyOfPath @, path.split('.'), value
+_pf_reset = -&gt;
 
 ##
 # Properties of a column of a model
@@ -45,6 +56,11 @@ class Model
   ##
   # Archives deleted records in the archive table
   @archive: false
+
+  ##
+  # @property tableName
+  # @type String
+  # @static
 
   ##
   # Indicates the connection associated to this model
@@ -108,6 +124,8 @@ class Model
     Object.defineProperty @, '_intermediate_paths', value: {}
     Object.defineProperty @, '_indexes', value: []
     Object.defineProperty @, '_integrities', value: []
+
+    @tableName = tableize name if not @tableName
 
   @_checkConnection: -&gt;
     return if @hasOwnProperty '_connection'
@@ -197,10 +215,11 @@ class Model
     # do not need to apply schema before drop, only waiting connection established
     return if @_connection._waitingForConnection @, @drop, arguments
 
-    @_adapter.drop @_name, _bindDomain (error) =&gt;
-      @_schema_changed = true
-      @_connection._schema_changed = true
-      callback error
+    console_future.execute callback, (callback) =&gt;
+      @_adapter.drop @_name, _bindDomain (error) =&gt;
+        @_schema_changed = true
+        @_connection._schema_changed = true
+        callback error
 
   ##
   # Creates a record.
@@ -244,12 +263,12 @@ class Model
         [obj, last] = util.getLeafOfPath @, property._parts
         @_defineProperty obj, last, column, false
     else
-      Object.defineProperty @, 'isDirty', value: -&gt; true
-      Object.defineProperty @, 'getChanged', value: -&gt; []
-      Object.defineProperty @, 'get', value: (path) -&gt; util.getPropertyOfPath @, path.split '.'
-      Object.defineProperty @, 'getPrevious', value: -&gt;
-      Object.defineProperty @, 'set', value: (path, value) -&gt; util.setPropertyOfPath @, path.split('.'), value
-      Object.defineProperty @, 'reset', value: -&gt;
+      Object.defineProperty @, 'isDirty', value: _pf_isDirty
+      Object.defineProperty @, 'getChanged', value: _pf_getChanged
+      Object.defineProperty @, 'get', value: _pf_get
+      Object.defineProperty @, 'getPrevious', value: _pf_getPrevious
+      Object.defineProperty @, 'set', value: _pf_set
+      Object.defineProperty @, 'reset', value: _pf_reset
 
     if id = arguments[1]
       # if id exists, this is called from adapter with database record data
@@ -384,25 +403,25 @@ class Model
   # @param {Function} callback
   # @param {Error} callback.error
   destroy: (callback) -&gt;
-    callback = (-&gt;) if typeof callback isnt 'function'
-    @_runCallbacks 'destroy', 'before'
-    if @id
-      @constructor.delete { id: @id }, (error, count) =&gt;
+    console_future.execute callback, (callback) =&gt;
+      callback = (-&gt;) if typeof callback isnt 'function'
+      @_runCallbacks 'destroy', 'before'
+      if @id
+        @constructor.delete { id: @id }, (error, count) =&gt;
+          @_runCallbacks 'destroy', 'after'
+          callback error
+      else
         @_runCallbacks 'destroy', 'after'
-        callback error
-    else
-      @_runCallbacks 'destroy', 'after'
-      callback null
-    return
+        callback null
 
   ##
   # Deletes all records from the database
   # @param {Function} callback
   # @param {Error} callback.error
   @deleteAll: (callback) -&gt;
-    callback = (-&gt;) if typeof callback isnt 'function'
-    @delete callback
-    return
+    console_future.execute callback, (callback) =&gt;
+      callback = (-&gt;) if typeof callback isnt 'function'
+      @delete callback
 
   ##
   # Adds a has-many association
@@ -454,6 +473,10 @@ class Model
       this_model: @
       target_model_or_column: target_model_or_column
       options: options
+
+  @inspect: (depth) -&gt;
+    schema = Object.keys(@_schema).sort().map((column) =&gt; return &quot;#{column}: #{@_schema[column].type}&quot;).join(', ')
+    return '\u001b[36m' + &quot;[Model: #{@name}(&quot; + '\u001b[90m' + schema + '\u001b[36m' + &quot;)]&quot; + '\u001b[39m'
 
 _use = (file) -&gt;
   MixClass = require &quot;./model/#{file}&quot;

@@ -177,6 +177,9 @@ setupContext = (context, options) -&gt;
     set: (value) =&gt; options.inspect_depth = value
   for key, object of exports.public
     context[key] = object
+  context.getTimestamp = (object_id) -&gt;
+    new Date parseInt(object_id.substr(0, 8), 16) * 1000
+  return
 
 ##
 # Members of this object will be imported when a console is started
@@ -186,7 +189,7 @@ exports.public = {}
 ##
 # Starts a CoffeeScript console
 # @memberOf console
-# @params {Object} options
+# @param {Object} options
 exports.startCoffee = (options) -&gt;
   options.inspect_depth or= 2
   repl_server = repl.start

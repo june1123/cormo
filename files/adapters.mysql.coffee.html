@@ -312,7 +312,7 @@ class MySQLAdapter extends SQLAdapterBase
         return callback e
     #console.log sql, params
     @_query sql, params, (error, result) -&gt;
-      return callback new Error 'rejected' if error and error.code is 'ER_ROW_IS_REFERENCED_'
+      return callback new Error 'rejected' if error and error.code in ['ER_ROW_IS_REFERENCED_', 'ER_ROW_IS_REFERENCED_2']
       return callback MySQLAdapter.wrapError 'unknown error', error if error or not result?
       callback null, result.affectedRows
 
@@ -337,18 +337,21 @@ class MySQLAdapter extends SQLAdapterBase
 
       @_client = client
 
-      # select database
-      client.query &quot;USE `#{settings.database}`&quot;, (error) -&gt;
-        return callback null if not error
+      @_selectDatabase settings, callback
 
-        # create one if not exist
-        if error.code is 'ER_BAD_DB_ERROR'
-          client.query &quot;CREATE DATABASE `#{settings.database}`&quot;, (error) -&gt;
-            return callback MySQLAdapter.wrapError 'unknown error', error if error
-            return callback null
-        else
-          msg = if error.code is 'ER_DBACCESS_DENIED_ERROR' then &quot;no access right to the database '#{settings.database}'&quot; else 'unknown error'
-          callback MySQLAdapter.wrapError msg, error
+  _selectDatabase: (settings, callback) -&gt;
+    # select database
+    @_client.query &quot;USE `#{settings.database}`&quot;, (error) =&gt;
+      return callback null if not error
+
+      # create one if not exist
+      if error.code is 'ER_BAD_DB_ERROR'
+        @_client.query &quot;CREATE DATABASE `#{settings.database}`&quot;, (error) =&gt;
+          return callback MySQLAdapter.wrapError 'unknown error', error if error
+          @_selectDatabase settings, callback
+      else
+        msg = if error.code is 'ER_DBACCESS_DENIED_ERROR' then &quot;no access right to the database '#{settings.database}'&quot; else 'unknown error'
+        callback MySQLAdapter.wrapError msg, error
 
   ## @override AdapterBase::close
   close: -&gt;

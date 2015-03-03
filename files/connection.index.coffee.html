@@ -5,6 +5,7 @@ Model = require '../model'
 _ = require 'underscore'
 {bindDomain} = require '../util'
 Promise = require 'bluebird'
+Toposort = require 'toposort-class'
 try
   redis = require 'redis'
 {inspect} = require 'util'
@@ -99,6 +100,24 @@ class Connection extends EventEmitter
           @column 'model', String
           @column 'data', Object
 
+  _getModelNamesByAssociationOrder: -&gt;
+    t = new Toposort()
+    Object.keys(@models).forEach (model) =&gt;
+      t.add model, []
+      modelClass = @models[model]
+      for name, association of modelClass._associations
+        # ignore association with models of other connection
+        if association.target_model._connection isnt @
+          continue
+        # ignore self association
+        if association.target_model is modelClass
+          continue
+        if association.type in ['hasMany', 'hasOne']
+          t.add association.target_model._name, model
+        else if association.type is 'belongsTo'
+          t.add model, association.target_model._name
+    t.sort()
+
   ##
   # Applies schemas
   # @promise
@@ -116,17 +135,32 @@ class Connection extends EventEmitter
         @_checkArchive()
 
         @_promise_schema_applied = @_promise_connection.then =&gt;
-          promises = Object.keys(@models).map (model) =&gt;
-            modelClass = @models[model]
-            return Promise.resolve() if not modelClass._schema_changed
-            @_adapter.applySchemaAsync model
-            .then -&gt;
-              modelClass._schema_changed = false
-          Promise.all promises
+          current = Promise.resolve()
+          Promise.all @_getModelNamesByAssociationOrder().reverse().map (model) =&gt;
+            current = current
+            .then =&gt;
+              modelClass = @models[model]
+              if not modelClass._schema_changed
+                return
+              @_adapter.applySchemaAsync model
+              .then -&gt;
+                modelClass._schema_changed = false
           .finally =&gt;
             @_applying_schemas = false
             @_schema_changed = false
       return @_promise_schema_applied
+    .nodeify bindDomain callback
+
+  ##
+  # Drops all model tables
+  # @promise
+  # @nodejscallback
+  dropAllModels: (callback) -&gt;
+    current = Promise.resolve()
+    Promise.all @_getModelNamesByAssociationOrder().map (model) =&gt;
+      current = current
+      .then =&gt;
+        @models[model].drop()
     .nodeify bindDomain callback
 
   ##

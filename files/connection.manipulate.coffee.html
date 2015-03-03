@@ -38,10 +38,7 @@ class ConnectionManipulate
     model.drop()
 
   _manipulateDropAllModels: -&gt;
-    promises = Object.keys(@models).map (model) =&gt;
-      model = @models[model]
-      model.drop()
-    Promise.all promises
+    @dropAllModels()
 
   _manipulateFind: (model, data) -&gt;
     model = inflector.camelize inflector.singularize model

@@ -4,6 +4,7 @@
 </div><div></div><dl><dt>Direct known subclasses:</dt><dd><a href='../classes/adapter.MySQLAdapter.html#adapter_MySQLAdapter'>adapter.MySQLAdapter</a>, <a href='../classes/adapter.PostgreSQLAdapter.html#adapter_PostgreSQLAdapter'>adapter.PostgreSQLAdapter</a>, <a href='../classes/adapter.SQLite3Adapter.html#adapter_SQLite3Adapter'>adapter.SQLite3Adapter</a></dd></dl><div class="showcode"><button class="btn btn-info">Show class code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/sql_base.coffee#L7">/src/adapters/sql_base.coffee:7</a>)</span></div><pre class="sourcecode prettyprint .linenums:7">class SQLAdapterBase extends AdapterBase
   _param_place_holder: (pos) -&gt; '?'
   _contains_op: 'LIKE'
+  _false_value: 'FALSE'
 
   _convertValueType: (value, property_type) -&gt;
     if property_type is types.Date
@@ -21,6 +22,8 @@
       key = @_buildGroupExpr property
     op = '='
     if Array.isArray value
+      if value.length is 0
+        return @_false_value
       values = value.map (value) =&gt;
         params.push value
         return @_param_place_holder params.length
@@ -35,6 +38,8 @@
             return &quot;(NOT (#{@_buildWhereSingle property, key, value[sub_key], params}) OR #{key.replace('.', '_')} IS NULL)&quot;
         when '$in'
           values = value[sub_key]
+          if values.length is 0
+            return @_false_value
           values = values.map (value) =&gt;
             params.push value
             return @_param_place_holder params.length

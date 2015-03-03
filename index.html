@@ -119,7 +119,9 @@ User.count({age: 27}, function (error, count) {
 
 User.find(1).update age: 10, (error, count) -&gt;
 
-User.where(age: 27).update age:10, (error, count) -&gt;
+User.where(age: 27).update age: 10, (error, count) -&gt;
+
+User.where(age: 35).update age: $inc: 3, (error, count) -&gt;
 </code></pre>
 <pre><code class="lang-javascript">User.find(1, function (error, user) {
   user.age = 30;
@@ -130,7 +132,10 @@ User.where(age: 27).update age:10, (error, count) -&gt;
 User.find(1).update({age: 10}, function (error, count) {
 });
 
-User.where({age: 27}).update({age:10}, function (error, count) {
+User.where({age: 27}).update({age: 10}, function (error, count) {
+});
+
+User.where({age: 35}).update({age: {$inc: 3}}, function (error, count) {
 });
 </code></pre>
 <h2 id="delete-records">Delete records</h2>

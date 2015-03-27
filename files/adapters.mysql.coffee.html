@@ -41,15 +41,6 @@ class MySQLAdapter extends SQLAdapterBase
   support_geopoint: true
   native_integrity: true
 
-  _convertValueType: (value, property_type) -&gt;
-    if property_type is types.Date
-      value = new Date value
-    else if property_type is types.Number
-      value = Number value
-      if isNaN value
-        value = Number.MAX_VALUE
-    value
-
   ##
   # Creates a MySQL adapter
   constructor: (connection) -&gt;
@@ -231,9 +222,14 @@ class MySQLAdapter extends SQLAdapterBase
 
   ## @override AdapterBase::findById
   findById: (model, id, options, callback) -&gt;
+    id = @_convertValueType id, @key_type
     select = @_buildSelect @_connection.models[model], options.select
     tableName = @_connection.models[model].tableName
     sql = &quot;SELECT #{select} FROM #{tableName} WHERE id=? LIMIT 1&quot;
+    if options.explain
+      return @_query &quot;EXPLAIN #{sql}&quot;, id, (error, result) -&gt;
+        return callback error if error
+        callback null, result
     @_query sql, id, (error, result) =&gt;
       return callback MySQLAdapter.wrapError 'unknown error', error if error
       if result?.length is 1
@@ -286,6 +282,10 @@ class MySQLAdapter extends SQLAdapterBase
     else if options?.skip?
       sql += ' LIMIT 2147483647 OFFSET ' + options.skip
     #console.log sql, params
+    if options.explain
+      return @_query &quot;EXPLAIN #{sql}&quot;, params, (error, result) -&gt;
+        return callback error if error
+        callback null, result
     @_query sql, params, (error, result) =&gt;
       #console.log result
       return callback MySQLAdapter.wrapError 'unknown error', error if error

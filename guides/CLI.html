@@ -63,6 +63,21 @@ net.createServer (socket) -&gt;
 <pre><code>$ cormo remote-console 3001
 cormo&gt; 1+1
 2
+</code></pre><h1 id="miscellaneous">Miscellaneous</h1>
+<h2 id="console-inspect_depth">console.inspect_depth</h2>
+<p>You can change the depth option of the util.inspect that the CORMO console uses.
+(The default value is 2)</p>
+<pre><code>cormo&gt; a: b: c: d: e: f: 1
+{ a: { b: { c: [Object] } } }
+cormo&gt; console.inspect_depth = 4
+4
+cormo&gt; a: b: c: d: e: f: 1
+{ a: { b: { c: { d: { e: [Object] } } } } }
+</code></pre><h2 id="console-measuretime">console.measureTime</h2>
+<p>You can measure the execution time of a function using console.measureTime.</p>
+<pre><code>cormo&gt; console.measureTime -&gt; User.count()
+measureTime: 193ms
+492
 </code></pre></div></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><script src="../group-examples.js"></script><script src="http://code.jquery.com/ui/1.9.0/jquery-ui.min.js"></script><script src="../tocify/jquery.tocify.js"></script><script>$(function() {
   $('#toc').tocify({extendPage:false, scrollTo:60});
 });</script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

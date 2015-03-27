@@ -217,7 +217,12 @@ class PostgreSQLAdapter extends SQLAdapterBase
   findById: (model, id, options, callback) -&gt;
     select = @_buildSelect @_connection.models[model], options.select
     tableName = @_connection.models[model].tableName
-    @_query &quot;SELECT #{select} FROM #{tableName} WHERE id=$1 LIMIT 1&quot;, [id], (error, result) =&gt;
+    sql = &quot;SELECT #{select} FROM #{tableName} WHERE id=$1 LIMIT 1&quot;
+    if options.explain
+      return @_query &quot;EXPLAIN #{sql}&quot;, [id], (error, result) -&gt;
+        return callback error if error
+        callback null, result
+    @_query sql, [id], (error, result) =&gt;
       rows = result?.rows
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
       if rows?.length is 1
@@ -264,6 +269,10 @@ class PostgreSQLAdapter extends SQLAdapterBase
     else if options?.skip?
       sql += ' LIMIT ALL OFFSET ' + options.skip
     #console.log sql, params
+    if options.explain
+      return @_query &quot;EXPLAIN #{sql}&quot;, params, (error, result) -&gt;
+        return callback error if error
+        callback null, result
     @_query sql, params, (error, result) =&gt;
       rows = result?.rows
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error

@@ -15,10 +15,13 @@ class CommandConsole
     program.usage 'console [options]'
     .option '-l, --load &lt;path&gt;', 'load specified module'
     .option '-d, --inspect-depth &lt;depth&gt;', 'specify depth for util.inspect'
+    .option '--javascript', 'using JavaScript instead of CoffeeScript'
     .on 'load', (path) -&gt;
       loads.push path
     .on 'inspect-depth', (depth) =&gt;
       @inspect_depth = depth
+    .on 'javascript', =&gt;
+      @language = 'javascript'
     program.help() if argv.indexOf('--help') &gt;= 0 || argv.indexOf('-h') &gt;= 0
     program.parse(argv)
 
@@ -42,12 +45,22 @@ class CommandConsole
   ##
   # Runs this command
   run: -&gt;
-    @startCoffee()
+    if @language is 'javascript'
+      @startJS()
+    else
+      @startCoffee()
 
   ##
   # Starts a CoffeeScript console
   startCoffee: -&gt;
     cormo_console.startCoffee inspect_depth: @inspect_depth
+    .on 'exit', -&gt;
+      process.exit 0
+
+  ##
+  # Starts a JavaScript console
+  startJS: -&gt;
+    cormo_console.startJS inspect_depth: @inspect_depth
     .on 'exit', -&gt;
       process.exit 0
 

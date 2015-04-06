@@ -8,7 +8,9 @@ catch error
 
 ObjectID = mongodb.ObjectID
 
-_ = require 'underscore'
+class CormoTypesObjectId
+
+_ = require 'lodash'
 AdapterBase = require './base'
 async = require 'async'
 types = require '../types'
@@ -63,8 +65,8 @@ _objectIdToString = (oid) -&gt;
 _buildWhereSingle = (property, key, value, not_op) -&gt;
   if key isnt 'id' and not property?
     throw new Error(&quot;unknown column '#{key}'&quot;)
-  property_type = property?.type
-  is_objectid = key is 'id' or property_type is 'objectid'
+  property_type_class = property?.type_class
+  is_objectid = key is 'id' or property_type_class is CormoTypesObjectId
   if Array.isArray value
     if is_objectid
       value = value.map (v) -&gt; _convertValueToObjectID v, key
@@ -81,16 +83,13 @@ _buildWhereSingle = (property, key, value, not_op) -&gt;
         sub_value = value[sub_key]
         if is_objectid
           sub_value = _convertValueToObjectID sub_value, key
-        else if property_type is types.Date
+        else if property_type_class is types.Date
           sub_value = new Date sub_value
-        value = {}
-        value[sub_key] = sub_value
+        value = _.object [sub_key], [sub_value]
         if not_op
           value = $not: value
-        obj = {}
         key = '_id' if key is 'id'
-        obj[key] = value
-        return obj
+        return _.object [key], [value]
       when '$contains'
         value = new RegExp value[sub_key], 'i'
       when '$in'
@@ -106,11 +105,9 @@ _buildWhereSingle = (property, key, value, not_op) -&gt;
     if not_op
       value = $ne: value
 
-  obj = {}
   key = '_id' if key is 'id'
-  value = new Date value if property_type is types.Date
-  obj[key] = value
-  return obj
+  value = new Date value if property_type_class is types.Date
+  return _.object [key], [value]
 
 _buildWhere = (schema, conditions, conjunction='$and') -&gt;
   if Array.isArray conditions
@@ -149,9 +146,7 @@ _buildWhere = (schema, conditions, conjunction='$and') -&gt;
       after_count = keys.length
       if before_count is after_count and not _.some(keys, (key) -&gt; key.substr(0, 1) is '$')
         return obj
-    obj = {}
-    obj[conjunction] = subs
-    return obj
+    return _.object [conjunction], [subs]
 
 _buildGroupFields = (group_by, group_fields) -&gt;
   group = {}
@@ -172,7 +167,7 @@ _buildGroupFields = (group_by, group_fields) -&gt;
 # @namespace adapter
 class MongoDBAdapter extends AdapterBase
   key_type: types.String
-  key_type_internal: 'objectid'
+  key_type_internal: CormoTypesObjectId
   support_geopoint: true
   support_nested: true
 
@@ -206,10 +201,8 @@ class MongoDBAdapter extends AdapterBase
           indexes.push [ column, { unique: true } ]
         else
           indexes.push [ column, { unique: true, sparse: true } ]
-      if property.type is types.GeoPoint
-        obj = {}
-        obj[column] = '2d'
-        indexes.push [ obj ]
+      if property.type_class is types.GeoPoint
+        indexes.push [ _.object [column], ['2d'] ]
     for index in @_connection.models[model]._indexes
       if index.options.unique
         indexes.push [ index.columns, { name: index.options.name, unique: true, sparse: true } ]
@@ -237,7 +230,7 @@ class MongoDBAdapter extends AdapterBase
   valueToDB: (value, column, property) -&gt;
     return if not value?
     # convert id type
-    if column is 'id' or property.type is 'objectid'
+    if column is 'id' or property.type_class is CormoTypesObjectId
       if property.array
         return value.map (v) -&gt; v and _convertValueToObjectID v, column
       else
@@ -248,7 +241,7 @@ class MongoDBAdapter extends AdapterBase
     _objectIdToString data._id
 
   valueToModel: (value, property) -&gt;
-    if property.type is 'objectid'
+    if property.type_class is CormoTypesObjectId
       if property.array
         value.map (v) -&gt; v and _objectIdToString v
       else

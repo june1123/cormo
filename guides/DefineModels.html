@@ -54,6 +54,13 @@ var Post = connection.model(&#39;Post&#39;, {
 </ul>
 <p>After defining models, you may call <a href='../classes/Connection.html#Connection__applySchemas'>Connection::applySchemas</a> to apply schemas to the database.
 (It will be called automatically when you run a query.)</p>
+<h2 id="type-options">type options</h2>
+<p>You can give options for types in some adapters.</p>
+<p>To specify length for string type in MySQL or PostgreSQL, you should do</p>
+<pre><code>@column &#39;method_1&#39;, cormo.types.String(50)
+# or
+@column &#39;method_2&#39;, &#39;string(50)&#39;
+</code></pre><p>Please note that you must use &#39;cormo.types.String&#39;, not &#39;String&#39;.</p>
 <h1 id="mixing-databases">mixing databases</h1>
 <p>You can use two or more databases at the same time.</p>
 <p>Use <a href='../classes/Model.html#Model_connection'>Model.connection</a> to specify the connection which the model uses if you use CoffeeScript.</p>

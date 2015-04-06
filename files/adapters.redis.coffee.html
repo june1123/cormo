@@ -10,7 +10,7 @@ AdapterBase = require './base'
 types = require '../types'
 tableize = require('../util/inflector').tableize
 async = require 'async'
-_ = require 'underscore'
+_ = require 'lodash'
 
 ##
 # Adapter for Redis
@@ -48,7 +48,7 @@ class RedisAdapter extends AdapterBase
 
   valueToDB: (value, column, property) -&gt;
     return if not value?
-    switch property.type
+    switch property.type_class
       when types.Number, types.Integer
         value.toString()
       when types.Date
@@ -61,7 +61,7 @@ class RedisAdapter extends AdapterBase
         value
 
   valueToModel: (value, property) -&gt;
-    switch property.type
+    switch property.type_class
       when types.Number, types.Integer
         Number value
       when types.Date

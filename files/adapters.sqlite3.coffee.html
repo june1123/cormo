@@ -9,18 +9,18 @@ catch e
 SQLAdapterBase = require './sql_base'
 types = require '../types'
 async = require 'async'
-_ = require 'underscore'
+_ = require 'lodash'
 
 _typeToSQL = (property) -&gt;
   if property.array
-    return 'VARCHAR(255)'
-  switch property.type
-    when types.String then 'VARCHAR(255)'
+    return 'TEXT'
+  switch property.type_class
+    when types.String then 'TEXT'
     when types.Number then 'DOUBLE'
     when types.Boolean then 'TINYINT'
     when types.Integer then 'INT'
     when types.Date then 'REAL'
-    when types.Object then 'VARCHAR(255)'
+    when types.Object then 'TEXT'
 
 _propertyToSQL = (property) -&gt;
   type = _typeToSQL property
@@ -101,11 +101,11 @@ class SQLite3Adapter extends SQLAdapterBase
     Number data.id
 
   valueToModel: (value, property) -&gt;
-    if property.type is types.Object or property.array
+    if property.type_class is types.Object or property.array
       JSON.parse value
-    else if property.type is types.Date
+    else if property.type_class is types.Date
       new Date value
-    else if property.type is types.Boolean
+    else if property.type_class is types.Boolean
       value isnt 0
     else
       value
@@ -126,7 +126,7 @@ class SQLite3Adapter extends SQLAdapterBase
       values.push value.$inc
       fields.push dbname + '=' + dbname + '+?'
     else
-      if property.type is types.Date
+      if property.type_class is types.Date
         values.push value?.getTime()
       else
         values.push value

@@ -8,19 +8,19 @@ catch e
 
 SQLAdapterBase = require './sql_base'
 types = require '../types'
-_ = require 'underscore'
+_ = require 'lodash'
 
 _typeToSQL = (property) -&gt;
   if property.array
-    return 'VARCHAR(255)'
-  switch property.type
-    when types.String then 'VARCHAR(255)'
+    return 'TEXT'
+  switch property.type_class
+    when types.String then &quot;VARCHAR(#{property.type.length or 255})&quot;
     when types.Number then 'DOUBLE'
     when types.Boolean then 'BOOLEAN'
     when types.Integer then 'INT'
     when types.GeoPoint then 'POINT'
     when types.Date then 'DATETIME'
-    when types.Object then 'VARCHAR(255)'
+    when types.Object then 'TEXT'
 
 _propertyToSQL = (property) -&gt;
   type = _typeToSQL property
@@ -39,6 +39,7 @@ _propertyToSQL = (property) -&gt;
 class MySQLAdapter extends SQLAdapterBase
   key_type: types.Integer
   support_geopoint: true
+  support_string_type_with_length: true
   native_integrity: true
 
   ##
@@ -102,11 +103,11 @@ class MySQLAdapter extends SQLAdapterBase
     Number data.id
 
   valueToModel: (value, property) -&gt;
-    if property.type is types.Object or property.array
+    if property.type_class is types.Object or property.array
       JSON.parse value
-    else if property.type is types.GeoPoint
+    else if property.type_class is types.GeoPoint
       [value.x, value.y]
-    else if property.type is types.Boolean
+    else if property.type_class is types.Boolean
       value isnt 0
     else
       value
@@ -127,7 +128,7 @@ class MySQLAdapter extends SQLAdapterBase
   _buildUpdateSetOfColumn: (property, data, values, fields, places, insert) -&gt;
     dbname = property._dbname
     value = data[dbname]
-    if property.type is types.GeoPoint
+    if property.type_class is types.GeoPoint
       values.push value[0]
       values.push value[1]
       if insert
@@ -371,6 +372,11 @@ class MySQLAdapter extends SQLAdapterBase
     if @_client
       @_client.end()
     @_client = null
+
+  ##
+  # Exposes mysql module's query method
+  query: (sql, values, callback) -&gt;
+    @_client.query sql, values, callback
 
 module.exports = (connection) -&gt;
   new MySQLAdapter connection</pre></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><script src="../group-examples.js"></script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

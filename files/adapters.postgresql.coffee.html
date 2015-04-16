@@ -19,6 +19,7 @@ _typeToSQL = (property) -&gt;
     when types.Number then 'DOUBLE PRECISION'
     when types.Boolean then 'BOOLEAN'
     when types.Integer then 'INT'
+    when types.GeoPoint then 'GEOMETRY(POINT)'
     when types.Date then 'TIMESTAMP WITHOUT TIME ZONE'
     when types.Object then 'JSON'
 
@@ -38,6 +39,7 @@ _propertyToSQL = (property) -&gt;
 # @namespace adapter
 class PostgreSQLAdapter extends SQLAdapterBase
   key_type: types.Integer
+  support_geopoint: true
   support_string_type_with_length: true
   native_integrity: true
   _param_place_holder: (pos) -&gt; '$' + pos
@@ -61,24 +63,23 @@ class PostgreSQLAdapter extends SQLAdapterBase
     for column, property of model_class._schema
       column_sql = _propertyToSQL property
       if column_sql
-        sql.push property._dbname + ' ' + column_sql
+        sql.push &quot;\&quot;#{property._dbname}\&quot; #{column_sql}&quot;
     for integrity in model_class._integrities
       if integrity.type is 'child_nullify'
-        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{integrity.parent.tableName}(id) ON DELETE SET NULL&quot;
+        sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE SET NULL&quot;
       else if integrity.type is 'child_restrict'
-        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{integrity.parent.tableName}(id) ON DELETE RESTRICT&quot;
+        sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE RESTRICT&quot;
       else if integrity.type is 'child_delete'
-        sql.push &quot;FOREIGN KEY (#{integrity.column}) REFERENCES #{integrity.parent.tableName}(id) ON DELETE CASCADE&quot;
-    sql = &quot;CREATE TABLE #{tableName} ( #{sql.join ','} )&quot;
+        sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE CASCADE&quot;
+    sql = &quot;CREATE TABLE \&quot;#{tableName}\&quot; ( #{sql.join ','} )&quot;
     @_query sql, null, (error) =&gt;
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
       async.forEach model_class._indexes, (index, callback) =&gt;
         columns = []
         for column, order of index.columns
-          order = if order is -1 then 'DESC' else 'ASC'
-          columns.push column + ' ' + order
+          columns.push &quot;\&quot;#{column}\&quot; #{if order is -1 then 'DESC' else 'ASC'}&quot;
         unique = if index.options.unique then 'UNIQUE ' else ''
-        sql = &quot;CREATE #{unique}INDEX #{index.options.name} ON #{tableName} (#{columns.join ','})&quot;
+        sql = &quot;CREATE #{unique}INDEX \&quot;#{index.options.name}\&quot; ON \&quot;#{tableName}\&quot; (#{columns.join ','})&quot;
         @_query sql, null, callback
       , (error) -&gt;
         return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
@@ -101,7 +102,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
   ## @override AdapterBase::drop
   drop: (model, callback) -&gt;
     tableName = @_connection.models[model].tableName
-    @_query &quot;DROP TABLE IF EXISTS #{tableName}&quot;, null, (error) -&gt;
+    @_query &quot;DROP TABLE IF EXISTS \&quot;#{tableName}\&quot;&quot;, null, (error) -&gt;
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
       callback null
 
@@ -128,19 +129,44 @@ class PostgreSQLAdapter extends SQLAdapterBase
       error = PostgreSQLAdapter.wrapError 'unknown error', error
     callback error
 
+  _buildSelect: (model_class, select) -&gt;
+    if not select
+      select = Object.keys(model_class._schema)
+    if select.length&gt;0
+      schema = model_class._schema
+      escape_ch = @_escape_ch
+      select = select.map (column) -&gt;
+        property = schema[column]
+        column = escape_ch + schema[column]._dbname + escape_ch
+        if property.type_class is types.GeoPoint
+          &quot;ARRAY[ST_X(#{column}), ST_Y(#{column})] AS #{column}&quot;
+        else
+          column
+      return 'id,' + select.join ','
+    else
+      return 'id'
+
   _buildUpdateSetOfColumn: (property, data, values, fields, places, insert) -&gt;
     dbname = property._dbname
     value = data[dbname]
-    if value?.$inc
+    if property.type_class is types.GeoPoint
+      values.push value[0]
+      values.push value[1]
+      if insert
+        fields.push &quot;\&quot;#{dbname}\&quot;&quot;
+        places.push &quot;ST_Point($#{values.length-1}, $#{values.length})&quot;
+      else
+        fields.push &quot;\&quot;#{dbname}\&quot;=ST_Point($#{values.length-1}, $#{values.length})&quot;
+    else if value?.$inc
       values.push value.$inc
-      fields.push dbname + '=' + dbname + '+$' + values.length
+      fields.push &quot;\&quot;#{dbname}\&quot;=\&quot;#{dbname}\&quot;+$#{values.length}&quot;
     else
       values.push value
       if insert
-        fields.push dbname
+        fields.push &quot;\&quot;#{dbname}\&quot;&quot;
         places.push '$' + values.length
       else
-        fields.push dbname + '=$' + values.length
+        fields.push &quot;\&quot;#{dbname}\&quot;=$#{values.length}&quot;
 
   _buildUpdateSet: (model, data, values, insert) -&gt;
     schema = @_connection.models[model]._schema
@@ -164,7 +190,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
     tableName = @_connection.models[model].tableName
     values = []
     [ fields, places ] = @_buildUpdateSet model, data, values, true
-    sql = &quot;INSERT INTO #{tableName} (#{fields}) VALUES (#{places}) RETURNING id&quot;
+    sql = &quot;INSERT INTO \&quot;#{tableName}\&quot; (#{fields}) VALUES (#{places}) RETURNING id&quot;
     @_query sql, values, (error, result) -&gt;
       rows = result?.rows
       return _processSaveError tableName, error, callback if error
@@ -182,7 +208,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
     data.forEach (item) =&gt;
       [ fields, places_sub ] = @_buildUpdateSet model, item, values, true
       places.push '(' + places_sub + ')'
-    sql = &quot;INSERT INTO #{tableName} (#{fields}) VALUES #{places.join ','} RETURNING id&quot;
+    sql = &quot;INSERT INTO \&quot;#{tableName}\&quot; (#{fields}) VALUES #{places.join ','} RETURNING id&quot;
     @_query sql, values, (error, result) -&gt;
       return _processSaveError tableName, error, callback if error
       ids = result?.rows.map (row) -&gt; row.id
@@ -197,7 +223,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
     values = []
     [ fields ] = @_buildUpdateSet model, data, values
     values.push data.id
-    sql = &quot;UPDATE #{tableName} SET #{fields} WHERE id=$#{values.length}&quot;
+    sql = &quot;UPDATE \&quot;#{tableName}\&quot; SET #{fields} WHERE id=$#{values.length}&quot;
     @_query sql, values, (error) -&gt;
       return _processSaveError tableName, error, callback if error
       callback null
@@ -207,7 +233,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
     tableName = @_connection.models[model].tableName
     values = []
     [ fields ] = @_buildPartialUpdateSet model, data, values
-    sql = &quot;UPDATE #{tableName} SET #{fields}&quot;
+    sql = &quot;UPDATE \&quot;#{tableName}\&quot; SET #{fields}&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, values
@@ -221,7 +247,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
   findById: (model, id, options, callback) -&gt;
     select = @_buildSelect @_connection.models[model], options.select
     tableName = @_connection.models[model].tableName
-    sql = &quot;SELECT #{select} FROM #{tableName} WHERE id=$1 LIMIT 1&quot;
+    sql = &quot;SELECT #{select} FROM \&quot;#{tableName}\&quot; WHERE id=$1 LIMIT 1&quot;
     if options.explain
       return @_query &quot;EXPLAIN #{sql}&quot;, [id], (error, result) -&gt;
         return callback error if error
@@ -245,9 +271,13 @@ class PostgreSQLAdapter extends SQLAdapterBase
       select = @_buildGroupFields options.group_by, options.group_fields
     else
       select = @_buildSelect @_connection.models[model], options.select
+    if options.near? and field = Object.keys(options.near)[0]
+      order_by = &quot;\&quot;#{field}_distance\&quot;&quot;
+      location = options.near[field]
+      select += &quot;,ST_Distance(\&quot;#{field}\&quot;,ST_Point(#{location[0]},#{location[1]})) AS \&quot;#{field}_distance\&quot;&quot;
     params = []
     tableName = @_connection.models[model].tableName
-    sql = &quot;SELECT #{select} FROM #{tableName}&quot;
+    sql = &quot;SELECT #{select} FROM \&quot;#{tableName}\&quot;&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -260,12 +290,14 @@ class PostgreSQLAdapter extends SQLAdapterBase
         sql += ' HAVING ' + @_buildWhere options.group_fields, options.conditions_of_group, params
       catch e
         return callback e
-    if options?.orders.length &gt; 0
+    if options?.orders.length &gt; 0 or order_by
       orders = options.orders.map (order) -&gt;
         if order[0] is '-'
-          return order[1..] + ' DESC'
+          return &quot;\&quot;#{order[1..]}\&quot; DESC&quot;
         else
-          return order + ' ASC'
+          return &quot;\&quot;#{order}\&quot; ASC&quot;
+      if order_by
+        orders.push order_by
       sql += ' ORDER BY ' + orders.join ','
     if options?.limit?
       sql += ' LIMIT ' + options.limit
@@ -292,7 +324,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
   count: (model, conditions, callback) -&gt;
     params = []
     tableName = @_connection.models[model].tableName
-    sql = &quot;SELECT COUNT(*) AS count FROM #{tableName}&quot;
+    sql = &quot;SELECT COUNT(*) AS count FROM \&quot;#{tableName}\&quot;&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -309,7 +341,7 @@ class PostgreSQLAdapter extends SQLAdapterBase
   delete: (model, conditions, callback) -&gt;
     params = []
     tableName = @_connection.models[model].tableName
-    sql = &quot;DELETE FROM #{tableName}&quot;
+    sql = &quot;DELETE FROM \&quot;#{tableName}\&quot;&quot;
     if conditions.length &gt; 0
       try
         sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params

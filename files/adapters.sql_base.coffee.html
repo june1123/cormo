@@ -10,6 +10,7 @@ class SQLAdapterBase extends AdapterBase
   _param_place_holder: (pos) -&gt; '?'
   _contains_op: 'LIKE'
   _false_value: 'FALSE'
+  _escape_ch: '&quot;'
 
   _convertValueType: (value, property_type_class) -&gt;
     if property_type_class is types.Date
@@ -33,7 +34,9 @@ class SQLAdapterBase extends AdapterBase
       property_type_class = property.type_class
     if property and not property_type_class
       # group field
-      key = @_buildGroupExpr property
+      column = @_buildGroupExpr property
+    else
+      column = @_escape_ch + key.replace('.', '_') + @_escape_ch
     op = '='
     if Array.isArray value
       if value.length is 0
@@ -41,15 +44,15 @@ class SQLAdapterBase extends AdapterBase
       values = value.map (value) =&gt;
         params.push value
         return @_param_place_holder params.length
-      return &quot;#{key.replace '.', '_'} IN (#{values.join ','})&quot;
+      return &quot;#{column} IN (#{values.join ','})&quot;
     else if typeof value is 'object' and value isnt null and (keys = Object.keys value).length is 1
       sub_key = keys[0]
       switch sub_key
         when '$not'
           if value[sub_key] is null
-            return &quot;NOT #{key.replace('.', '_')} IS NULL&quot;
+            return &quot;NOT #{column} IS NULL&quot;
           else
-            return &quot;(NOT (#{@_buildWhereSingle property, key, value[sub_key], params}) OR #{key.replace('.', '_')} IS NULL)&quot;
+            return &quot;(NOT (#{@_buildWhereSingle property, key, value[sub_key], params}) OR #{column} IS NULL)&quot;
         when '$in'
           values = value[sub_key]
           if values.length is 0
@@ -57,7 +60,7 @@ class SQLAdapterBase extends AdapterBase
           values = values.map (value) =&gt;
             params.push value
             return @_param_place_holder params.length
-          return &quot;#{key.replace '.', '_'} IN (#{values.join ','})&quot;
+          return &quot;#{column} IN (#{values.join ','})&quot;
         when '$gt'
           op = '&gt;'
           value = value[sub_key]
@@ -72,14 +75,22 @@ class SQLAdapterBase extends AdapterBase
           value = value[sub_key]
         when '$contains'
           op = ' ' + @_contains_op + ' '
-          value = '%' + value[sub_key] + '%'
+          values = value[sub_key]
+          if not Array.isArray values
+            values = [values]
+          if values.length is 0
+            return @_false_value
+          values = values.map (value) =&gt;
+            params.push '%' + value + '%'
+            return column + op + @_param_place_holder params.length
+          return &quot;(#{values.join ' OR '})&quot;
         else
           throw new Error &quot;unknown operator '#{sub_key}'&quot;
     else if value is null
-      return &quot;#{key.replace('.', '_')} IS NULL&quot;
+      return &quot;#{column} IS NULL&quot;
 
     params.push @_convertValueType value, property_type_class
-    return key.replace('.', '_') + op + @_param_place_holder params.length
+    return column + op + @_param_place_holder params.length
 
   _buildWhere: (schema, conditions, params, conjunction='AND') -&gt;
     if Array.isArray conditions
@@ -147,7 +158,8 @@ class SQLAdapterBase extends AdapterBase
     if select
       if select.length&gt;0
         schema = model_class._schema
-        select = select.map (column) -&gt; schema[column]._dbname
+        escape_ch = @_escape_ch
+        select = select.map (column) -&gt; &quot;#{escape_ch}#{schema[column]._dbname}#{escape_ch}&quot;
         return 'id,' + select.join ','
       else
         return 'id'

@@ -5,12 +5,13 @@
   key_type: types.Integer
   support_geopoint: true
   support_string_type_with_length: true
-  native_integrity: true</pre><div class="panel panel-info"><div data-toggle="collapse" data-target="#adapter_MySQLAdapter_ctor_body" class="panel-heading collapsed"><h3 class="panel-title">Constructor<span class="pull-right glyphicon"></span></h3></div><div id="adapter_MySQLAdapter_ctor_body" class="panel-collapse collapse"><div class="panel-body"><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><td>(None)</td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L45">/src/adapters/mysql.coffee:45</a>)</span></div><pre class="sourcecode prettyprint .linenums:45">constructor: (connection) -&gt;
+  native_integrity: true
+  _escape_ch: '`'</pre><div class="panel panel-info"><div data-toggle="collapse" data-target="#adapter_MySQLAdapter_ctor_body" class="panel-heading collapsed"><h3 class="panel-title">Constructor<span class="pull-right glyphicon"></span></h3></div><div id="adapter_MySQLAdapter_ctor_body" class="panel-collapse collapse"><div class="panel-body"><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><td>(None)</td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L46">/src/adapters/mysql.coffee:46</a>)</span></div><pre class="sourcecode prettyprint .linenums:46">constructor: (connection) -&gt;
   @_connection = connection</pre></div></div></div></section><span id="adapter_MySQLAdapter__applySchema" class="fix-anchor"></span><section><div class="panel panel-success"><div data-toggle="collapse" data-target="#adapter_MySQLAdapter__applySchema_body" class="panel-heading collapsed"><h3 class="panel-title">MySQLAdapter::applySchema(model, callback)<span class="label label-override">override</span><span class="pull-right glyphicon"></span></h3><div class="method-summary"><p>Applies schema.
 Creates tables, alter tables, create indexes, or etc. depending adapters</p>
 </div></div><div id="adapter_MySQLAdapter__applySchema_body" class="panel-collapse collapse"><div class="panel-body"><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__applySchema'>AdapterBase::applySchema</a></div><br><div></div><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td><span class="method-depth0"></span><code>model</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>callback</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)</span></td><td><span> NodeJS style's callback</span></td></tr><tr><td><span class="method-depth1"></span><code>error</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a></span></td><td><span> See throws</span></td></tr></table><h4>Returns<small><span> as</span><span class="label label-info">NodeJS callback</span></small></h4><table class="table table-bordered table-condensed table-hover"><tr><td>(Nothing)</td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L85">/src/adapters/mysql.coffee:85</a>)</span></div><pre class="sourcecode prettyprint .linenums:85">applySchema: (model, callback) -&gt;
   tableName = @_connection.models[model].tableName
-  @_query &quot;SHOW COLUMNS FROM #{tableName}&quot;, (error, columns) =&gt;
+  @_query &quot;SHOW COLUMNS FROM `#{tableName}`&quot;, (error, columns) =&gt;
     if error?.code is 'ER_NO_SUCH_TABLE'
       @_createTable model, callback
     else
@@ -35,7 +36,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
 </div></div><div id="adapter_MySQLAdapter__count_body" class="panel-collapse collapse"><div class="panel-body"><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__count'>AdapterBase::count</a></div><br><div></div><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td><span class="method-depth0"></span><code>model</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>conditions</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>callback</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, result)</span></td><td><span> NodeJS style's callback</span></td></tr><tr><td><span class="method-depth1"></span><code>error</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a></span></td><td><span> See throws</span></td></tr><tr><td><span class="method-depth1"></span><code>result</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a></span></td><td><span> See returns</span></td></tr></table><h4>Returns<small><span> as</span><span class="label label-info">NodeJS callback</span></small></h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>(Returns)</td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a></span></td><td><span></span></td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L300">/src/adapters/mysql.coffee:300</a>)</span></div><pre class="sourcecode prettyprint .linenums:300">count: (model, conditions, callback) -&gt;
   params = []
   tableName = @_connection.models[model].tableName
-  sql = &quot;SELECT COUNT(*) AS count FROM #{tableName}&quot;
+  sql = &quot;SELECT COUNT(*) AS count FROM `#{tableName}`&quot;
   if conditions.length &gt; 0
     try
       sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -50,7 +51,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   tableName = @_connection.models[model].tableName
   values = []
   [ fields, places ] = @_buildUpdateSet model, data, values, true
-  sql = &quot;INSERT INTO #{tableName} (#{fields}) VALUES (#{places})&quot;
+  sql = &quot;INSERT INTO `#{tableName}` (#{fields}) VALUES (#{places})&quot;
   @_query sql, values, (error, result) -&gt;
     return _processSaveError error, callback if error
     if id = result?.insertId
@@ -65,7 +66,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   data.forEach (item) =&gt;
     [ fields, places_sub ] = @_buildUpdateSet model, item, values, true
     places.push '(' + places_sub + ')'
-  sql = &quot;INSERT INTO #{tableName} (#{fields}) VALUES #{places.join ','}&quot;
+  sql = &quot;INSERT INTO `#{tableName}` (#{fields}) VALUES #{places.join ','}&quot;
   @_query sql, values, (error, result) -&gt;
     return _processSaveError error, callback if error
     if id = result?.insertId
@@ -75,7 +76,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
 </div></div><div id="adapter_MySQLAdapter__delete_body" class="panel-collapse collapse"><div class="panel-body"><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__delete'>AdapterBase::delete</a></div><br><div></div><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td><span class="method-depth0"></span><code>model</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>conditions</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>callback</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, result)</span></td><td><span> NodeJS style's callback</span></td></tr><tr><td><span class="method-depth1"></span><code>error</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a></span></td><td><span> See throws</span></td></tr><tr><td><span class="method-depth1"></span><code>result</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a></span></td><td><span> See returns</span></td></tr></table><h4>Returns<small><span> as</span><span class="label label-info">NodeJS callback</span></small></h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>(Returns)</td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number'>Number</a></span></td><td><span></span></td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L316">/src/adapters/mysql.coffee:316</a>)</span></div><pre class="sourcecode prettyprint .linenums:316">delete: (model, conditions, callback) -&gt;
   params = []
   tableName = @_connection.models[model].tableName
-  sql = &quot;DELETE FROM #{tableName}&quot;
+  sql = &quot;DELETE FROM `#{tableName}`&quot;
   if conditions.length &gt; 0
     try
       sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -88,7 +89,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
     callback null, result.affectedRows</pre></div></div></div></section><span id="adapter_MySQLAdapter__drop" class="fix-anchor"></span><section><div class="panel panel-success"><div data-toggle="collapse" data-target="#adapter_MySQLAdapter__drop_body" class="panel-heading collapsed"><h3 class="panel-title">MySQLAdapter::drop(model, callback)<span class="label label-override">override</span><span class="pull-right glyphicon"></span></h3><div class="method-summary"><p>Drops a model from the database</p>
 </div></div><div id="adapter_MySQLAdapter__drop_body" class="panel-collapse collapse"><div class="panel-body"><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__drop'>AdapterBase::drop</a></div><br><div></div><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td><span class="method-depth0"></span><code>model</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>callback</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error)</span></td><td><span> NodeJS style's callback</span></td></tr><tr><td><span class="method-depth1"></span><code>error</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a></span></td><td><span> See throws</span></td></tr></table><h4>Returns<small><span> as</span><span class="label label-info">NodeJS callback</span></small></h4><table class="table table-bordered table-condensed table-hover"><tr><td>(Nothing)</td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L94">/src/adapters/mysql.coffee:94</a>)</span></div><pre class="sourcecode prettyprint .linenums:94">drop: (model, callback) -&gt;
   tableName = @_connection.models[model].tableName
-  @_query &quot;DROP TABLE IF EXISTS #{tableName}&quot;, (error) -&gt;
+  @_query &quot;DROP TABLE IF EXISTS `#{tableName}`&quot;, (error) -&gt;
     return callback MySQLAdapter.wrapError 'unknown error', error if error
     callback null</pre></div></div></div></section><span id="adapter_MySQLAdapter__find" class="fix-anchor"></span><section><div class="panel panel-success"><div data-toggle="collapse" data-target="#adapter_MySQLAdapter__find_body" class="panel-heading collapsed"><h3 class="panel-title">MySQLAdapter::find(model, conditions, options, callback)<span class="label label-override">override</span><span class="pull-right glyphicon"></span></h3><div class="method-summary"><p>Finds records</p>
 </div></div><div id="adapter_MySQLAdapter__find_body" class="panel-collapse collapse"><div class="panel-body"><div>Overrides <a href='../classes/adapter.AdapterBase.html#adapter_AdapterBase__find'>AdapterBase::find</a></div><br><div></div><h4>Parameters</h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td><span class="method-depth0"></span><code>model</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String'>String</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>conditions</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>options</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object'>Object</a></span></td><td><span> </span></td></tr><tr><td><span class="method-depth0"></span><code>callback</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function'>Function</a>(error, result)</span></td><td><span> NodeJS style's callback</span></td></tr><tr><td><span class="method-depth1"></span><code>error</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error</a></span></td><td><span> See throws</span></td></tr><tr><td><span class="method-depth1"></span><code>result</code></td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;</span></td><td><span> See returns</span></td></tr></table><h4>Returns<small><span> as</span><span class="label label-info">NodeJS callback</span></small></h4><table class="table table-bordered table-condensed table-hover"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>(Returns)</td><td><span><a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array'>Array</a>&lt;<a href='../classes/Model.html#Model'>Model</a>&gt;</span></td><td><span></span></td></tr></table><div class="showcode"><button class="btn btn-info">Show code</button><span> (defined in <a href="https://github.com/croquiscom/cormo/blob/master//src/adapters/mysql.coffee#L245">/src/adapters/mysql.coffee:245</a>)</span></div><pre class="sourcecode prettyprint .linenums:245">find: (model, conditions, options, callback) -&gt;
@@ -97,12 +98,12 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   else
     select = @_buildSelect @_connection.models[model], options.select
   if options.near? and field = Object.keys(options.near)[0]
-    order_by = &quot;#{field}_distance&quot;
+    order_by = &quot;`#{field}_distance`&quot;
     location = options.near[field]
-    select += &quot;,GLENGTH(LINESTRING(#{field},POINT(#{location[0]},#{location[1]}))) AS #{field}_distance&quot;
+    select += &quot;,GLENGTH(LINESTRING(`#{field}`,POINT(#{location[0]},#{location[1]}))) AS `#{field}_distance`&quot;
   params = []
   tableName = @_connection.models[model].tableName
-  sql = &quot;SELECT #{select} FROM #{tableName}&quot;
+  sql = &quot;SELECT #{select} FROM `#{tableName}`&quot;
   if conditions.length &gt; 0
     try
       sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
@@ -118,9 +119,9 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   if options?.orders.length &gt; 0 or order_by
     orders = options.orders.map (order) -&gt;
       if order[0] is '-'
-        return order[1..] + ' DESC'
+        return &quot;`#{order[1..]}` DESC&quot;
       else
-        return order + ' ASC'
+        return &quot;`#{order}` ASC&quot;
     if order_by
       orders.push order_by
     sql += ' ORDER BY ' + orders.join ','
@@ -148,7 +149,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   id = @_convertValueType id, @key_type
   select = @_buildSelect @_connection.models[model], options.select
   tableName = @_connection.models[model].tableName
-  sql = &quot;SELECT #{select} FROM #{tableName} WHERE id=? LIMIT 1&quot;
+  sql = &quot;SELECT #{select} FROM `#{tableName}` WHERE id=? LIMIT 1&quot;
   if options.explain
     return @_query &quot;EXPLAIN #{sql}&quot;, id, (error, result) -&gt;
       return callback error if error
@@ -171,7 +172,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   values = []
   [ fields ] = @_buildUpdateSet model, data, values
   values.push data.id
-  sql = &quot;UPDATE #{tableName} SET #{fields} WHERE id=?&quot;
+  sql = &quot;UPDATE `#{tableName}` SET #{fields} WHERE id=?&quot;
   @_query sql, values, (error) -&gt;
     return _processSaveError error, callback if error
     callback null</pre></div></div></div></section><span id="adapter_MySQLAdapter__updatePartial" class="fix-anchor"></span><section><div class="panel panel-success"><div data-toggle="collapse" data-target="#adapter_MySQLAdapter__updatePartial_body" class="panel-heading collapsed"><h3 class="panel-title">MySQLAdapter::updatePartial(model, data, conditions, options, callback)<span class="label label-override">override</span><span class="pull-right glyphicon"></span></h3><div class="method-summary"><p>Updates some fields of records that match conditions</p>
@@ -179,7 +180,7 @@ Creates tables, alter tables, create indexes, or etc. depending adapters</p>
   tableName = @_connection.models[model].tableName
   values = []
   [ fields ] = @_buildPartialUpdateSet model, data, values
-  sql = &quot;UPDATE #{tableName} SET #{fields}&quot;
+  sql = &quot;UPDATE `#{tableName}` SET #{fields}&quot;
   if conditions.length &gt; 0
     try
       sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, values

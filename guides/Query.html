@@ -83,6 +83,18 @@ Two or more <a href='../classes/Query.html#Query__where'>Query::where</a>s mean 
 </tr>
 
 <tr>
+<td rowspan='2'>Regular expression</td>
+<td>name: /smi/</td>
+<td>name REGEXP &#39;smi&#39;</td>
+<td>{ name: /smi/i }</td>
+</tr>
+<tr>
+<td>name: /smi|doe/</td>
+<td>name REGEXP &#39;smi|doe&#39;</td>
+<td>{ name: /smi|doe/i }</td>
+</tr>
+
+<tr>
 <td rowspan='2'>Matches any of an array</td>
 <td>age: { $in: [ 10, 20, 30 ] }</td>
 <td rowspan='2'>age IN (10,20,30)</td>

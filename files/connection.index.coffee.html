@@ -65,9 +65,9 @@ class Connection extends EventEmitter
 
     @_adapter = Promise.promisifyAll require(__dirname + '/../adapters/' + adapter_name) @
     @_promise_connection = @_adapter.connectAsync settings
-    .then -&gt;
+    .then =&gt;
       @connected = true
-    .catch (error) -&gt;
+    .catch (error) =&gt;
       @_adapter = null
       Promise.reject error
 
@@ -90,8 +90,16 @@ class Connection extends EventEmitter
     return Model.newModel @, name, schema
 
   _checkSchemaApplied: -&gt;
+    @_initializeModels()
     return Promise.resolve() if not @_applying_schemas and not @_schema_changed
     return @applySchemas()
+
+  _initializeModels: -&gt;
+    for model, modelClass of @models
+      if modelClass.initialize and not modelClass._initialize_called
+        modelClass.initialize()
+        modelClass._initializeModels = true
+    return
 
   _checkArchive: -&gt;
     for model, modelClass of @models
@@ -101,6 +109,7 @@ class Connection extends EventEmitter
           @archive: false
           @column 'model', String
           @column 'data', Object
+    return
 
   _getModelNamesByAssociationOrder: -&gt;
     t = new Toposort()
@@ -127,6 +136,7 @@ class Connection extends EventEmitter
   # @see AdapterBase::applySchema
   applySchemas: (callback) -&gt;
     Promise.resolve().then =&gt;
+      @_initializeModels()
       return if not @_schema_changed
 
       @_applyAssociations()

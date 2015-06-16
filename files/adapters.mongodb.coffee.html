@@ -108,6 +108,9 @@ _buildWhereSingle = (property, key, value, not_op) -&gt;
         throw new Error &quot;unknown operator '#{sub_key}'&quot;
     if not_op
       value = $not: value
+  else if _.isRegExp value
+    if not value.ignoreCase
+      value = new RegExp value.source, 'i'
   else
     if is_objectid and value?
       value = _convertValueToObjectID value, key
@@ -346,6 +349,32 @@ class MongoDBAdapter extends AdapterBase
       return callback MongoDBAdapter.wrapError 'unknown error', error if error
       callback null, result.result.n
 
+  ## @override AdapterBase::upsert
+  upsert: (model, data, conditions, options, callback) -&gt;
+    schema = @_connection.models[model]._schema
+    try
+      conditions = _buildWhere schema, conditions
+    catch e
+      return callback e
+    if not conditions
+      conditions = {}
+    update_ops = $set: {}, $unset: {}, $inc: {}
+    for key, value of conditions
+      update_ops.$set[key] = value
+    @_buildUpdateOps schema, update_ops, data, '', data
+    if Object.keys(update_ops.$set).length is 0
+      delete update_ops.$set
+    if Object.keys(update_ops.$unset).length is 0
+      delete update_ops.$unset
+    if Object.keys(update_ops.$inc).length is 0
+      delete update_ops.$inc
+    @_collection(model).update conditions, update_ops, safe: true, upsert: true, (error, result) -&gt;
+      if error?.code in [11001, 11000]
+        key = error.message.match /index: [\w-.]+\$(\w+)_1/
+        return callback new Error('duplicated ' + key?[1])
+      return callback MongoDBAdapter.wrapError 'unknown error', error if error
+      callback null
+
   ## @override AdapterBase::findById
   findById: (model, id, options, callback) -&gt;
     if options.select
@@ -457,15 +486,28 @@ class MongoDBAdapter extends AdapterBase
             callback null, result.map (record) =&gt; @_convertToModelInstance model, record, options.select, options.select_raw
 
   ## @override AdapterBase::count
-  count: (model, conditions, callback) -&gt;
+  count: (model, conditions, options, callback) -&gt;
     try
       conditions = _buildWhere @_connection.models[model]._schema, conditions
     catch e
       return callback e
     #console.log JSON.stringify conditions
-    @_collection(model).count conditions, (error, count) =&gt;
-      return callback MongoDBAdapter.wrapError 'unknown error', error if error
-      callback null, count
+    if options.group_by or options.group_fields
+      pipeline = []
+      if conditions
+        pipeline.push $match: conditions
+      pipeline.push $group: _buildGroupFields options.group_by, options.group_fields
+      if options.conditions_of_group.length &gt; 0
+        pipeline.push $match: _buildWhere options.group_fields, options.conditions_of_group
+      pipeline.push $group: _id: null, count: $sum: 1
+      @_collection(model).aggregate pipeline, (error, result) =&gt;
+        return callback MongoDBAdapter.wrapError 'unknown error', error if error
+        return callback new Error 'unknown error' if result?.length isnt 1
+        callback null, result[0].count
+    else
+      @_collection(model).count conditions, (error, count) =&gt;
+        return callback MongoDBAdapter.wrapError 'unknown error', error if error
+        callback null, count
 
   ## @override AdapterBase::delete
   delete: (model, conditions, callback) -&gt;

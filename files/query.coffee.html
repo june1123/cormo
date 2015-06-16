@@ -349,7 +349,7 @@ class Query
       if @_id or @_find_single_id
         @_conditions.push id: @_id
         delete @_id
-      @_adapter.countAsync @_name, @_conditions
+      @_adapter.countAsync @_name, @_conditions, @_options
     .nodeify bindDomain callback
 
   ##
@@ -395,6 +395,28 @@ class Query
         delete @_id
       @_connection.log @_name, 'update', data: data, conditions: @_conditions, options: @_options
       @_adapter.updatePartialAsync @_name, data, @_conditions, @_options
+    .nodeify bindDomain callback
+
+  ##
+  # Executes the query as an insert or update operation
+  # @param {Object} updates
+  # @return {Number}
+  # @promise
+  # @nodejscallback
+  # @see AdapterBase::count
+  upsert: (updates, callback) -&gt;
+    @_model._checkReady().then =&gt;
+      errors = []
+      data = {}
+      @_validateAndBuildSaveData errors, data, updates, '', updates
+      if errors.length &gt; 0
+        return Promise.reject new Error errors.join ','
+
+      if @_id or @_find_single_id
+        @_conditions.push id: @_id
+        delete @_id
+      @_connection.log @_name, 'upsert', data: data, conditions: @_conditions, options: @_options
+      @_adapter.upsertAsync @_name, data, @_conditions, @_options
     .nodeify bindDomain callback
 
   _doIntegrityActions: (integrities, ids) -&gt;

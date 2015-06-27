@@ -379,22 +379,30 @@ class MySQLAdapter extends SQLAdapterBase
       user: settings.user
       password: settings.password
     client.connect (error) =&gt;
-      return callback MySQLAdapter.wrapError 'failed to connect', error if error
+      if error
+        client.end()
+        return callback MySQLAdapter.wrapError 'failed to connect', error
+      @_createDatabase client, settings, (error) =&gt;
+        client.end()
+        return callback error if error
+        @_client = mysql.createPool
+          host: settings.host
+          port: settings.port
+          user: settings.user
+          password: settings.password
+          database: settings.database
+        callback null
 
-      @_client = client
-
-      @_selectDatabase settings, callback
-
-  _selectDatabase: (settings, callback) -&gt;
-    # select database
-    @_client.query &quot;USE `#{settings.database}`&quot;, (error) =&gt;
+  # create database if not exist
+  _createDatabase: (client, settings, callback) -&gt;
+    # check database existence
+    client.query &quot;USE `#{settings.database}`&quot;, (error) =&gt;
       return callback null if not error
 
-      # create one if not exist
       if error.code is 'ER_BAD_DB_ERROR'
-        @_client.query &quot;CREATE DATABASE `#{settings.database}`&quot;, (error) =&gt;
+        client.query &quot;CREATE DATABASE `#{settings.database}`&quot;, (error) =&gt;
           return callback MySQLAdapter.wrapError 'unknown error', error if error
-          @_selectDatabase settings, callback
+          @_createDatabase client, settings, callback
       else
         msg = if error.code is 'ER_DBACCESS_DENIED_ERROR' then &quot;no access right to the database '#{settings.database}'&quot; else 'unknown error'
         callback MySQLAdapter.wrapError msg, error

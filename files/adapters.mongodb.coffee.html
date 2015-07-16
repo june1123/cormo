@@ -13,6 +13,7 @@ class CormoTypesObjectId
 _ = require 'lodash'
 AdapterBase = require './base'
 async = require 'async'
+stream = require 'stream'
 types = require '../types'
 
 _convertValueToObjectID = (value, key) -&gt;
@@ -284,6 +285,18 @@ class MongoDBAdapter extends AdapterBase
 
   ## @override AdapterBase::create
   createBulk: (model, data, callback) -&gt;
+    if data.length &gt; 1000
+      chunks = []
+      i = 0
+      while i &lt; data.length
+        chunks.push data.slice i, i+1000
+        i += 1000
+      async.map chunks, (chunk, callback) =&gt;
+        @createBulk model, chunk, callback
+      , (error, records_list) -&gt;
+        return callback error if error
+        callback null, _.flatten records_list
+      return
     @_collection(model).insert data, safe: true, (error, result) -&gt;
       if error?.code is 11000
         key = error.message.match /index: [\w-.]+\$(\w+)_1/
@@ -400,15 +413,11 @@ class MongoDBAdapter extends AdapterBase
       else
         callback null, @_convertToModelInstance model, result, options.select, options.select_raw
 
-  ## @override AdapterBase::find
-  find: (model, conditions, options, callback) -&gt;
+  _buildConditionsForFind: (model, conditions, options) -&gt;
     if options.select
       fields = {}
       options.select.forEach (column) -&gt; fields[column] = 1
-    try
-      conditions = _buildWhere @_connection.models[model]._schema, conditions
-    catch e
-      return callback e
+    conditions = _buildWhere @_connection.models[model]._schema, conditions
     if options.near? and field = Object.keys(options.near)[0]
       # MongoDB fails if $near is mixed with $and
       keys = Object.keys conditions if conditions
@@ -439,6 +448,21 @@ class MongoDBAdapter extends AdapterBase
           if column is 'id'
             column = '_id'
         orders[column] = dir
+    client_options =
+      limit: options.limit
+      skip: options.skip
+    if fields
+      client_options.fields = fields
+    if orders
+      client_options.sort = orders
+    [conditions, fields, orders, client_options]
+
+  ## @override AdapterBase::find
+  find: (model, conditions, options, callback) -&gt;
+    try
+      [conditions, fields, orders, client_options] = @_buildConditionsForFind model, conditions, options
+    catch e
+      return callback e
     #console.log JSON.stringify conditions
     if options.group_by or options.group_fields
       pipeline = []
@@ -462,13 +486,6 @@ class MongoDBAdapter extends AdapterBase
               record[group] = record._id[group] for group in options.group_by
           @_convertToGroupInstance model, record, options.group_by, options.group_fields
     else
-      client_options =
-        limit: options.limit
-        skip: options.skip
-      if fields
-        client_options.fields = fields
-      if orders
-        client_options.sort = orders
       if options.explain
         client_options.explain = true
         return @_collection(model).find conditions, client_options, (error, cursor) -&gt;
@@ -484,6 +501,26 @@ class MongoDBAdapter extends AdapterBase
             callback null, result.map (record) =&gt; @_refineRawInstance model, record, options.select, options.select_raw
           else
             callback null, result.map (record) =&gt; @_convertToModelInstance model, record, options.select, options.select_raw
+
+  ## @override AdapterBase::stream
+  stream: (model, conditions, options) -&gt;
+    try
+      [conditions, fields, orders, client_options] = @_buildConditionsForFind model, conditions, options
+    catch e
+      readable = new stream.Readable objectMode: true
+      readable._read = -&gt;
+        readable.emit 'error', e
+      return readable
+    transformer = new stream.Transform objectMode: true
+    transformer._transform = (record, encoding, callback) =&gt;
+      transformer.push @_convertToModelInstance model, record, options.select, options.select_raw
+      callback()
+    @_collection(model).find conditions, client_options, (error, cursor) -&gt;
+      return transformer.emit 'error', MongoDBAdapter.wrapError 'unknown error', error if error or not cursor
+      cursor.on 'error', (error) -&gt;
+        transformer.emit 'error', error
+      .pipe transformer
+    transformer
 
   ## @override AdapterBase::count
   count: (model, conditions, options, callback) -&gt;

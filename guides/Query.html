@@ -234,6 +234,21 @@ It makes a query return a single instance (or null) instead of array of instance
   console.log(user);
 });
 </code></pre>
+<h2 id="stream-the-result">Stream the result</h2>
+<p>If the result has many records, you can use Node.js stream API to reduce memory usage.</p>
+<pre><code class="lang-coffeescript">count = 0
+User.where(age: 27).stream()
+.on &#39;data&#39;, (user) -&gt;
+  count++
+.on &#39;end&#39;, -&gt;
+</code></pre>
+<pre><code class="lang-javascript">count = 0;
+User.where({age: 27}).stream()
+.on(&#39;data&#39;, function (user) {
+  count++;
+}).on(&#39;end&#39;, function () {
+});
+</code></pre>
 <h1 id="count-records">Count records</h1>
 <p><a href='../classes/Query.html#Query__count'>Query::count</a> returns the count of records.</p>
 <table class='table table-bordered'><thead><tr>

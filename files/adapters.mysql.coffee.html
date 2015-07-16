@@ -9,6 +9,7 @@ catch e
 SQLAdapterBase = require './sql_base'
 types = require '../types'
 _ = require 'lodash'
+stream = require 'stream'
 
 _typeToSQL = (property) -&gt;
   if property.array
@@ -267,8 +268,7 @@ class MySQLAdapter extends SQLAdapterBase
       else
         callback new Error 'not found'
 
-  ## @override AdapterBase::find
-  find: (model, conditions, options, callback) -&gt;
+  _buildSqlForFind: (model, conditions, options) -&gt;
     if options.group_by or options.group_fields
       select = @_buildGroupFields options.group_by, options.group_fields
     else
@@ -281,17 +281,11 @@ class MySQLAdapter extends SQLAdapterBase
     tableName = @_connection.models[model].tableName
     sql = &quot;SELECT #{select} FROM `#{tableName}`&quot;
     if conditions.length &gt; 0
-      try
-        sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
-      catch e
-        return callback e
+      sql += ' WHERE ' + @_buildWhere @_connection.models[model]._schema, conditions, params
     if options.group_by
       sql += ' GROUP BY ' + options.group_by.join ','
     if options.conditions_of_group.length &gt; 0
-      try
-        sql += ' HAVING ' + @_buildWhere options.group_fields, options.conditions_of_group, params
-      catch e
-        return callback e
+      sql += ' HAVING ' + @_buildWhere options.group_fields, options.conditions_of_group, params
     if options?.orders.length &gt; 0 or order_by
       orders = options.orders.map (order) -&gt;
         if order[0] is '-'
@@ -307,6 +301,14 @@ class MySQLAdapter extends SQLAdapterBase
     else if options?.skip?
       sql += ' LIMIT 2147483647 OFFSET ' + options.skip
     #console.log sql, params
+    [sql, params]
+
+  ## @override AdapterBase::find
+  find: (model, conditions, options, callback) -&gt;
+    try
+      [sql, params] = @_buildSqlForFind model, conditions, options
+    catch e
+      return callback e
     if options.explain
       return @_query &quot;EXPLAIN #{sql}&quot;, params, (error, result) -&gt;
         return callback error if error
@@ -321,6 +323,25 @@ class MySQLAdapter extends SQLAdapterBase
           callback null, result.map (record) =&gt; @_refineRawInstance model, record, options.select, options.select_raw
         else
           callback null, result.map (record) =&gt; @_convertToModelInstance model, record, options.select, options.select_raw
+
+  ## @override AdapterBase::stream
+  stream: (model, conditions, options) -&gt;
+    try
+      [sql, params] = @_buildSqlForFind model, conditions, options
+    catch e
+      readable = new stream.Readable objectMode: true
+      readable._read = -&gt;
+        readable.emit 'error', e
+      return readable
+    transformer = new stream.Transform objectMode: true
+    transformer._transform = (record, encoding, callback) =&gt;
+      transformer.push @_convertToModelInstance model, record, options.select, options.select_raw
+      callback()
+    @_query(sql, params).stream()
+    .on 'error', (error) -&gt;
+      transformer.emit 'error', error
+    .pipe transformer
+    transformer
 
   ## @override AdapterBase::count
   count: (model, conditions, options, callback) -&gt;

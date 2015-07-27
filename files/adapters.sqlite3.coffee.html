@@ -30,8 +30,6 @@ _propertyToSQL = (property) -&gt;
       type += ' NOT NULL'
     else
       type += ' NULL'
-    if property.unique
-      type += ' UNIQUE'
     return type
 
 ##
@@ -52,7 +50,79 @@ class SQLite3Adapter extends SQLAdapterBase
     #console.log 'SQLite3Adapter:', sql
     @_client[method].apply @_client, [].slice.call arguments, 1
 
-  _createTable: (model, callback) -&gt;
+  _getTables: (callback) -&gt;
+    @_query 'all', &quot;SELECT name FROM sqlite_master WHERE type='table'&quot;, (error, tables) =&gt;
+      return callback error if error
+      tables = tables.map (table) -&gt;
+        table.name
+      callback null, tables
+
+  _getSchema: (table, callback) -&gt;
+    @_query 'all', &quot;PRAGMA table_info(`#{table}`)&quot;, (error, columns) -&gt;
+      return callback error if error
+      schema = {}
+      for column in columns
+        type = if /^varchar\((\d*)\)/i.test column.type
+          new types.String(RegExp.$1)
+        else if /^double/i.test column.type
+          new types.Number()
+        else if /^tinyint/i.test column.type
+          new types.Boolean()
+        else if /^int/i.test column.type
+          new types.Integer()
+        else if /^real/i.test column.type
+          new types.Date()
+        else if /^text/i.test column.type
+          new types.Object()
+        schema[column.name] = type: type, required: column.notnull is 1
+      callback null, schema
+
+  _getIndexes: (table, callback) -&gt;
+    @_query 'all', &quot;PRAGMA index_list(`#{table}`)&quot;, (error, rows) =&gt;
+      return callback error if error
+      indexes = {}
+      async.each rows, (row, callback) =&gt;
+        indexes[row.name] or= {}
+        @_query 'all', &quot;PRAGMA index_info(`#{row.name}`)&quot;, (error, columns) -&gt;
+          return callback error if error
+          for column in columns
+            indexes[row.name][column.name] = 1
+          callback null
+      , (error) -&gt;
+        callback error, indexes
+
+  ## @override AdapterBase::getSchemas
+  getSchemas: (callback) -&gt;
+    async.auto
+      get_tables: (callback) =&gt;
+        @_getTables callback
+      get_table_schemas: ['get_tables', (callback, results) =&gt;
+        table_schemas = {}
+        async.each results.get_tables, (table, callback) =&gt;
+          @_getSchema table, (error, schema) -&gt;
+            return callback error if error
+            table_schemas[table] = schema
+            callback null
+        , (error) -&gt;
+          return callback error if error
+          callback null, table_schemas
+      ]
+      get_indexes: ['get_tables', (callback, results) =&gt;
+        all_indexes = {}
+        async.each results.get_tables, (table, callback) =&gt;
+          @_getIndexes table, (error, indexes) -&gt;
+            return callback error if error
+            all_indexes[table] = indexes
+            callback null
+        , (error) -&gt;
+          return callback error if error
+          callback null, all_indexes
+      ]
+    , (error, results) -&gt;
+      callback error, tables: results.get_table_schemas, indexes: results.get_indexes
+
+  ## @override AdapterBase::createTable
+  createTable: (model, callback) -&gt;
     model_class = @_connection.models[model]
     tableName = model_class.tableName
     sql = []
@@ -69,27 +139,31 @@ class SQLite3Adapter extends SQLAdapterBase
       else if integrity.type is 'child_delete'
         sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE CASCADE&quot;
     sql = &quot;CREATE TABLE \&quot;#{tableName}\&quot; ( #{sql.join ','} )&quot;
+    @_query 'run', sql, (error) =&gt;
+      return callback SQLite3Adapter.wrapError 'unknown error', error if error
+      callback null
+
+  ## @override AdapterBase::addColumn
+  addColumn: (model, column_property, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    sql = &quot;ALTER TABLE \&quot;#{tableName}\&quot; ADD COLUMN \&quot;#{column_property._dbname}\&quot; #{_propertyToSQL column_property}&quot;
+    @_query 'run', sql, (error) -&gt;
+      return callback SQLite3Adapter.wrapError 'unknown error', error if error
+      callback null
+
+  ## @override AdapterBase::createIndex
+  createIndex: (model, index, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    columns = []
+    for column, order of index.columns
+      columns.push &quot;\&quot;#{column}\&quot; #{if order is -1 then 'DESC' else 'ASC'}&quot;
+    unique = if index.options.unique then 'UNIQUE ' else ''
+    sql = &quot;CREATE #{unique}INDEX \&quot;#{index.options.name}\&quot; ON \&quot;#{tableName}\&quot; (#{columns.join ','})&quot;
     @_query 'run', sql, (error, result) =&gt;
       return callback SQLite3Adapter.wrapError 'unknown error', error if error
-      async.forEach model_class._indexes, (index, callback) =&gt;
-        columns = []
-        for column, order of index.columns
-          columns.push &quot;\&quot;#{column}\&quot; #{if order is -1 then 'DESC' else 'ASC'}&quot;
-        unique = if index.options.unique then 'UNIQUE ' else ''
-        sql = &quot;CREATE #{unique}INDEX \&quot;#{index.options.name}\&quot; ON \&quot;#{tableName}\&quot; (#{columns.join ','})&quot;
-        @_query 'run', sql, callback
-      , (error) -&gt;
-        return callback SQLite3Adapter.wrapError 'unknown error', error if error
-        callback null
-
-  ## @override AdapterBase::applySchema
-  applySchema: (model, callback) -&gt;
-    tableName = @_connection.models[model].tableName
-    @_query 'all', &quot;SELECT name FROM sqlite_master WHERE type='table' AND name='#{tableName}'&quot;, (error, result) =&gt;
-      if result?.length != 1
-        @_createTable model, callback
-      else
-        callback null
+      callback null
 
   ## @override AdapterBase::drop
   drop: (model, callback) -&gt;

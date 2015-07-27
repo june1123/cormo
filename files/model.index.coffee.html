@@ -119,7 +119,6 @@ class Model
     Object.defineProperty @, '_associations', value: {}
     Object.defineProperty @, '_validators', value: []
     Object.defineProperty @, '_name', value: name
-    Object.defineProperty @, '_schema_changed', writable: true, value: true
     Object.defineProperty @, '_schema', value: {}
     Object.defineProperty @, '_intermediate_paths', value: {}
     Object.defineProperty @, '_indexes', value: []
@@ -193,7 +192,9 @@ class Model
 
     @_schema[path] = property
 
-    @_schema_changed = true
+    if property.unique
+      @_indexes.push columns: _.zipObject([[property._dbname, 1]]), options: name: property._dbname, unique: true, required: property.required
+
     @_connection._schema_changed = true
 
   ##
@@ -209,6 +210,8 @@ class Model
       options.name = Object.keys(columns).join('_')
     @_indexes.push columns: columns, options: options
 
+    @_connection._schema_changed = true
+
   ##
   # Drops this model from the database
   # @promise
@@ -219,7 +222,6 @@ class Model
     @_connection._promise_connection.then =&gt;
       @_adapter.dropAsync @_name
     .finally =&gt;
-      @_schema_changed = true
       @_connection._schema_changed = true
     .nodeify util.bindDomain callback
 

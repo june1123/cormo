@@ -19,13 +19,50 @@ class AdapterBase
     return error
 
   ##
-  # Applies schema.
-  # Creates tables, alter tables, create indexes, or etc. depending adapters
+  # Returns current schemas.
+  # @abstract
+  # @return {Object}
+  # @returnprop {Object} tables
+  # @nodejscallback
+  # @see Connection::applySchemas
+  getSchemas: (callback) -&gt; callback null, tables: []
+
+  ## Creates a table.
   # @abstract
   # @param {String} model
   # @nodejscallback
   # @see Connection::applySchemas
-  applySchema: (model, callback) -&gt; callback null
+  createTable: (model, callback) -&gt; callback null
+
+  ## Adds a column to a table
+  # @abstract
+  # @param {String} model
+  # @param {Object} column_property
+  # @nodejscallback
+  # @see Connection::applySchemas
+  addColumn: (model, column_property, callback) -&gt; callback null
+
+  ## Creates an index.
+  # @abstract
+  # @param {String} model
+  # @param {Object} index
+  # @param {Object} index.columns
+  # @param {Object} index.options
+  # @param {String} index.options.name
+  # @param {Boolean} index.options.unique
+  # @nodejscallback
+  # @see Connection::applySchemas
+  createIndex: (model, index, callback) -&gt; callback null
+
+  ## Creates a foreign key.
+  # @abstract
+  # @param {String} model
+  # @param {String} column
+  # @param {String} type
+  # @param {Class&lt;Model&gt;} references
+  # @nodejscallback
+  # @see Connection::applySchemas
+  createForeignKey: (model, column, type, references, callback) -&gt; callback null
 
   ##
   # Drops a model from the database

@@ -11,8 +11,9 @@ try
 
 SQLAdapterBase = require './sql_base'
 types = require '../types'
-async = require 'async'
+
 _ = require 'lodash'
+async = require 'async'
 stream = require 'stream'
 
 _typeToSQL = (property) -&gt;
@@ -34,8 +35,6 @@ _propertyToSQL = (property) -&gt;
       type += ' NOT NULL'
     else
       type += ' NULL'
-    if property.unique
-      type += ' UNIQUE'
     return type
 
 ##
@@ -60,7 +59,80 @@ class PostgreSQLAdapter extends SQLAdapterBase
     @_client.query sql, data, (error, result) -&gt;
       callback error, result
 
-  _createTable: (model, callback) -&gt;
+  _getTables: (callback) -&gt;
+    @_query &quot;SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'public' AND table_type = 'BASE TABLE'&quot;, null, (error, result) -&gt;
+      return callback error if error
+      tables = result.rows.map (table) -&gt;
+        table.table_name
+      callback null, tables
+
+  _getSchema: (table, callback) -&gt;
+    @_query &quot;SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name=$1&quot;, [table], (error, result) =&gt;
+      return callback error if error
+      schema = {}
+      for column in result.rows
+        type = if column.data_type is 'character varying'
+          new types.String(column.character_maximum_length)
+        else if column.data_type is 'double precision'
+          new types.Number()
+        else if column.data_type is 'boolean'
+          new types.Boolean()
+        else if column.data_type is 'integer'
+          new types.Integer()
+        else if column.data_type is 'USER-DEFINED' and column.udt_schema is 'public' and column.udt_name is 'geometry'
+          new types.GeoPoint()
+        else if column.data_type is 'timestamp without time zone'
+          new types.Date()
+        else if column.data_type is 'json'
+          new types.Object()
+        schema[column.column_name] = type: type, required: column.is_nullable is 'NO'
+      callback null, schema
+
+  _getIndexes: (callback) -&gt;
+    # see http://stackoverflow.com/a/2213199/3239514
+    @_query &quot;SELECT t.relname AS table_name, i.relname AS index_name, a.attname AS column_name FROM pg_class t, pg_class i, pg_index ix, pg_attribute a WHERE t.oid = ix.indrelid AND i.oid = ix.indexrelid AND a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)&quot;, null, (error, result) -&gt;
+      return callback error if error
+      indexes = {}
+      for row in result.rows
+        indexes_of_table = indexes[row.table_name] or= {}
+        (indexes_of_table[row.index_name] or= {})[row.column_name] = 1
+      callback null, indexes
+
+  _getForeignKeys: (callback) -&gt;
+    # see http://stackoverflow.com/a/1152321/3239514
+    @_query &quot;SELECT tc.table_name AS table_name, kcu.column_name AS column_name, ccu.table_name AS referenced_table_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name WHERE constraint_type = 'FOREIGN KEY'&quot;, null, (error, result) -&gt;
+      return callback error if error
+      foreign_keys = {}
+      for row in result.rows
+        foreign_keys_of_table = foreign_keys[row.table_name] or= {}
+        foreign_keys_of_table[row.column_name] = row.referenced_table_name
+      callback null, foreign_keys
+
+  ## @override AdapterBase::getSchemas
+  getSchemas: (callback) -&gt;
+    async.auto
+      get_tables: (callback) =&gt;
+        @_getTables callback
+      get_table_schemas: ['get_tables', (callback, results) =&gt;
+        table_schemas = {}
+        async.each results.get_tables, (table, callback) =&gt;
+          @_getSchema table, (error, schema) -&gt;
+            return callback error if error
+            table_schemas[table] = schema
+            callback null
+        , (error) -&gt;
+          return callback error if error
+          callback null, table_schemas
+      ]
+      get_indexes: (callback) =&gt;
+        @_getIndexes callback
+      get_foreign_keys: (callback) =&gt;
+        @_getForeignKeys callback
+    , (error, results) -&gt;
+      callback error, tables: results.get_table_schemas, indexes: results.get_indexes, foreign_keys: results.get_foreign_keys
+
+  ## @override AdapterBase::createTable
+  createTable: (model, callback) -&gt;
     model_class = @_connection.models[model]
     tableName = model_class.tableName
     sql = []
@@ -69,40 +141,46 @@ class PostgreSQLAdapter extends SQLAdapterBase
       column_sql = _propertyToSQL property
       if column_sql
         sql.push &quot;\&quot;#{property._dbname}\&quot; #{column_sql}&quot;
-    for integrity in model_class._integrities
-      if integrity.type is 'child_nullify'
-        sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE SET NULL&quot;
-      else if integrity.type is 'child_restrict'
-        sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE RESTRICT&quot;
-      else if integrity.type is 'child_delete'
-        sql.push &quot;FOREIGN KEY (\&quot;#{integrity.column}\&quot;) REFERENCES \&quot;#{integrity.parent.tableName}\&quot;(id) ON DELETE CASCADE&quot;
     sql = &quot;CREATE TABLE \&quot;#{tableName}\&quot; ( #{sql.join ','} )&quot;
     @_query sql, null, (error) =&gt;
       return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
-      async.forEach model_class._indexes, (index, callback) =&gt;
-        columns = []
-        for column, order of index.columns
-          columns.push &quot;\&quot;#{column}\&quot; #{if order is -1 then 'DESC' else 'ASC'}&quot;
-        unique = if index.options.unique then 'UNIQUE ' else ''
-        sql = &quot;CREATE #{unique}INDEX \&quot;#{index.options.name}\&quot; ON \&quot;#{tableName}\&quot; (#{columns.join ','})&quot;
-        @_query sql, null, callback
-      , (error) -&gt;
-        return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
-        callback null
+      callback null
 
-  _alterTable: (model, columns, callback) -&gt;
-    # TODO
-    callback null
+  ## @override AdapterBase::addColumn
+  addColumn: (model, column_property, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    sql = &quot;ALTER TABLE \&quot;#{tableName}\&quot; ADD COLUMN \&quot;#{column_property._dbname}\&quot; #{_propertyToSQL column_property}&quot;
+    @_query sql, null, (error) -&gt;
+      return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
+      callback null
 
-  ## @override AdapterBase::applySchema
-  applySchema: (model, callback) -&gt;
-    tableName = @_connection.models[model].tableName
-    @_query &quot;SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name=$1&quot;, [tableName], (error, result) =&gt;
-      columns = result?.rows
-      if error or columns.length is 0
-        @_createTable model, callback
-      else
-        @_alterTable model, columns, callback
+  ## @override AdapterBase::createIndex
+  createIndex: (model, index, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    columns = []
+    for column, order of index.columns
+      columns.push &quot;\&quot;#{column}\&quot; #{if order is -1 then 'DESC' else 'ASC'}&quot;
+    unique = if index.options.unique then 'UNIQUE ' else ''
+    sql = &quot;CREATE #{unique}INDEX \&quot;#{index.options.name}\&quot; ON \&quot;#{tableName}\&quot; (#{columns.join ','})&quot;
+    @_query sql, null, (error) =&gt;
+      return callback PostgreSQLAdapter.wrapError 'unknown error', error if error
+      callback null
+
+  ## @override AdapterBase::createForeignKey
+  createForeignKey: (model, column, type, references, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    action = switch type
+      when 'nullify' then 'SET NULL'
+      when 'restrict' then 'RESTRICT'
+      when 'delete' then 'CASCADE'
+    sql = &quot;ALTER TABLE \&quot;#{tableName}\&quot; ADD FOREIGN KEY (\&quot;#{column}\&quot;) REFERENCES \&quot;#{references.tableName}\&quot;(id) ON DELETE #{action}&quot;
+    @_query sql, null, (error) -&gt;
+      if error
+        return callback MySQLAdapter.wrapError 'unknown error', error
+      callback null
 
   ## @override AdapterBase::drop
   drop: (model, callback) -&gt;

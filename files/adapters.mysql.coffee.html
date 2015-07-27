@@ -8,7 +8,9 @@ catch e
 
 SQLAdapterBase = require './sql_base'
 types = require '../types'
+
 _ = require 'lodash'
+async = require 'async'
 stream = require 'stream'
 
 _typeToSQL = (property) -&gt;
@@ -30,8 +32,6 @@ _propertyToSQL = (property) -&gt;
       type += ' NOT NULL'
     else
       type += ' NULL'
-    if property.unique
-      type += ' UNIQUE'
     return type
 
 ##
@@ -53,7 +53,79 @@ class MySQLAdapter extends SQLAdapterBase
     #console.log 'MySQLAdapter:', sql
     @_client.query sql, data, callback
 
-  _createTable: (model, callback) -&gt;
+  _getTables: (callback) -&gt;
+    @_query &quot;SHOW TABLES&quot;, (error, tables) -&gt;
+      return callback error if error
+      tables = tables.map (table) -&gt;
+        key = Object.keys(table)[0]
+        table[key]
+      callback null, tables
+
+  _getSchema: (table, callback) -&gt;
+    @_query &quot;SHOW COLUMNS FROM `#{table}`&quot;, (error, columns) -&gt;
+      return callback error if error
+      schema = {}
+      for column in columns
+        type = if /^varchar\((\d*)\)/i.test column.Type
+          new types.String(RegExp.$1)
+        else if /^double/i.test column.Type
+          new types.Number()
+        else if /^tinyint\(1\)/i.test column.Type
+          new types.Boolean()
+        else if /^int/i.test column.Type
+          new types.Integer()
+        else if /^point/i.test column.Type
+          new types.GeoPoint()
+        else if /^datetime/i.test column.Type
+          new types.Date()
+        else if /^text/i.test column.Type
+          new types.Object()
+        schema[column.Field] = type: type, required: column.Null is 'NO'
+      callback null, schema
+
+  _getIndexes: (callback) -&gt;
+    @_query &quot;SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = ? ORDER BY SEQ_IN_INDEX&quot;, [@_database], (error, rows) -&gt;
+      return callback error if error
+      indexes = {}
+      for row in rows
+        indexes_of_table = indexes[row.TABLE_NAME] or= {}
+        (indexes_of_table[row.INDEX_NAME] or= {})[row.COLUMN_NAME] = 1
+      callback null, indexes
+
+  _getForeignKeys: (callback) -&gt;
+    @_query &quot;SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME IS NOT NULL AND CONSTRAINT_SCHEMA = ?&quot;, [@_database], (error, rows) -&gt;
+      return callback error if error
+      foreign_keys = {}
+      for row in rows
+        foreign_keys_of_table = foreign_keys[row.TABLE_NAME] or= {}
+        foreign_keys_of_table[row.COLUMN_NAME] = row.REFERENCED_TABLE_NAME
+      callback null, foreign_keys
+
+  ## @override AdapterBase::getSchemas
+  getSchemas: (callback) -&gt;
+    async.auto
+      get_tables: (callback) =&gt;
+        @_getTables callback
+      get_table_schemas: ['get_tables', (callback, results) =&gt;
+        table_schemas = {}
+        async.each results.get_tables, (table, callback) =&gt;
+          @_getSchema table, (error, schema) -&gt;
+            return callback error if error
+            table_schemas[table] = schema
+            callback null
+        , (error) -&gt;
+          return callback error if error
+          callback null, table_schemas
+      ]
+      get_indexes: (callback) =&gt;
+        @_getIndexes callback
+      get_foreign_keys: (callback) =&gt;
+        @_getForeignKeys callback
+    , (error, results) -&gt;
+      callback error, tables: results.get_table_schemas, indexes: results.get_indexes, foreign_keys: results.get_foreign_keys
+
+  ## @override AdapterBase::createTable
+  createTable: (model, callback) -&gt;
     model_class = @_connection.models[model]
     tableName = model_class.tableName
     sql = []
@@ -62,36 +134,48 @@ class MySQLAdapter extends SQLAdapterBase
       column_sql = _propertyToSQL property
       if column_sql
         sql.push &quot;`#{property._dbname}` #{column_sql}&quot;
-    for index in model_class._indexes
-      columns = []
-      for column, order of index.columns
-        columns.push &quot;`#{column}` #{if order is -1 then 'DESC' else 'ASC'}&quot;
-      unique = if index.options.unique then 'UNIQUE ' else ''
-      sql.push &quot;#{unique}INDEX `#{index.options.name}` (#{columns.join ','})&quot;
-    for integrity in model_class._integrities
-      if integrity.type is 'child_nullify'
-        sql.push &quot;FOREIGN KEY (`#{integrity.column}`) REFERENCES `#{integrity.parent.tableName}`(id) ON DELETE SET NULL&quot;
-      else if integrity.type is 'child_restrict'
-        sql.push &quot;FOREIGN KEY (`#{integrity.column}`) REFERENCES `#{integrity.parent.tableName}`(id) ON DELETE RESTRICT&quot;
-      else if integrity.type is 'child_delete'
-        sql.push &quot;FOREIGN KEY (`#{integrity.column}`) REFERENCES `#{integrity.parent.tableName}`(id) ON DELETE CASCADE&quot;
     sql = &quot;CREATE TABLE `#{tableName}` ( #{sql.join ','} )&quot;
-    @_query sql, (error, result) -&gt;
+    sql += &quot; DEFAULT CHARSET=#{@_settings.charset or 'utf8'}&quot;
+    sql += &quot; COLLATE=#{@_settings.collation or 'utf8_unicode_ci'}&quot;
+    @_query sql, (error) -&gt;
       return callback MySQLAdapter.wrapError 'unknown error', error if error
       callback null
 
-  _alterTable: (model, columns, callback) -&gt;
-    # TODO
-    callback null
+  ## @override AdapterBase::addColumn
+  addColumn: (model, column_property, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    sql = &quot;ALTER TABLE `#{tableName}` ADD COLUMN `#{column_property._dbname}` #{_propertyToSQL column_property}&quot;
+    @_query sql, (error) -&gt;
+      return callback MySQLAdapter.wrapError 'unknown error', error if error
+      callback null
 
-  ## @override AdapterBase::applySchema
-  applySchema: (model, callback) -&gt;
-    tableName = @_connection.models[model].tableName
-    @_query &quot;SHOW COLUMNS FROM `#{tableName}`&quot;, (error, columns) =&gt;
-      if error?.code is 'ER_NO_SUCH_TABLE'
-        @_createTable model, callback
-      else
-        @_alterTable model, columns, callback
+  ## @override AdapterBase::createIndex
+  createIndex: (model, index, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    columns = []
+    for column, order of index.columns
+      columns.push &quot;`#{column}` #{if order is -1 then 'DESC' else 'ASC'}&quot;
+    unique = if index.options.unique then 'UNIQUE ' else ''
+    sql = &quot;CREATE #{unique}INDEX `#{index.options.name}` ON `#{tableName}` (#{columns.join ','})&quot;
+    @_query sql, (error) -&gt;
+      return callback MySQLAdapter.wrapError 'unknown error', error if error
+      callback null
+
+  ## @override AdapterBase::createForeignKey
+  createForeignKey: (model, column, type, references, callback) -&gt;
+    model_class = @_connection.models[model]
+    tableName = model_class.tableName
+    action = switch type
+      when 'nullify' then 'SET NULL'
+      when 'restrict' then 'RESTRICT'
+      when 'delete' then 'CASCADE'
+    sql = &quot;ALTER TABLE `#{tableName}` ADD FOREIGN KEY (`#{column}`) REFERENCES `#{references.tableName}`(id) ON DELETE #{action}&quot;
+    @_query sql, (error) -&gt;
+      if error
+        return callback MySQLAdapter.wrapError 'unknown error', error
+      callback null
 
   ## @override AdapterBase::drop
   drop: (model, callback) -&gt;
@@ -391,6 +475,8 @@ class MySQLAdapter extends SQLAdapterBase
   # @param {String} [settings.user]
   # @param {String} [settings.password]
   # @param {String} settings.database
+  # @param {String} [settings.charset='utf8']
+  # @param {String} [settings.collation='utf8_unicode_ci']
   # @nodejscallback
   connect: (settings, callback) -&gt;
     # connect
@@ -399,11 +485,13 @@ class MySQLAdapter extends SQLAdapterBase
       port: settings.port
       user: settings.user
       password: settings.password
+    @_database = settings.database
+    @_settings = settings
     client.connect (error) =&gt;
       if error
         client.end()
         return callback MySQLAdapter.wrapError 'failed to connect', error
-      @_createDatabase client, settings, (error) =&gt;
+      @_createDatabase client, (error) =&gt;
         client.end()
         return callback error if error
         @_client = mysql.createPool
@@ -415,17 +503,17 @@ class MySQLAdapter extends SQLAdapterBase
         callback null
 
   # create database if not exist
-  _createDatabase: (client, settings, callback) -&gt;
+  _createDatabase: (client, callback) -&gt;
     # check database existence
-    client.query &quot;USE `#{settings.database}`&quot;, (error) =&gt;
+    client.query &quot;USE `#{@_database}`&quot;, (error) =&gt;
       return callback null if not error
 
       if error.code is 'ER_BAD_DB_ERROR'
-        client.query &quot;CREATE DATABASE `#{settings.database}`&quot;, (error) =&gt;
+        client.query &quot;CREATE DATABASE `#{@_database}`&quot;, (error) =&gt;
           return callback MySQLAdapter.wrapError 'unknown error', error if error
-          @_createDatabase client, settings, callback
+          @_createDatabase client, callback
       else
-        msg = if error.code is 'ER_DBACCESS_DENIED_ERROR' then &quot;no access right to the database '#{settings.database}'&quot; else 'unknown error'
+        msg = if error.code is 'ER_DBACCESS_DENIED_ERROR' then &quot;no access right to the database '#{@_database}'&quot; else 'unknown error'
         callback MySQLAdapter.wrapError msg, error
 
   ## @override AdapterBase::close

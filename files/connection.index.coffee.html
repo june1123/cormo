@@ -9,6 +9,8 @@ Toposort = require 'toposort-class'
 try
   redis = require 'redis'
 {inspect} = require 'util'
+try
+  deasync = require 'deasync'
 
 ##
 # Manages connection to a database
@@ -131,10 +133,18 @@ class Connection extends EventEmitter
 
   ##
   # Applies schemas
+  # @param {Object} [options]
+  # @param {Boolean} [options.verbose=false]
   # @promise
   # @nodejscallback
   # @see AdapterBase::applySchema
-  applySchemas: (callback) -&gt;
+  applySchemas: (options, callback) -&gt;
+    if typeof options is 'function'
+      callback = options
+      options = {}
+    else if not options
+      options = {}
+
     Promise.resolve().then =&gt;
       @_initializeModels()
       return if not @_schema_changed
@@ -146,22 +156,64 @@ class Connection extends EventEmitter
 
         @_checkArchive()
 
+        console.log 'Applying schemas' if options.verbose
+
         @_promise_schema_applied = @_promise_connection.then =&gt;
-          current = Promise.resolve()
-          Promise.all @_getModelNamesByAssociationOrder().reverse().map (model) =&gt;
-            current = current
-            .then =&gt;
-              modelClass = @models[model]
-              if not modelClass._schema_changed
-                return
-              @_adapter.applySchemaAsync model
-              .then -&gt;
-                modelClass._schema_changed = false
+          return @_adapter.getSchemasAsync()
+          .tap (current) =&gt;
+            add_columns_commands = []
+            for model, modelClass of @models
+              if not current.tables?[modelClass.tableName] or current.tables?[modelClass.tableName] is 'NO SCHEMA'
+                continue
+              for column, property of modelClass._schema
+                if not current.tables?[modelClass.tableName]?[property._dbname]
+                  console.log &quot;Adding column #{column} to #{modelClass.tableName}&quot; if options.verbose
+                  add_columns_commands.push @_adapter.addColumnAsync model, property
+            Promise.all add_columns_commands
+          .tap (current) =&gt;
+            tables_commands = []
+            for model, modelClass of @models
+              if not current.tables[modelClass.tableName]
+                console.log &quot;Creating table #{modelClass.tableName}&quot; if options.verbose
+                tables_commands.push @_adapter.createTableAsync model
+            Promise.all tables_commands
+          .tap (current) =&gt;
+            indexes_commands = []
+            for model, modelClass of @models
+              for index in modelClass._indexes
+                if not current.indexes?[modelClass.tableName]?[index.options.name]
+                  console.log &quot;Creating index on #{modelClass.tableName} #{Object.keys(index.columns)}&quot; if options.verbose
+                  indexes_commands.push @_adapter.createIndexAsync model, index
+            Promise.all indexes_commands
+          .tap (current) =&gt;
+            foreign_keys_commands = []
+            for model, modelClass of @models
+              for integrity in modelClass._integrities
+                type = ''
+                if integrity.type is 'child_nullify'
+                  type = 'nullify'
+                else if integrity.type is 'child_restrict'
+                  type = 'restrict'
+                else if integrity.type is 'child_delete'
+                  type = 'delete'
+                if type
+                  current_foreign_key = current.foreign_keys?[modelClass.tableName]?[integrity.column]
+                  if not (current_foreign_key and current_foreign_key is integrity.parent.tableName)
+                    console.log &quot;Adding foreign key #{modelClass.tableName}.#{integrity.column} to #{integrity.parent.tableName}&quot; if options.verbose
+                    foreign_keys_commands.push @_adapter.createForeignKeyAsync model, integrity.column, type, integrity.parent
+            Promise.all foreign_keys_commands
           .finally =&gt;
+            console.log 'Applying schemas done' if options.verbose
             @_applying_schemas = false
             @_schema_changed = false
       return @_promise_schema_applied
     .nodeify bindDomain callback
+
+  ##
+  # Applies schemas synchronously
+  # @method
+  # @see Connection::applySchemas
+  applySchemasSync: deasync? @::applySchemas
 
   ##
   # Drops all model tables

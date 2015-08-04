@@ -34,7 +34,7 @@ exports.getLeafOfPath = (obj, path, create_object) -&gt;
 # @memberOf util
 # @param {Object} obj
 # @param {String|Array&lt;String&gt;} path
-# @return {}
+# @return {*}
 exports.getPropertyOfPath = (obj, path) -&gt;
   [obj, last] = exports.getLeafOfPath obj, path, false
   return obj?[last]
@@ -44,7 +44,7 @@ exports.getPropertyOfPath = (obj, path) -&gt;
 # @memberOf util
 # @param {Object} obj
 # @param {String|Array&lt;String&gt;} path
-# @param {} value
+# @param {*} value
 exports.setPropertyOfPath = (obj, path, value) -&gt;
   [obj, last] = exports.getLeafOfPath obj, path
   obj[last] = value

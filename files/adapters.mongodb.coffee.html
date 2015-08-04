@@ -17,6 +17,8 @@ stream = require 'stream'
 types = require '../types'
 
 _convertValueToObjectID = (value, key) -&gt;
+  if not value?
+    return null
   try
     new ObjectID value
   catch e
@@ -113,7 +115,7 @@ _buildWhereSingle = (property, key, value, not_op) -&gt;
     if not value.ignoreCase
       value = new RegExp value.source, 'i'
   else
-    if is_objectid and value?
+    if is_objectid
       value = _convertValueToObjectID value, key
     if not_op
       value = $ne: value
@@ -444,10 +446,7 @@ class MongoDBAdapter extends AdapterBase
     @_collection(model).findOne _id: id, client_options, (error, result) =&gt;
       return callback MongoDBAdapter.wrapError 'unknown error', error if error
       return callback new Error('not found') if not result
-      if options.lean
-        callback null, @_refineRawInstance model, result, options.select, options.select_raw
-      else
-        callback null, @_convertToModelInstance model, result, options.select, options.select_raw
+      callback null, @_convertToModelInstance model, result, options
 
   _buildConditionsForFind: (model, conditions, options) -&gt;
     if options.select
@@ -533,10 +532,7 @@ class MongoDBAdapter extends AdapterBase
         return callback MongoDBAdapter.wrapError 'unknown error', error if error or not cursor
         cursor.toArray (error, result) =&gt;
           return callback MongoDBAdapter.wrapError 'unknown error', error if error
-          if options.lean
-            callback null, result.map (record) =&gt; @_refineRawInstance model, record, options.select, options.select_raw
-          else
-            callback null, result.map (record) =&gt; @_convertToModelInstance model, record, options.select, options.select_raw
+          callback null, result.map (record) =&gt; @_convertToModelInstance model, record, options
 
   ## @override AdapterBase::stream
   stream: (model, conditions, options) -&gt;
@@ -549,7 +545,7 @@ class MongoDBAdapter extends AdapterBase
       return readable
     transformer = new stream.Transform objectMode: true
     transformer._transform = (record, encoding, callback) =&gt;
-      transformer.push @_convertToModelInstance model, record, options.select, options.select_raw
+      transformer.push @_convertToModelInstance model, record, options
       callback()
     @_collection(model).find conditions, client_options, (error, cursor) -&gt;
       return transformer.emit 'error', MongoDBAdapter.wrapError 'unknown error', error if error or not cursor

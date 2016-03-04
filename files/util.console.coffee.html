@@ -17,6 +17,15 @@ util = require 'util'
 Connection = require '../connection'
 Model = require '../model'
 
+repl_servers = []
+
+addReplServer = (repl_server) -&gt;
+  repl_server.on 'exit', -&gt;
+    pos = repl_servers.indexOf repl_server
+    if pos &gt;= 0
+      repl_servers.splice pos, 1
+  repl_servers.push repl_server
+
 setupContext = (context, options) -&gt;
   context.Connection = Connection
   context.Model = Model
@@ -92,7 +101,7 @@ evalCoffee = (cmd, context, filename, callback) -&gt;
       defer = Promise.defer()
       context.$ = defer.callback
     js = coffee.compile cmd, filename: filename, bare: true
-    result = vm.runInContext js, context, filename
+    result = vm.runInContext js, context, filename: filename, displayErrors: false
     if defer
       delete context.$
       return defer.promise
@@ -127,6 +136,7 @@ exports.startCoffee = (options) -&gt;
     terminal: true
   addArgCompleterCoffee repl_server
   setupContext repl_server.context, options
+  addReplServer repl_server
   return repl_server
 
 # copied from coffee-script's repl.coffee
@@ -140,6 +150,7 @@ addHistoryJS = (repl, filename, maxSize) -&gt;
     readFd = fs.openSync filename, 'r'
     buffer = new Buffer(size)
     fs.readSync readFd, buffer, 0, size, stat.size - size
+    fs.close readFd
     # Set the history on the interpreter
     repl.rli.history = buffer.toString().split('\n').reverse()
     # If the history file was truncated we should pop off a potential partial line
@@ -157,7 +168,7 @@ addHistoryJS = (repl, filename, maxSize) -&gt;
       fs.write fd, &quot;#{code}\n&quot;
       lastLine = code
 
-  repl.rli.on 'exit', -&gt; fs.close fd
+  repl.on 'exit', -&gt; fs.close fd
 
   # Add a command to show the history stack
   repl.commands[getCommandId(repl, 'history')] =
@@ -241,4 +252,10 @@ exports.startJS = (options) -&gt;
   addHistoryJS repl_server, historyFile, historyMaxInputSize if historyFile
   addArgCompleterJS repl_server
   setupContext repl_server.context, options
-  return repl_server</pre></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><script src="../group-examples.js"></script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>
+  addReplServer repl_server
+  return repl_server
+
+exports.resetupContext = -&gt;
+  for repl_server in repl_servers
+    for key, object of exports.public
+      repl_server.context[key] = object</pre></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><script src="../group-examples.js"></script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

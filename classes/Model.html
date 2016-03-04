@@ -122,12 +122,12 @@ Maps from column path to property object</p>
   property.type = type
   property.type_class = type.constructor
   property._parts = path.split '.'
-  property._dbname = path.replace '.', '_'
+  property._dbname = path.replace /\./g, '_'
 
   @_schema[path] = property
 
   if property.unique
-    @_indexes.push columns: _.zipObject([[property._dbname, 1]]), options: name: property._dbname, unique: true, required: property.required
+    @_indexes.push columns: _.zipObject([property._dbname], [1]), options: name: property._dbname, unique: true, required: property.required
 
   @_connection._schema_changed = true</pre></div></div></div></section><span id="Model_connection" class="fix-anchor"></span><section><div class="panel panel-success"><div data-toggle="collapse" data-target="#Model_connection_body" class="panel-heading collapsed"><h3 class="panel-title">Model.connection(connection, [name])<span class="label label-static">static</span><span class="pull-right glyphicon"></span></h3><div class="method-summary"><p>Sets a connection of this model</p>
 </div></div><div id="Model_connection_body" class="panel-collapse collapse"><div class="panel-body"><div><p>If this methods was not called explicitly, this model will use Connection.defaultConnection</p>

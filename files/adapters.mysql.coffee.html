@@ -190,7 +190,10 @@ class MySQLAdapter extends SQLAdapterBase
 
   valueToModel: (value, property) -&gt;
     if property.type_class is types.Object or property.array
-      JSON.parse value
+      try
+        JSON.parse value
+      catch
+        null
     else if property.type_class is types.GeoPoint
       [value.x, value.y]
     else if property.type_class is types.Boolean
@@ -369,11 +372,17 @@ class MySQLAdapter extends SQLAdapterBase
     if options.conditions_of_group.length &gt; 0
       sql += ' HAVING ' + @_buildWhere options.group_fields, options.conditions_of_group, params
     if options?.orders.length &gt; 0 or order_by
+      model_class = @_connection.models[model]
+      schema = model_class._schema
       orders = options.orders.map (order) -&gt;
         if order[0] is '-'
-          return &quot;`#{order[1..]}` DESC&quot;
+          column = order[1..]
+          order = 'DESC'
         else
-          return &quot;`#{order}` ASC&quot;
+          column = order
+          order = 'ASC'
+        column = schema[column]?._dbname or column
+        return &quot;`#{column}` #{order}&quot;
       if order_by
         orders.push order_by
       sql += ' ORDER BY ' + orders.join ','
@@ -481,6 +490,7 @@ class MySQLAdapter extends SQLAdapterBase
       port: settings.port
       user: settings.user
       password: settings.password
+      charset: settings.charset
     @_database = settings.database
     @_settings = settings
     client.connect (error) =&gt;
@@ -499,6 +509,7 @@ class MySQLAdapter extends SQLAdapterBase
             port: settings.port
             user: settings.user
             password: settings.password
+            charset: settings.charset
             database: settings.database
             connectionLimit: settings.pool_size or 10
           callback null
@@ -536,8 +547,8 @@ class MySQLAdapter extends SQLAdapterBase
 
   ##
   # Exposes mysql module's query method
-  query: (sql, values, callback) -&gt;
-    @_client.query sql, values, callback
+  query: -&gt;
+    @_client.query.apply @_client, arguments
 
 module.exports = (connection) -&gt;
   new MySQLAdapter connection</pre></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><script src="../group-examples.js"></script><a href="https://github.com/croquiscom/cormo"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

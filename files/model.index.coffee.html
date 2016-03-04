@@ -188,12 +188,12 @@ class Model
     property.type = type
     property.type_class = type.constructor
     property._parts = path.split '.'
-    property._dbname = path.replace '.', '_'
+    property._dbname = path.replace /\./g, '_'
 
     @_schema[path] = property
 
     if property.unique
-      @_indexes.push columns: _.zipObject([[property._dbname, 1]]), options: name: property._dbname, unique: true, required: property.required
+      @_indexes.push columns: _.zipObject([property._dbname], [1]), options: name: property._dbname, unique: true, required: property.required
 
     @_connection._schema_changed = true
 
@@ -455,7 +455,7 @@ class Model
       options: options
 
   @inspect: (depth) -&gt;
-    schema = Object.keys(@_schema).sort().map((column) =&gt; return &quot;#{column}: #{@_schema[column].type}&quot;).join(', ')
+    schema = Object.keys(@_schema or {}).sort().map((column) =&gt; return &quot;#{column}: #{@_schema[column].type}&quot;).join(', ')
     return '\u001b[36m' + &quot;[Model: #{@name}(&quot; + '\u001b[90m' + schema + '\u001b[36m' + &quot;)]&quot; + '\u001b[39m'
 
 _use = (file) -&gt;

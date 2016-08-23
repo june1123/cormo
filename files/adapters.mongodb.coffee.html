@@ -25,45 +25,7 @@ _convertValueToObjectID = (value, key) -&gt;
     throw new Error(&quot;'#{key}' is not a valid id&quot;)
 
 _objectIdToString = (oid) -&gt;
-  oid = oid.id
-  str = ''
-  value = oid.charCodeAt 0
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 1
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 2
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 3
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 4
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 5
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 6
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 7
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 8
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 9
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 10
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  value = oid.charCodeAt 11
-  str += '0' if value &lt; 16
-  str += value.toString(16)
-  return str
+  return oid.toString()
 
 _buildWhereSingle = (property, key, value, not_op) -&gt;
   if key isnt 'id' and not property?
@@ -229,7 +191,7 @@ class MongoDBAdapter extends AdapterBase
     async.auto
       get_tables: (callback) =&gt;
         @_getTables callback
-      get_table_schemas: ['get_tables', (callback, results) =&gt;
+      get_table_schemas: ['get_tables', (results, callback) =&gt;
         table_schemas = {}
         async.each results.get_tables, (table, callback) =&gt;
           @_getSchema table, (error, schema) -&gt;
@@ -240,7 +202,7 @@ class MongoDBAdapter extends AdapterBase
           return callback error if error
           callback null, table_schemas
       ]
-      get_indexes: ['get_tables', (callback, results) =&gt;
+      get_indexes: ['get_tables', (results, callback) =&gt;
         all_indexes = {}
         async.each results.get_tables, (table, callback) =&gt;
           @_getIndexes table, (error, indexes) -&gt;

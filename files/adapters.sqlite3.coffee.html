@@ -96,7 +96,7 @@ class SQLite3Adapter extends SQLAdapterBase
     async.auto
       get_tables: (callback) =&gt;
         @_getTables callback
-      get_table_schemas: ['get_tables', (callback, results) =&gt;
+      get_table_schemas: ['get_tables', (results, callback) =&gt;
         table_schemas = {}
         async.each results.get_tables, (table, callback) =&gt;
           @_getSchema table, (error, schema) -&gt;
@@ -107,7 +107,7 @@ class SQLite3Adapter extends SQLAdapterBase
           return callback error if error
           callback null, table_schemas
       ]
-      get_indexes: ['get_tables', (callback, results) =&gt;
+      get_indexes: ['get_tables', (results, callback) =&gt;
         all_indexes = {}
         async.each results.get_tables, (table, callback) =&gt;
           @_getIndexes table, (error, indexes) -&gt;

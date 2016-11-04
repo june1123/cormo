@@ -17,6 +17,8 @@ util = require 'util'
 Connection = require '../connection'
 Model = require '../model'
 
+Promise.config cancellation: true
+
 repl_servers = []
 
 addReplServer = (repl_server) -&gt;
@@ -37,8 +39,8 @@ setupContext = (context, options) -&gt;
   Object.defineProperty context.console, 'inspect_depth',
     configurable: true
     enumrable: true
-    get: =&gt; return options.inspect_depth
-    set: (value) =&gt; options.inspect_depth = value
+    get: -&gt; return options.inspect_depth
+    set: (value) -&gt; options.inspect_depth = value
   for key, object of exports.public
     context[key] = object
   context.getTimestamp = (object_id) -&gt;
@@ -93,9 +95,13 @@ evalCoffee = (cmd, context, filename, callback) -&gt;
   if /^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test cmd
     assign_to = RegExp.$1
 
-  @.rli.pause()
+  originalKeypressHandler = @.rli.input._events.keypress[0]
+  @.rli.input._events.keypress[0] = (char, key) -&gt;
+    if key and key.ctrl and key.name is 'c'
+      runner.cancel()
+    return
 
-  Promise.try -&gt;
+  runner = Promise.try -&gt;
     if /[, ]\$$/.test cmd
       # apply defer if command is ended with '$'
       defer = Promise.defer()
@@ -107,14 +113,22 @@ evalCoffee = (cmd, context, filename, callback) -&gt;
       return defer.promise
     else
       return result
-  .then (result) =&gt;
+
+  runner.finally =&gt;
+    @.rli.input._events.keypress[0] = originalKeypressHandler
+    if runner.isCancelled()
+      callback prettyErrorMessage new Promise.CancellationError(), filename, cmd, true
+    return
+  .then (result) -&gt;
     if assign_to
       context[assign_to] = result
-    @.rli.resume()
     callback null, result
-  .catch (error) =&gt;
-    @.rli.resume()
+    return
+  .catch (error) -&gt;
     callback prettyErrorMessage error, filename, cmd, true
+    return
+
+  return
 
 ##
 # Starts a CoffeeScript console
@@ -186,20 +200,35 @@ evalJS = (originalEval) -&gt;
   (cmd, context, filename, callback) -&gt;
     if /^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test cmd
       assign_to = RegExp.$1
-    @.rli.pause()
-    originalEval cmd, context, filename, (error, result) =&gt;
-      if error
-        @.rli.resume()
-        return callback error
-      Promise.resolve result
-      .then (result) =&gt;
-        if assign_to
-          context[assign_to] = result
-        @.rli.resume()
-        callback null, result
-      .catch (error) =&gt;
-        @.rli.resume()
-        callback error
+
+    originalKeypressHandler = @.rli.input._events.keypress
+    @.rli.input._events.keypress = (char, key) -&gt;
+      if key and key.ctrl and key.name is 'c'
+        runner.cancel()
+      return
+
+    runner = new Promise (resolve, reject) -&gt;
+      originalEval cmd, context, filename, (error, result) -&gt;
+        if error
+          reject error
+        else
+          resolve result
+
+    runner.finally =&gt;
+      @.rli.input._events.keypress = originalKeypressHandler
+      if runner.isCancelled()
+        callback new Promise.CancellationError()
+      return
+    .then (result) -&gt;
+      if assign_to
+        context[assign_to] = result
+      callback null, result
+      return
+    .catch (error) -&gt;
+      callback error
+      return
+
+    return
 
 addArgCompleterJS = (repl_server) -&gt;
   rli = repl_server.rli

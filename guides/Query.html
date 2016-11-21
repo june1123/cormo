@@ -83,6 +83,20 @@ Two or more <a href='../classes/Query.html#Query__where'>Query::where</a>s mean 
 </tr>
 
 <tr>
+<td>Starts with some text in case insensitive</td>
+<td>name: { $startswith: &#39;smi&#39; }</td>
+<td>name LIKE &#39;smi%&#39;</td>
+<td>{ name: /^smi/i }</td>
+</tr>
+
+<tr>
+<td>Ends with some text in case insensitive</td>
+<td>name: { $endswith: &#39;smi&#39; }</td>
+<td>name LIKE &#39;%smi&#39;</td>
+<td>{ name: /smi$/i }</td>
+</tr>
+
+<tr>
 <td rowspan='2'>Regular expression</td>
 <td>name: /smi/</td>
 <td>name REGEXP &#39;smi&#39;</td>

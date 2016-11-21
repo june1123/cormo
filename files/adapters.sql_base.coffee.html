@@ -86,6 +86,16 @@ class SQLAdapterBase extends AdapterBase
             params.push '%' + value + '%'
             return column + op + @_param_place_holder params.length
           return &quot;(#{values.join ' OR '})&quot;
+        when '$startswith'
+          op = ' ' + @_contains_op + ' '
+          value = value[sub_key]
+          params.push value + '%'
+          return column + op + @_param_place_holder params.length
+        when '$endswith'
+          op = ' ' + @_contains_op + ' '
+          value = value[sub_key]
+          params.push '%' + value
+          return column + op + @_param_place_holder params.length
         else
           throw new Error &quot;unknown operator '#{sub_key}'&quot;
     else if _.isRegExp value
